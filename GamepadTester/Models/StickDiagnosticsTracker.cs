@@ -14,24 +14,38 @@ namespace GamepadTester.Models
         private const double InnerRingRadius = 116d;
         private const double OuterRingRadius = 128d;
         private readonly double[] bucketMaxima;
+        private double magnitudeSum;
+        private bool hasSamples;
 
         public StickDiagnosticsTracker()
         {
             bucketMaxima = new double[BucketCount];
             PathPoints = new PointCollection();
+            PathGeometry = Geometry.Empty;
             CoverageGeometry = Geometry.Empty;
         }
 
         public PointCollection PathPoints { get; private set; }
+        public Geometry PathGeometry { get; private set; }
         public Geometry CoverageGeometry { get; private set; }
         public int CoveragePercent { get; private set; }
         public int CoveredSectors { get; private set; }
         public double MaxMagnitude { get; private set; }
+        public double AverageMagnitude { get; private set; }
+        public int SampleCount { get; private set; }
+        public double MinX { get; private set; }
+        public double MaxX { get; private set; }
+        public double MinY { get; private set; }
+        public double MaxY { get; private set; }
 
         public void AddSample(StickState stick)
         {
             var magnitude = Math.Min(1d, stick.Magnitude);
             MaxMagnitude = Math.Max(MaxMagnitude, magnitude);
+            SampleCount++;
+            magnitudeSum += magnitude;
+            AverageMagnitude = magnitudeSum / SampleCount;
+            UpdateAxisRange(stick);
 
             AppendPathPoint(stick);
             UpdateCircularCoverage(stick, magnitude);
@@ -41,10 +55,19 @@ namespace GamepadTester.Models
         {
             Array.Clear(bucketMaxima, 0, bucketMaxima.Length);
             PathPoints = new PointCollection();
+            PathGeometry = Geometry.Empty;
             CoverageGeometry = Geometry.Empty;
             CoveragePercent = 0;
             CoveredSectors = 0;
             MaxMagnitude = 0d;
+            AverageMagnitude = 0d;
+            SampleCount = 0;
+            magnitudeSum = 0d;
+            hasSamples = false;
+            MinX = 0d;
+            MaxX = 0d;
+            MinY = 0d;
+            MaxY = 0d;
         }
 
         private void AppendPathPoint(StickState stick)
@@ -57,6 +80,53 @@ namespace GamepadTester.Models
             {
                 PathPoints.RemoveAt(0);
             }
+
+            RebuildPathGeometry();
+        }
+
+        private void UpdateAxisRange(StickState stick)
+        {
+            if (!hasSamples)
+            {
+                MinX = stick.X;
+                MaxX = stick.X;
+                MinY = stick.Y;
+                MaxY = stick.Y;
+                hasSamples = true;
+                return;
+            }
+
+            MinX = Math.Min(MinX, stick.X);
+            MaxX = Math.Max(MaxX, stick.X);
+            MinY = Math.Min(MinY, stick.Y);
+            MaxY = Math.Max(MaxY, stick.Y);
+        }
+
+        private void RebuildPathGeometry()
+        {
+            if (PathPoints.Count < 2)
+            {
+                PathGeometry = Geometry.Empty;
+                return;
+            }
+
+            var figure = new PathFigure
+            {
+                StartPoint = PathPoints[0],
+                IsClosed = false,
+                IsFilled = false
+            };
+
+            var segment = new PolyLineSegment();
+            for (var index = 1; index < PathPoints.Count; index++)
+            {
+                segment.Points.Add(PathPoints[index]);
+            }
+
+            figure.Segments.Add(segment);
+            var geometry = new PathGeometry();
+            geometry.Figures.Add(figure);
+            PathGeometry = geometry;
         }
 
         private void UpdateCircularCoverage(StickState stick, double magnitude)
