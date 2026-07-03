@@ -313,6 +313,16 @@ namespace GamepadTester.ViewModels
             get { return rightStickDiagnostics.PathPoints; }
         }
 
+        public Geometry LeftStickPathGeometry
+        {
+            get { return leftStickDiagnostics.PathGeometry; }
+        }
+
+        public Geometry RightStickPathGeometry
+        {
+            get { return rightStickDiagnostics.PathGeometry; }
+        }
+
         public Geometry LeftStickCircularCoverageGeometry
         {
             get { return leftStickDiagnostics.CoverageGeometry; }
@@ -321,6 +331,36 @@ namespace GamepadTester.ViewModels
         public Geometry RightStickCircularCoverageGeometry
         {
             get { return rightStickDiagnostics.CoverageGeometry; }
+        }
+
+        public int LeftStickCircularCoveragePercent
+        {
+            get { return leftStickDiagnostics.CoveragePercent; }
+        }
+
+        public int RightStickCircularCoveragePercent
+        {
+            get { return rightStickDiagnostics.CoveragePercent; }
+        }
+
+        public int LeftStickMaxReachPercent
+        {
+            get { return Math.Min(100, (int)Math.Round(leftStickDiagnostics.MaxMagnitude * 100d)); }
+        }
+
+        public int RightStickMaxReachPercent
+        {
+            get { return Math.Min(100, (int)Math.Round(rightStickDiagnostics.MaxMagnitude * 100d)); }
+        }
+
+        public int LeftStickCurrentMagnitudePercent
+        {
+            get { return Math.Min(100, (int)Math.Round(State.LeftStick.Magnitude * 100d)); }
+        }
+
+        public int RightStickCurrentMagnitudePercent
+        {
+            get { return Math.Min(100, (int)Math.Round(State.RightStick.Magnitude * 100d)); }
         }
 
         public string LeftStickCircularCoverageLabel
@@ -351,6 +391,46 @@ namespace GamepadTester.ViewModels
         public string RightStickMaxReachLabel
         {
             get { return string.Format("Max reach: {0}%", Math.Min(100, (int)Math.Round(rightStickDiagnostics.MaxMagnitude * 100d))); }
+        }
+
+        public string LeftStickCurrentMagnitudeLabel
+        {
+            get { return string.Format("Current: {0}%", LeftStickCurrentMagnitudePercent); }
+        }
+
+        public string RightStickCurrentMagnitudeLabel
+        {
+            get { return string.Format("Current: {0}%", RightStickCurrentMagnitudePercent); }
+        }
+
+        public string LeftStickAngleLabel
+        {
+            get { return GetAngleLabel(State.LeftStick); }
+        }
+
+        public string RightStickAngleLabel
+        {
+            get { return GetAngleLabel(State.RightStick); }
+        }
+
+        public string LeftStickAxisRangeLabel
+        {
+            get { return GetAxisRangeLabel(leftStickDiagnostics); }
+        }
+
+        public string RightStickAxisRangeLabel
+        {
+            get { return GetAxisRangeLabel(rightStickDiagnostics); }
+        }
+
+        public string LeftStickAverageMagnitudeLabel
+        {
+            get { return GetAverageMagnitudeLabel(leftStickDiagnostics); }
+        }
+
+        public string RightStickAverageMagnitudeLabel
+        {
+            get { return GetAverageMagnitudeLabel(rightStickDiagnostics); }
         }
 
         public int QuickTestProgress
@@ -1030,6 +1110,46 @@ namespace GamepadTester.ViewModels
             return string.Format("Path samples: {0}", tracker.PathPoints.Count);
         }
 
+        private static string GetAxisRangeLabel(StickDiagnosticsTracker tracker)
+        {
+            if (tracker.SampleCount == 0)
+            {
+                return "Range: no samples";
+            }
+
+            return string.Format("Range X {0:0.00}..{1:0.00}  Y {2:0.00}..{3:0.00}",
+                tracker.MinX,
+                tracker.MaxX,
+                tracker.MinY,
+                tracker.MaxY);
+        }
+
+        private static string GetAverageMagnitudeLabel(StickDiagnosticsTracker tracker)
+        {
+            if (tracker.SampleCount == 0)
+            {
+                return "Average: 0%";
+            }
+
+            return string.Format("Average: {0}%", Math.Min(100, (int)Math.Round(tracker.AverageMagnitude * 100d)));
+        }
+
+        private static string GetAngleLabel(StickState stick)
+        {
+            if (stick.Magnitude < 0.05d)
+            {
+                return "Angle: center";
+            }
+
+            var angle = Math.Atan2(stick.Y, stick.X) * 180d / Math.PI;
+            if (angle < 0d)
+            {
+                angle += 360d;
+            }
+
+            return string.Format("Angle: {0:0} deg", angle);
+        }
+
         private void NotifyStateChanged()
         {
             OnPropertyChanged("State");
@@ -1060,14 +1180,30 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("MaxDriftLabel");
             OnPropertyChanged("LeftStickPathPoints");
             OnPropertyChanged("RightStickPathPoints");
+            OnPropertyChanged("LeftStickPathGeometry");
+            OnPropertyChanged("RightStickPathGeometry");
             OnPropertyChanged("LeftStickCircularCoverageGeometry");
             OnPropertyChanged("RightStickCircularCoverageGeometry");
+            OnPropertyChanged("LeftStickCircularCoveragePercent");
+            OnPropertyChanged("RightStickCircularCoveragePercent");
+            OnPropertyChanged("LeftStickMaxReachPercent");
+            OnPropertyChanged("RightStickMaxReachPercent");
+            OnPropertyChanged("LeftStickCurrentMagnitudePercent");
+            OnPropertyChanged("RightStickCurrentMagnitudePercent");
             OnPropertyChanged("LeftStickCircularCoverageLabel");
             OnPropertyChanged("RightStickCircularCoverageLabel");
             OnPropertyChanged("LeftStickPathSampleLabel");
             OnPropertyChanged("RightStickPathSampleLabel");
             OnPropertyChanged("LeftStickMaxReachLabel");
             OnPropertyChanged("RightStickMaxReachLabel");
+            OnPropertyChanged("LeftStickCurrentMagnitudeLabel");
+            OnPropertyChanged("RightStickCurrentMagnitudeLabel");
+            OnPropertyChanged("LeftStickAngleLabel");
+            OnPropertyChanged("RightStickAngleLabel");
+            OnPropertyChanged("LeftStickAxisRangeLabel");
+            OnPropertyChanged("RightStickAxisRangeLabel");
+            OnPropertyChanged("LeftStickAverageMagnitudeLabel");
+            OnPropertyChanged("RightStickAverageMagnitudeLabel");
             OnPropertyChanged("QuickTestProgress");
             OnPropertyChanged("QuickTestLabel");
             OnPropertyChanged("ButtonCoverageLabel");

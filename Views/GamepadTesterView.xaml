@@ -362,13 +362,13 @@
                                         <Path Data="{Binding LeftStickCircularCoverageGeometry}"
                                               Fill="{StaticResource ActiveBrush}"
                                               Opacity="0.72" />
-                                        <Polyline Points="{Binding LeftStickPathPoints}"
-                                                  Stroke="#4CC9F0"
-                                                  StrokeThickness="2"
-                                                  StrokeStartLineCap="Round"
-                                                  StrokeEndLineCap="Round"
-                                                  StrokeLineJoin="Round"
-                                                  Opacity="0.9" />
+                                        <Path Data="{Binding LeftStickPathGeometry}"
+                                              Stroke="#4CC9F0"
+                                              StrokeThickness="2.4"
+                                              StrokeStartLineCap="Round"
+                                              StrokeEndLineCap="Round"
+                                              StrokeLineJoin="Round"
+                                              Opacity="0.95" />
                                         <Ellipse Width="18" Height="18" Fill="#4CC9F0" Stroke="#DDF7FF" StrokeThickness="1.5" HorizontalAlignment="Center" VerticalAlignment="Center">
                                             <Ellipse.RenderTransform>
                                                 <TranslateTransform X="{Binding LeftStickDiagnosticsDotX}" Y="{Binding LeftStickDiagnosticsDotY}" />
@@ -376,17 +376,30 @@
                                         </Ellipse>
                                     </Grid>
 
-                                    <UniformGrid Grid.Row="2" Columns="2">
-                                        <StackPanel Margin="0,0,8,0">
-                                            <TextBlock Text="{Binding LeftStickVector}" />
-                                            <TextBlock Text="{Binding LeftStickDriftStatus}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
-                                        </StackPanel>
-                                        <StackPanel>
+                                    <Grid Grid.Row="2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel Margin="0,0,10,0">
                                             <TextBlock Text="{Binding LeftStickCircularCoverageLabel}" />
-                                            <TextBlock Text="{Binding LeftStickMaxReachLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
+                                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding LeftStickCircularCoveragePercent}" Height="8" Margin="0,6,0,10" />
+                                            <TextBlock Text="{Binding LeftStickMaxReachLabel}" />
+                                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding LeftStickMaxReachPercent}" Height="8" Margin="0,6,0,10" />
+                                            <TextBlock Text="{Binding LeftStickCurrentMagnitudeLabel}" />
+                                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding LeftStickCurrentMagnitudePercent}" Height="8" Margin="0,6,0,0" />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="{Binding LeftStickVector}" />
+                                            <TextBlock Text="{Binding LeftStickAngleLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
+                                            <TextBlock Text="{Binding LeftStickDriftStatus}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
+                                            <TextBlock Text="{Binding LeftStickAxisRangeLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,10,0,0" TextWrapping="Wrap" />
+                                            <TextBlock Text="{Binding LeftStickAverageMagnitudeLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
                                             <TextBlock Text="{Binding LeftStickPathSampleLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
                                         </StackPanel>
-                                    </UniformGrid>
+                                    </Grid>
                                 </Grid>
                             </Border>
 
@@ -410,13 +423,13 @@
                                         <Path Data="{Binding RightStickCircularCoverageGeometry}"
                                               Fill="{StaticResource WarningBrush}"
                                               Opacity="0.76" />
-                                        <Polyline Points="{Binding RightStickPathPoints}"
-                                                  Stroke="#F7B955"
-                                                  StrokeThickness="2"
-                                                  StrokeStartLineCap="Round"
-                                                  StrokeEndLineCap="Round"
-                                                  StrokeLineJoin="Round"
-                                                  Opacity="0.9" />
+                                        <Path Data="{Binding RightStickPathGeometry}"
+                                              Stroke="#F7B955"
+                                              StrokeThickness="2.4"
+                                              StrokeStartLineCap="Round"
+                                              StrokeEndLineCap="Round"
+                                              StrokeLineJoin="Round"
+                                              Opacity="0.95" />
                                         <Ellipse Width="18" Height="18" Fill="#F7B955" Stroke="#FFF4DC" StrokeThickness="1.5" HorizontalAlignment="Center" VerticalAlignment="Center">
                                             <Ellipse.RenderTransform>
                                                 <TranslateTransform X="{Binding RightStickDiagnosticsDotX}" Y="{Binding RightStickDiagnosticsDotY}" />
@@ -424,17 +437,30 @@
                                         </Ellipse>
                                     </Grid>
 
-                                    <UniformGrid Grid.Row="2" Columns="2">
-                                        <StackPanel Margin="0,0,8,0">
-                                            <TextBlock Text="{Binding RightStickVector}" />
-                                            <TextBlock Text="{Binding RightStickDriftStatus}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
-                                        </StackPanel>
-                                        <StackPanel>
+                                    <Grid Grid.Row="2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel Margin="0,0,10,0">
                                             <TextBlock Text="{Binding RightStickCircularCoverageLabel}" />
-                                            <TextBlock Text="{Binding RightStickMaxReachLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
+                                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding RightStickCircularCoveragePercent}" Height="8" Margin="0,6,0,10" />
+                                            <TextBlock Text="{Binding RightStickMaxReachLabel}" />
+                                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding RightStickMaxReachPercent}" Height="8" Margin="0,6,0,10" />
+                                            <TextBlock Text="{Binding RightStickCurrentMagnitudeLabel}" />
+                                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding RightStickCurrentMagnitudePercent}" Height="8" Margin="0,6,0,0" />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="{Binding RightStickVector}" />
+                                            <TextBlock Text="{Binding RightStickAngleLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
+                                            <TextBlock Text="{Binding RightStickDriftStatus}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
+                                            <TextBlock Text="{Binding RightStickAxisRangeLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,10,0,0" TextWrapping="Wrap" />
+                                            <TextBlock Text="{Binding RightStickAverageMagnitudeLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
                                             <TextBlock Text="{Binding RightStickPathSampleLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
                                         </StackPanel>
-                                    </UniformGrid>
+                                    </Grid>
                                 </Grid>
                             </Border>
                         </Grid>
