@@ -1,0 +1,536 @@
+<UserControl x:Class="GamepadTester.Views.GamepadTesterView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:GamepadTester.Converters"
+             xmlns:layouts="clr-namespace:GamepadTester.Views.ControllerLayouts">
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="PanelBrush" Color="#20242C" />
+        <SolidColorBrush x:Key="PanelAltBrush" Color="#171B22" />
+        <SolidColorBrush x:Key="LineBrush" Color="#596273" />
+        <SolidColorBrush x:Key="TextMutedBrush" Color="#A9B0BE" />
+        <SolidColorBrush x:Key="ActiveBrush" Color="#31C48D" />
+        <SolidColorBrush x:Key="IdleBrush" Color="#2B313D" />
+        <SolidColorBrush x:Key="WarningBrush" Color="#F7B955" />
+        <SolidColorBrush x:Key="SwitchAccentBrush" Color="#E60012" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibility" />
+        <converters:BoolToBrushConverter x:Key="InputFillBrush"
+                                         FalseBrush="{StaticResource IdleBrush}"
+                                         TrueBrush="{StaticResource ActiveBrush}" />
+
+        <Style x:Key="MetricLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
+            <Setter Property="FontSize" Value="11" />
+        </Style>
+
+        <Style x:Key="MetricValue" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+
+        <Style x:Key="PanelBorder" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource PanelAltBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource LineBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="14" />
+        </Style>
+
+        <Style x:Key="InputPill" TargetType="Border">
+            <Setter Property="Height" Value="34" />
+            <Setter Property="CornerRadius" Value="7" />
+            <Setter Property="BorderBrush" Value="{StaticResource LineBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Margin" Value="4" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="22" TextElement.Foreground="{DynamicResource TextBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Margin="0,0,0,10">
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <ComboBox Width="360"
+                          Height="34"
+                          Margin="0,0,12,0"
+                          ItemsSource="{Binding Controllers}"
+                          SelectedItem="{Binding SelectedController, Mode=TwoWay}"
+                          IsDropDownOpen="{Binding IsControllerSelectorOpen, Mode=TwoWay}"
+                          Visibility="{Binding IsControllerSelectorVisible, Converter={StaticResource BoolToVisibility}}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" Margin="2" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+        </Grid>
+
+        <Border Grid.Row="1"
+                Background="{StaticResource PanelBrush}"
+                BorderBrush="#3C4350"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="16">
+            <TabControl>
+                <TabItem Header="Test">
+                    <Grid Margin="0,14,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0" Style="{StaticResource PanelBorder}" Margin="0,0,8,0">
+                                <StackPanel>
+                                    <TextBlock Text="Health" Style="{StaticResource MetricLabel}" />
+                                    <TextBlock Text="{Binding HealthScore, StringFormat={}{0}%}" Style="{StaticResource MetricValue}" />
+                                    <TextBlock Text="{Binding HealthLabel}" Foreground="{StaticResource TextMutedBrush}" />
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="1" Style="{StaticResource PanelBorder}" Margin="0,0,8,0">
+                                <StackPanel>
+                                    <TextBlock Text="Active inputs" Style="{StaticResource MetricLabel}" />
+                                    <TextBlock Text="{Binding ActiveButtonCount}" Style="{StaticResource MetricValue}" />
+                                    <TextBlock Text="Buttons currently pressed" Foreground="{StaticResource TextMutedBrush}" />
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="2" Style="{StaticResource PanelBorder}" Margin="0,0,8,0">
+                                <StackPanel>
+                                    <TextBlock Text="Rest drift" Style="{StaticResource MetricLabel}" />
+                                    <TextBlock Text="{Binding MaxDriftLabel}" Style="{StaticResource MetricValue}" />
+                                    <TextBlock Text="Peak while idle" Foreground="{StaticResource TextMutedBrush}" />
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="3" Style="{StaticResource PanelBorder}">
+                                <StackPanel>
+                                    <TextBlock Text="Device" Style="{StaticResource MetricLabel}" />
+                                    <TextBlock Text="{Binding DeviceModelLabel}" Style="{StaticResource MetricValue}" />
+                                    <TextBlock Text="{Binding DeviceIdLabel}" Foreground="{StaticResource TextMutedBrush}" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <Grid Grid.Row="1"
+                              MaxWidth="1160"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Top"
+                              Margin="0,18,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="155" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="155" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                <TextBlock Text="Left stick" FontWeight="SemiBold" Margin="0,0,0,8" />
+                                <Grid Width="128" Height="128">
+                                    <Ellipse Stroke="{StaticResource LineBrush}" StrokeThickness="2" Fill="#11151B" />
+                                    <Ellipse Width="16" Height="16" Stroke="#384252" StrokeThickness="1" />
+                                    <Line X1="64" X2="64" Y1="12" Y2="116" Stroke="#4D5564" />
+                                    <Line X1="12" X2="116" Y1="64" Y2="64" Stroke="#4D5564" />
+                                    <Ellipse Width="26" Height="26" Fill="#4CC9F0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Ellipse.RenderTransform>
+                                            <TranslateTransform X="{Binding LeftStickDotX}" Y="{Binding LeftStickDotY}" />
+                                        </Ellipse.RenderTransform>
+                                    </Ellipse>
+                                </Grid>
+                                <TextBlock Text="{Binding LeftStickVector}" Margin="0,10,0,0" Foreground="{StaticResource TextMutedBrush}" />
+                                <TextBlock Text="{Binding LeftStickDriftPercent, StringFormat=Drift: {0}%}" />
+                                <TextBlock Text="{Binding LeftStickDriftStatus}" Foreground="{StaticResource TextMutedBrush}" />
+                            </StackPanel>
+
+                            <Grid Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <layouts:UniversalControllerTesterView Width="760" Height="500" />
+                            </Grid>
+
+                            <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                <TextBlock Text="Right stick" FontWeight="SemiBold" Margin="0,0,0,8" />
+                                <Grid Width="128" Height="128">
+                                    <Ellipse Stroke="{StaticResource LineBrush}" StrokeThickness="2" Fill="#11151B" />
+                                    <Ellipse Width="16" Height="16" Stroke="#384252" StrokeThickness="1" />
+                                    <Line X1="64" X2="64" Y1="12" Y2="116" Stroke="#4D5564" />
+                                    <Line X1="12" X2="116" Y1="64" Y2="64" Stroke="#4D5564" />
+                                    <Ellipse Width="26" Height="26" Fill="#F7B955" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Ellipse.RenderTransform>
+                                            <TranslateTransform X="{Binding RightStickDotX}" Y="{Binding RightStickDotY}" />
+                                        </Ellipse.RenderTransform>
+                                    </Ellipse>
+                                </Grid>
+                                <TextBlock Text="{Binding RightStickVector}" Margin="0,10,0,0" Foreground="{StaticResource TextMutedBrush}" />
+                                <TextBlock Text="{Binding RightStickDriftPercent, StringFormat=Drift: {0}%}" />
+                                <TextBlock Text="{Binding RightStickDriftStatus}" Foreground="{StaticResource TextMutedBrush}" />
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="Quick test">
+                    <Grid Margin="0,14,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.05*" />
+                            <ColumnDefinition Width="1.35*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Border Style="{StaticResource PanelBorder}" Margin="0,0,12,0">
+                            <StackPanel>
+                                <TextBlock Text="Coverage" FontSize="18" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding QuickTestProgress, StringFormat={}{0}%}" FontSize="44" FontWeight="SemiBold" Margin="0,14,0,0" />
+                                <ProgressBar Minimum="0" Maximum="100" Value="{Binding QuickTestProgress, Mode=OneWay}" Height="18" />
+                                <TextBlock Text="{Binding QuickTestLabel}" Margin="0,10,0,0" Foreground="{StaticResource TextMutedBrush}" />
+                                <TextBlock Text="{Binding ButtonCoverageLabel}" Margin="0,18,0,0" />
+                                <TextBlock Text="{Binding AnalogCoverageLabel}" Margin="0,6,0,0" />
+                                <Button Content="Reset session"
+                                        Command="{Binding ResetDiagnosticsCommand}"
+                                        Height="38"
+                                        Margin="0,22,0,0"
+                                        HorizontalAlignment="Left"
+                                        MinWidth="140" />
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="1" Style="{StaticResource PanelBorder}">
+                            <StackPanel>
+                                <TextBlock Text="Remaining checks" FontSize="18" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding QuickTestMissingLabel}"
+                                           TextWrapping="Wrap"
+                                           Margin="0,12,0,0"
+                                           Foreground="{StaticResource TextMutedBrush}" />
+                                <TextBlock Text="Press every face button, shoulder, stick click, menu button and D-pad direction. Move each stick to the edge and pull both triggers fully."
+                                           TextWrapping="Wrap"
+                                           Margin="0,18,0,0" />
+                                <TextBlock Text="The visual map and this checklist use the same normalized SDL state, so a completed check confirms the input was received by the plugin."
+                                           TextWrapping="Wrap"
+                                           Margin="0,10,0,0"
+                                           Foreground="{StaticResource TextMutedBrush}" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="Inputs">
+                    <Grid Margin="0,14,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.15*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Border Style="{StaticResource PanelBorder}" Margin="0,0,12,0">
+                            <StackPanel>
+                                <TextBlock Text="Button matrix" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12" />
+                                <UniformGrid Columns="4">
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.South, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding SouthLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.East, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding EastLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.West, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding WestLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.North, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding NorthLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.LeftShoulder, Converter={StaticResource InputFillBrush}}"><TextBlock Text="LB / L1" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.RightShoulder, Converter={StaticResource InputFillBrush}}"><TextBlock Text="RB / R1" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.LeftStick, Converter={StaticResource InputFillBrush}}"><TextBlock Text="L3" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.RightStick, Converter={StaticResource InputFillBrush}}"><TextBlock Text="R3" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.DpadUp, Converter={StaticResource InputFillBrush}}"><TextBlock Text="D-Up" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.DpadDown, Converter={StaticResource InputFillBrush}}"><TextBlock Text="D-Down" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.DpadLeft, Converter={StaticResource InputFillBrush}}"><TextBlock Text="D-Left" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.DpadRight, Converter={StaticResource InputFillBrush}}"><TextBlock Text="D-Right" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.Back, Converter={StaticResource InputFillBrush}}"><TextBlock Text="Back" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.Guide, Converter={StaticResource InputFillBrush}}"><TextBlock Text="Guide" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.Start, Converter={StaticResource InputFillBrush}}"><TextBlock Text="Start" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                </UniformGrid>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="1" Style="{StaticResource PanelBorder}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="Input history" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12" />
+                                <ListBox Grid.Row="1"
+                                         ItemsSource="{Binding InputHistory}"
+                                         DisplayMemberPath="DisplayText"
+                                         Background="#11151B"
+                                         BorderBrush="{StaticResource LineBrush}" />
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="Diagnostics">
+                    <Grid Margin="0,14,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Border Style="{StaticResource PanelBorder}" Margin="0,0,12,0">
+                            <StackPanel>
+                                <TextBlock Text="Controller health" FontSize="18" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding HealthScore, StringFormat={}{0}%}" FontSize="44" FontWeight="SemiBold" Margin="0,14,0,0" />
+                                <ProgressBar Minimum="0" Maximum="100" Value="{Binding HealthScore, Mode=OneWay}" Height="18" />
+                                <TextBlock Text="{Binding HealthLabel}" Margin="0,10,0,0" Foreground="{StaticResource TextMutedBrush}" />
+                                <TextBlock Text="Health is estimated from rest drift. Quick test coverage is tracked separately so moving the sticks during testing does not make a new controller look unhealthy." TextWrapping="Wrap" Margin="0,12,0,0" Foreground="{StaticResource TextMutedBrush}" />
+                                <Button Content="Reset diagnostics"
+                                        Command="{Binding ResetDiagnosticsCommand}"
+                                        Height="38"
+                                        Margin="0,18,0,0"
+                                        HorizontalAlignment="Left"
+                                        MinWidth="150" />
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="1" Style="{StaticResource PanelBorder}">
+                            <StackPanel>
+                                <TextBlock Text="Analog diagnostics" FontSize="18" FontWeight="SemiBold" />
+                                <TextBlock Text="Drift bands: Safe below 0.05, minor from 0.05 to 0.15, major above 0.15." TextWrapping="Wrap" Margin="0,10,0,16" Foreground="{StaticResource TextMutedBrush}" />
+                                <TextBlock Text="{Binding LeftStickVector, StringFormat=Left stick  {0}}" />
+                                <TextBlock Text="{Binding LeftStickDriftStatus}" Foreground="{StaticResource TextMutedBrush}" Margin="0,2,0,12" />
+                                <TextBlock Text="{Binding RightStickVector, StringFormat=Right stick  {0}}" />
+                                <TextBlock Text="{Binding RightStickDriftStatus}" Foreground="{StaticResource TextMutedBrush}" Margin="0,2,0,12" />
+                                <TextBlock Text="{Binding LeftTriggerPercent, StringFormat=LT range  {0}%}" />
+                                <TextBlock Text="{Binding RightTriggerPercent, StringFormat=RT range  {0}%}" />
+                                <TextBlock Text="{Binding MaxDriftLabel, StringFormat=Session rest drift  {0}}" Margin="0,12,0,0" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="Sticks">
+                    <Grid Margin="0,14,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <Border Style="{StaticResource PanelBorder}" Margin="0,0,0,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="Stick path and circular test" FontSize="18" FontWeight="SemiBold" />
+                                    <TextBlock Text="Move each stick slowly around the outer edge. The ring fills as sectors reach the expected outer range; the line shows the latest movement path."
+                                               TextWrapping="Wrap"
+                                               Margin="0,8,0,0"
+                                               Foreground="{StaticResource TextMutedBrush}" />
+                                </StackPanel>
+                                <Button Grid.Column="1"
+                                        Content="Reset sticks"
+                                        Command="{Binding ResetDiagnosticsCommand}"
+                                        Height="38"
+                                        MinWidth="130"
+                                        Margin="18,0,0,0"
+                                        VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border Style="{StaticResource PanelBorder}" Margin="0,0,8,0">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Text="Left stick" FontSize="18" FontWeight="SemiBold" />
+
+                                    <Grid Grid.Row="1" Width="280" Height="280" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10">
+                                        <Ellipse Stroke="#2F3746" StrokeThickness="1" Fill="#11151B" />
+                                        <Ellipse Width="256" Height="256" Stroke="{StaticResource LineBrush}" StrokeThickness="1.5" />
+                                        <Ellipse Width="216" Height="216" Stroke="#313947" StrokeThickness="1" StrokeDashArray="3 4" />
+                                        <Ellipse Width="28" Height="28" Stroke="#313947" StrokeThickness="1" />
+                                        <Line X1="140" X2="140" Y1="18" Y2="262" Stroke="#384252" />
+                                        <Line X1="18" X2="262" Y1="140" Y2="140" Stroke="#384252" />
+                                        <Path Data="{Binding LeftStickCircularCoverageGeometry}"
+                                              Fill="{StaticResource ActiveBrush}"
+                                              Opacity="0.72" />
+                                        <Polyline Points="{Binding LeftStickPathPoints}"
+                                                  Stroke="#4CC9F0"
+                                                  StrokeThickness="2"
+                                                  StrokeStartLineCap="Round"
+                                                  StrokeEndLineCap="Round"
+                                                  StrokeLineJoin="Round"
+                                                  Opacity="0.9" />
+                                        <Ellipse Width="18" Height="18" Fill="#4CC9F0" Stroke="#DDF7FF" StrokeThickness="1.5" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Ellipse.RenderTransform>
+                                                <TranslateTransform X="{Binding LeftStickDiagnosticsDotX}" Y="{Binding LeftStickDiagnosticsDotY}" />
+                                            </Ellipse.RenderTransform>
+                                        </Ellipse>
+                                    </Grid>
+
+                                    <UniformGrid Grid.Row="2" Columns="2">
+                                        <StackPanel Margin="0,0,8,0">
+                                            <TextBlock Text="{Binding LeftStickVector}" />
+                                            <TextBlock Text="{Binding LeftStickDriftStatus}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
+                                        </StackPanel>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding LeftStickCircularCoverageLabel}" />
+                                            <TextBlock Text="{Binding LeftStickMaxReachLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
+                                            <TextBlock Text="{Binding LeftStickPathSampleLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
+                                        </StackPanel>
+                                    </UniformGrid>
+                                </Grid>
+                            </Border>
+
+                            <Border Grid.Column="1" Style="{StaticResource PanelBorder}" Margin="8,0,0,0">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Text="Right stick" FontSize="18" FontWeight="SemiBold" />
+
+                                    <Grid Grid.Row="1" Width="280" Height="280" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10">
+                                        <Ellipse Stroke="#2F3746" StrokeThickness="1" Fill="#11151B" />
+                                        <Ellipse Width="256" Height="256" Stroke="{StaticResource LineBrush}" StrokeThickness="1.5" />
+                                        <Ellipse Width="216" Height="216" Stroke="#313947" StrokeThickness="1" StrokeDashArray="3 4" />
+                                        <Ellipse Width="28" Height="28" Stroke="#313947" StrokeThickness="1" />
+                                        <Line X1="140" X2="140" Y1="18" Y2="262" Stroke="#384252" />
+                                        <Line X1="18" X2="262" Y1="140" Y2="140" Stroke="#384252" />
+                                        <Path Data="{Binding RightStickCircularCoverageGeometry}"
+                                              Fill="{StaticResource WarningBrush}"
+                                              Opacity="0.76" />
+                                        <Polyline Points="{Binding RightStickPathPoints}"
+                                                  Stroke="#F7B955"
+                                                  StrokeThickness="2"
+                                                  StrokeStartLineCap="Round"
+                                                  StrokeEndLineCap="Round"
+                                                  StrokeLineJoin="Round"
+                                                  Opacity="0.9" />
+                                        <Ellipse Width="18" Height="18" Fill="#F7B955" Stroke="#FFF4DC" StrokeThickness="1.5" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Ellipse.RenderTransform>
+                                                <TranslateTransform X="{Binding RightStickDiagnosticsDotX}" Y="{Binding RightStickDiagnosticsDotY}" />
+                                            </Ellipse.RenderTransform>
+                                        </Ellipse>
+                                    </Grid>
+
+                                    <UniformGrid Grid.Row="2" Columns="2">
+                                        <StackPanel Margin="0,0,8,0">
+                                            <TextBlock Text="{Binding RightStickVector}" />
+                                            <TextBlock Text="{Binding RightStickDriftStatus}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
+                                        </StackPanel>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding RightStickCircularCoverageLabel}" />
+                                            <TextBlock Text="{Binding RightStickMaxReachLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
+                                            <TextBlock Text="{Binding RightStickPathSampleLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
+                                        </StackPanel>
+                                    </UniformGrid>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="Rumble">
+                    <Grid Margin="0,14,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="1.4*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Border Style="{StaticResource PanelBorder}" Margin="0,0,12,0">
+                            <StackPanel>
+                                <TextBlock Text="Vibration presets" FontSize="18" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding RumbleStatusLabel}" Margin="0,8,0,18" Foreground="{StaticResource TextMutedBrush}" />
+                                <UniformGrid Columns="2">
+                                    <Button Content="Standard" Height="42" Margin="0,0,8,8" Command="{Binding RumbleCommand}" />
+                                    <Button Content="Light" Height="42" Margin="0,0,0,8" Command="{Binding LightRumbleCommand}" />
+                                    <Button Content="Medium" Height="42" Margin="0,0,8,8" Command="{Binding MediumRumbleCommand}" />
+                                    <Button Content="Heavy" Height="42" Margin="0,0,0,8" Command="{Binding HeavyRumbleCommand}" />
+                                </UniformGrid>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="1" Style="{StaticResource PanelBorder}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="Motor diagnostics" FontSize="18" FontWeight="SemiBold" />
+                                <UniformGrid Grid.Row="1" Columns="2" Margin="0,16,0,18">
+                                    <Button Content="Low motor" Height="42" Margin="0,0,8,8" Command="{Binding LowMotorRumbleCommand}" />
+                                    <Button Content="High motor" Height="42" Margin="0,0,0,8" Command="{Binding HighMotorRumbleCommand}" />
+                                    <Button Content="Pulse" Height="42" Margin="0,0,8,8" Command="{Binding PulseRumbleCommand}" />
+                                    <Button Content="Alternating" Height="42" Margin="0,0,0,8" Command="{Binding AlternatingRumbleCommand}" />
+                                    <Button Content="Ramp" Height="42" Margin="0,0,8,0" Command="{Binding RampRumbleCommand}" />
+                                </UniformGrid>
+                                <Grid Grid.Row="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border Background="#11151B" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,8,0">
+                                        <StackPanel>
+                                            <TextBlock Text="Low-frequency" FontWeight="SemiBold" />
+                                            <TextBlock Text="Usually the stronger motor. Useful to detect weak startup or uneven vibration." TextWrapping="Wrap" Margin="0,8,0,0" Foreground="{StaticResource TextMutedBrush}" />
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Grid.Column="1" Background="#11151B" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" CornerRadius="8" Padding="14">
+                                        <StackPanel>
+                                            <TextBlock Text="High-frequency" FontWeight="SemiBold" />
+                                            <TextBlock Text="Usually the finer motor. Alternating and ramp tests make differences easier to feel." TextWrapping="Wrap" Margin="0,8,0,0" Foreground="{StaticResource TextMutedBrush}" />
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="Device">
+                    <Border Style="{StaticResource PanelBorder}" Margin="0,14,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="180" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Text="Name" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding State.ControllerName}" Margin="0,0,0,10" />
+                            <TextBlock Grid.Row="1" Text="Detected model" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding DeviceModelLabel}" Margin="0,0,0,10" />
+                            <TextBlock Grid.Row="2" Text="VID / PID" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding DeviceIdLabel}" Margin="0,0,0,10" />
+                            <TextBlock Grid.Row="3" Text="Layout" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding State.Layout}" Margin="0,0,0,10" />
+                            <TextBlock Grid.Row="4" Text="Backend" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
+                            <TextBlock Grid.Row="4" Grid.Column="1" Text="SDL GameController" Margin="0,0,0,10" />
+                            <TextBlock Grid.Row="5" Text="Notes" Foreground="{StaticResource TextMutedBrush}" />
+                            <TextBlock Grid.Row="5" Grid.Column="1" Text="Mappings are normalized through SDL: sticks -1..1, triggers 0..1. Rumble support depends on the controller mode and driver." TextWrapping="Wrap" />
+                        </Grid>
+                    </Border>
+                </TabItem>
+            </TabControl>
+        </Border>
+    </Grid>
+</UserControl>
