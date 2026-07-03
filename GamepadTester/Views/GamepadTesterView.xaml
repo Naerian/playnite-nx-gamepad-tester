@@ -384,11 +384,11 @@
 
                                         <StackPanel Margin="0,0,10,0">
                                             <TextBlock Text="{Binding LeftStickCircularCoverageLabel}" />
-                                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding LeftStickCircularCoveragePercent}" Height="8" Margin="0,6,0,10" />
+                                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding LeftStickCircularCoveragePercent, Mode=OneWay}" Height="8" Margin="0,6,0,10" />
                                             <TextBlock Text="{Binding LeftStickMaxReachLabel}" />
-                                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding LeftStickMaxReachPercent}" Height="8" Margin="0,6,0,10" />
+                                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding LeftStickMaxReachPercent, Mode=OneWay}" Height="8" Margin="0,6,0,10" />
                                             <TextBlock Text="{Binding LeftStickCurrentMagnitudeLabel}" />
-                                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding LeftStickCurrentMagnitudePercent}" Height="8" Margin="0,6,0,0" />
+                                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding LeftStickCurrentMagnitudePercent, Mode=OneWay}" Height="8" Margin="0,6,0,0" />
                                         </StackPanel>
 
                                         <StackPanel Grid.Column="1">
@@ -445,11 +445,11 @@
 
                                         <StackPanel Margin="0,0,10,0">
                                             <TextBlock Text="{Binding RightStickCircularCoverageLabel}" />
-                                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding RightStickCircularCoveragePercent}" Height="8" Margin="0,6,0,10" />
+                                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding RightStickCircularCoveragePercent, Mode=OneWay}" Height="8" Margin="0,6,0,10" />
                                             <TextBlock Text="{Binding RightStickMaxReachLabel}" />
-                                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding RightStickMaxReachPercent}" Height="8" Margin="0,6,0,10" />
+                                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding RightStickMaxReachPercent, Mode=OneWay}" Height="8" Margin="0,6,0,10" />
                                             <TextBlock Text="{Binding RightStickCurrentMagnitudeLabel}" />
-                                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding RightStickCurrentMagnitudePercent}" Height="8" Margin="0,6,0,0" />
+                                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding RightStickCurrentMagnitudePercent, Mode=OneWay}" Height="8" Margin="0,6,0,0" />
                                         </StackPanel>
 
                                         <StackPanel Grid.Column="1">
