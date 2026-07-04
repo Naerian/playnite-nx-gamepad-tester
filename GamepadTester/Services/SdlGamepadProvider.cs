@@ -77,6 +77,7 @@ namespace GamepadTester.Services
                         Back = IsPressed(SdlControllerButton.Back),
                         Start = IsPressed(SdlControllerButton.Start),
                         Guide = IsPressed(SdlControllerButton.Guide),
+                        Touchpad = IsPressed(SdlControllerButton.Touchpad),
                         LeftStick = IsPressed(SdlControllerButton.LeftStick),
                         RightStick = IsPressed(SdlControllerButton.RightStick),
                         DpadUp = IsPressed(SdlControllerButton.DpadUp),

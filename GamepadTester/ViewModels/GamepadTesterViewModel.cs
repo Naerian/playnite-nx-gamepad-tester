@@ -1088,6 +1088,7 @@ namespace GamepadTester.ViewModels
             TrackButtonChange("Back / Share", previousButtons.Back, nextState.Buttons.Back);
             TrackButtonChange("Start / Options", previousButtons.Start, nextState.Buttons.Start);
             TrackButtonChange("Guide", previousButtons.Guide, nextState.Buttons.Guide);
+            TrackButtonChange("Touchpad", previousButtons.Touchpad, nextState.Buttons.Touchpad);
             TrackButtonChange("L3", previousButtons.LeftStick, nextState.Buttons.LeftStick);
             TrackButtonChange("R3", previousButtons.RightStick, nextState.Buttons.RightStick);
             TrackButtonChange("D-Pad Up", previousButtons.DpadUp, nextState.Buttons.DpadUp);
@@ -1510,6 +1511,7 @@ namespace GamepadTester.ViewModels
                 Back = buttons.Back,
                 Start = buttons.Start,
                 Guide = buttons.Guide,
+                Touchpad = buttons.Touchpad,
                 LeftStick = buttons.LeftStick,
                 RightStick = buttons.RightStick,
                 DpadUp = buttons.DpadUp,

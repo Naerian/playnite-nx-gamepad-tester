@@ -11,6 +11,7 @@ namespace GamepadTester.Models
         public bool Back { get; set; }
         public bool Start { get; set; }
         public bool Guide { get; set; }
+        public bool Touchpad { get; set; }
         public bool LeftStick { get; set; }
         public bool RightStick { get; set; }
         public bool DpadUp { get; set; }
