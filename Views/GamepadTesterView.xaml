@@ -527,6 +527,141 @@
                     </Grid>
                 </TabItem>
 
+                <TabItem Header="{DynamicResource LOCGT_TabCalibration}">
+                    <Grid Margin="0,14,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <Border Style="{StaticResource PanelBorder}" Margin="0,0,0,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource LOCGT_CalibrationTitle}" FontSize="18" FontWeight="SemiBold" />
+                                    <TextBlock Text="{DynamicResource LOCGT_CalibrationHelp}"
+                                               TextWrapping="Wrap"
+                                               Margin="0,8,0,0"
+                                               Foreground="{StaticResource TextMutedBrush}" />
+                                </StackPanel>
+                                <Button Grid.Column="1"
+                                        Content="{DynamicResource LOCGT_CaptureCenter}"
+                                        Command="{Binding StartCenterCalibrationCommand}"
+                                        Height="38"
+                                        MinWidth="140"
+                                        Margin="18,0,0,0"
+                                        VerticalAlignment="Center" />
+                                <Button Grid.Column="2"
+                                        Content="{DynamicResource LOCGT_ResetCalibration}"
+                                        Command="{Binding ResetCalibrationCommand}"
+                                        Height="38"
+                                        MinWidth="140"
+                                        Margin="8,0,0,0"
+                                        VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border Style="{StaticResource PanelBorder}" Margin="0,0,8,0">
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource LOCGT_CenterCalibration}" FontSize="18" FontWeight="SemiBold" />
+                                    <TextBlock Text="{Binding CalibrationStatusLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,8,0,8" TextWrapping="Wrap" />
+                                    <ProgressBar Minimum="0" Maximum="100" Value="{Binding CalibrationProgress, Mode=OneWay}" Height="10" />
+
+                                    <Grid Margin="0,18,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel Margin="0,0,10,0">
+                                            <TextBlock Text="{DynamicResource LOCGT_LeftStick}" FontWeight="SemiBold" />
+                                            <TextBlock Text="{Binding LeftCalibrationCenterLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,8,0,0" />
+                                            <TextBlock Text="{Binding LeftRecommendedDeadzoneLabel}" Margin="0,10,0,0" />
+                                            <ProgressBar Minimum="0" Maximum="25" Value="{Binding LeftRecommendedDeadzonePercent, Mode=OneWay}" Height="8" Margin="0,6,0,0" />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="{DynamicResource LOCGT_RightStick}" FontWeight="SemiBold" />
+                                            <TextBlock Text="{Binding RightCalibrationCenterLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,8,0,0" />
+                                            <TextBlock Text="{Binding RightRecommendedDeadzoneLabel}" Margin="0,10,0,0" />
+                                            <ProgressBar Minimum="0" Maximum="25" Value="{Binding RightRecommendedDeadzonePercent, Mode=OneWay}" Height="8" Margin="0,6,0,0" />
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="1" Style="{StaticResource PanelBorder}" Margin="8,0,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource LOCGT_RangeCalibration}" FontSize="18" FontWeight="SemiBold" />
+                                    <TextBlock Text="{DynamicResource LOCGT_RangeCalibrationHelp}"
+                                               TextWrapping="Wrap"
+                                               Margin="0,8,0,16"
+                                               Foreground="{StaticResource TextMutedBrush}" />
+
+                                    <TextBlock Text="{DynamicResource LOCGT_LeftStick}" FontWeight="SemiBold" />
+                                    <TextBlock Text="{Binding LeftRangeQualityLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,8,0,0" />
+                                    <ProgressBar Minimum="0" Maximum="100" Value="{Binding LeftRangeQualityPercent, Mode=OneWay}" Height="10" Margin="0,6,0,14" />
+                                    <TextBlock Text="{Binding LeftStickAxisRangeLabel}" Foreground="{StaticResource TextMutedBrush}" TextWrapping="Wrap" />
+
+                                    <TextBlock Text="{DynamicResource LOCGT_RightStick}" FontWeight="SemiBold" Margin="0,18,0,0" />
+                                    <TextBlock Text="{Binding RightRangeQualityLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,8,0,0" />
+                                    <ProgressBar Minimum="0" Maximum="100" Value="{Binding RightRangeQualityPercent, Mode=OneWay}" Height="10" Margin="0,6,0,14" />
+                                    <TextBlock Text="{Binding RightStickAxisRangeLabel}" Foreground="{StaticResource TextMutedBrush}" TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="{DynamicResource LOCGT_TabLatency}">
+                    <Grid Margin="0,14,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Border Style="{StaticResource PanelBorder}" Margin="0,0,12,0">
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource LOCGT_LatencyTitle}" FontSize="18" FontWeight="SemiBold" />
+                                <TextBlock Text="{DynamicResource LOCGT_LatencyHelp}" TextWrapping="Wrap" Margin="0,8,0,18" Foreground="{StaticResource TextMutedBrush}" />
+                                <TextBlock Text="{Binding PollingLatencyScore, StringFormat={}{0}%}" FontSize="44" FontWeight="SemiBold" />
+                                <ProgressBar Minimum="0" Maximum="100" Value="{Binding PollingLatencyScore, Mode=OneWay}" Height="16" Margin="0,6,0,16" />
+                                <TextBlock Text="{Binding PollingLatencyCurrentLabel}" />
+                                <TextBlock Text="{Binding PollingLatencyAverageLabel}" Margin="0,6,0,0" />
+                                <TextBlock Text="{Binding PollingLatencyRangeLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,6,0,0" />
+                                <Button Content="{DynamicResource LOCGT_ResetLatency}"
+                                        Command="{Binding ResetLatencyCommand}"
+                                        Height="38"
+                                        Margin="0,22,0,0"
+                                        HorizontalAlignment="Left"
+                                        MinWidth="140" />
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="1" Style="{StaticResource PanelBorder}">
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource LOCGT_InputEventLatency}" FontSize="18" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding LatencyStatusLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,8,0,14" TextWrapping="Wrap" />
+                                <TextBlock Text="{Binding InputEventLatencyAverageLabel}" TextWrapping="Wrap" />
+                                <TextBlock Text="{DynamicResource LOCGT_InputEventLatencyHelp}"
+                                           TextWrapping="Wrap"
+                                           Margin="0,18,0,0"
+                                           Foreground="{StaticResource TextMutedBrush}" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </TabItem>
+
                 <TabItem Header="{DynamicResource LOCGT_TabHardware}">
                     <Grid Margin="0,14,0,0">
                         <Grid.ColumnDefinitions>
