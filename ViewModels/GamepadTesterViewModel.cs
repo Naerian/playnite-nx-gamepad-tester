@@ -4,6 +4,8 @@ using GamepadTester.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -32,6 +34,7 @@ namespace GamepadTester.ViewModels
         private readonly RelayCommand resetCalibrationCommand;
         private readonly RelayCommand resetLatencyCommand;
         private readonly RelayCommand startLatencyTestCommand;
+        private readonly RelayCommand exportReportCommand;
         private readonly StickDiagnosticsTracker leftStickDiagnostics;
         private readonly StickDiagnosticsTracker rightStickDiagnostics;
         private GamepadState state;
@@ -81,6 +84,7 @@ namespace GamepadTester.ViewModels
         private double bestLatencyMs;
         private double latencyTestSumMs;
         private int latencyTestSamples;
+        private string exportReportStatusLabel;
 
         public GamepadTesterViewModel(GamepadPollingService pollingService, GamepadTesterSettings settings = null, Func<string, string> localizer = null)
         {
@@ -104,11 +108,13 @@ namespace GamepadTester.ViewModels
             resetCalibrationCommand = new RelayCommand(ResetCalibration);
             resetLatencyCommand = new RelayCommand(ResetLatency);
             startLatencyTestCommand = new RelayCommand(StartLatencyTest, () => State.IsConnected && !isLatencyTestRunning);
+            exportReportCommand = new RelayCommand(ExportReport);
             leftStickDiagnostics = new StickDiagnosticsTracker();
             rightStickDiagnostics = new StickDiagnosticsTracker();
             coveredButtons = new GamepadButtonState();
             rumbleStatusLabel = L("LOCGT_Ready", "Ready");
             latencyStatusLabel = L("LOCGT_LatencyWaiting", "Waiting for input changes.");
+            exportReportStatusLabel = L("LOCGT_ReportReady", "Report ready to export.");
             pollingIntervalMinMs = double.MaxValue;
             inputEventIntervalMinMs = double.MaxValue;
             pollingService.StateUpdated += OnStateUpdated;
@@ -195,6 +201,11 @@ namespace GamepadTester.ViewModels
         public ICommand StartLatencyTestCommand
         {
             get { return startLatencyTestCommand; }
+        }
+
+        public ICommand ExportReportCommand
+        {
+            get { return exportReportCommand; }
         }
 
         public GamepadControllerInfo SelectedController
@@ -851,6 +862,64 @@ namespace GamepadTester.ViewModels
             }
         }
 
+        public string HealthSummaryLabel
+        {
+            get
+            {
+                if (!State.IsConnected)
+                {
+                    return L("LOCGT_ConnectControllerToStart", "Connect a controller to start.");
+                }
+
+                if (CurrentCenterDrift < 0.03d)
+                {
+                    return L("LOCGT_HealthSummaryCentered", "Centered sticks look stable right now.");
+                }
+
+                if (CurrentCenterDrift < 0.08d)
+                {
+                    return L("LOCGT_HealthSummarySmallDrift", "Small centered-stick movement is visible. Release the sticks and watch whether it settles.");
+                }
+
+                return L("LOCGT_HealthSummaryReview", "Centered-stick drift is high enough to review deadzone, calibration, or hardware condition.");
+            }
+        }
+
+        public string HealthDriftFactorLabel
+        {
+            get
+            {
+                return string.Format(L("LOCGT_HealthDriftFactorFormat", "Current center drift: {0:0.000} ({1})"),
+                    CurrentCenterDrift,
+                    GetDriftStatus(CurrentCenterDrift));
+            }
+        }
+
+        public string HealthRangeFactorLabel
+        {
+            get
+            {
+                return string.Format(L("LOCGT_HealthRangeFactorFormat", "Outer range seen: LS {0}% / RS {1}%"),
+                    LeftStickMaxReachPercent,
+                    RightStickMaxReachPercent);
+            }
+        }
+
+        public string HealthCoverageFactorLabel
+        {
+            get
+            {
+                return string.Format(L("LOCGT_HealthCoverageFactorFormat", "Quick checks: {0}% ({1})"),
+                    QuickTestProgress,
+                    ButtonCoverageLabel);
+            }
+        }
+
+        public string ExportReportStatusLabel
+        {
+            get { return exportReportStatusLabel; }
+        }
+
         public string ControllerSummary
         {
             get
@@ -1369,6 +1438,94 @@ namespace GamepadTester.ViewModels
             startLatencyTestCommand.RaiseCanExecuteChanged();
         }
 
+        private void ExportReport()
+        {
+            try
+            {
+                var desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+                if (string.IsNullOrWhiteSpace(desktop))
+                {
+                    desktop = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                }
+
+                var fileName = string.Format("GamepadTester-report-{0:yyyyMMdd-HHmmss}.txt", DateTime.Now);
+                var path = Path.Combine(desktop, fileName);
+                File.WriteAllText(path, BuildReportText(), Encoding.UTF8);
+                exportReportStatusLabel = string.Format(L("LOCGT_ReportExportedFormat", "Report exported to {0}"), path);
+            }
+            catch (Exception ex)
+            {
+                exportReportStatusLabel = string.Format(L("LOCGT_ReportExportFailedFormat", "Could not export report: {0}"), ex.Message);
+            }
+
+            OnPropertyChanged("ExportReportStatusLabel");
+        }
+
+        private string BuildReportText()
+        {
+            var report = new StringBuilder();
+            report.AppendLine("Gamepad Tester report");
+            report.AppendLine(string.Format("Generated: {0:yyyy-MM-dd HH:mm:ss}", DateTime.Now));
+            report.AppendLine();
+
+            report.AppendLine("[Device]");
+            report.AppendLine(string.Format("Name: {0}", State.ControllerName));
+            report.AppendLine(string.Format("Display name: {0}", DeviceModelLabel));
+            report.AppendLine(string.Format("VID/PID: {0}", string.IsNullOrWhiteSpace(DeviceIdLabel) ? "Unknown" : DeviceIdLabel));
+            report.AppendLine(string.Format("Layout: {0}", State.Layout));
+            report.AppendLine(string.Format("8BitDo model: {0}", State.EightBitDoModel));
+            report.AppendLine();
+
+            report.AppendLine("[Summary]");
+            report.AppendLine(string.Format("Health score: {0}%", HealthScore));
+            report.AppendLine(string.Format("Health label: {0}", HealthLabel));
+            report.AppendLine(HealthSummaryLabel);
+            report.AppendLine(HealthDriftFactorLabel);
+            report.AppendLine(HealthRangeFactorLabel);
+            report.AppendLine(HealthCoverageFactorLabel);
+            report.AppendLine();
+
+            report.AppendLine("[Current input]");
+            report.AppendLine(string.Format("Active buttons: {0}", ActiveButtonCount));
+            report.AppendLine(string.Format("Left stick: {0} | {1}", LeftStickVector, LeftStickDriftStatus));
+            report.AppendLine(string.Format("Right stick: {0} | {1}", RightStickVector, RightStickDriftStatus));
+            report.AppendLine(string.Format("Left trigger: {0}%", LeftTriggerPercent));
+            report.AppendLine(string.Format("Right trigger: {0}%", RightTriggerPercent));
+            report.AppendLine();
+
+            report.AppendLine("[Session checks]");
+            report.AppendLine(string.Format("Progress: {0}%", QuickTestProgress));
+            report.AppendLine(ButtonCoverageLabel);
+            report.AppendLine(AnalogCoverageLabel);
+            report.AppendLine(string.Format("Missing: {0}", QuickTestMissingLabel));
+            report.AppendLine();
+
+            report.AppendLine("[Sticks]");
+            report.AppendLine(string.Format("Left circular coverage: {0}", LeftStickCircularCoverageLabel));
+            report.AppendLine(string.Format("Left max reach: {0}", LeftStickMaxReachLabel));
+            report.AppendLine(string.Format("Left range: {0}", LeftStickAxisRangeLabel));
+            report.AppendLine(string.Format("Right circular coverage: {0}", RightStickCircularCoverageLabel));
+            report.AppendLine(string.Format("Right max reach: {0}", RightStickMaxReachLabel));
+            report.AppendLine(string.Format("Right range: {0}", RightStickAxisRangeLabel));
+            report.AppendLine();
+
+            report.AppendLine("[Calibration]");
+            report.AppendLine(CalibrationStatusLabel);
+            report.AppendLine(string.Format("Left center: {0}", LeftCalibrationCenterLabel));
+            report.AppendLine(string.Format("Left deadzone: {0}", LeftRecommendedDeadzoneLabel));
+            report.AppendLine(string.Format("Right center: {0}", RightCalibrationCenterLabel));
+            report.AppendLine(string.Format("Right deadzone: {0}", RightRecommendedDeadzoneLabel));
+            report.AppendLine();
+
+            report.AppendLine("[Latency]");
+            report.AppendLine(string.Format("Manual latency: {0}", LatencyResultLabel));
+            report.AppendLine(LatencyStatsLabel);
+            report.AppendLine(PollingLatencyAverageLabel);
+            report.AppendLine(InputEventLatencyAverageLabel);
+
+            return report.ToString();
+        }
+
         private void UpdateCenterCalibration(GamepadState nextState)
         {
             if (!isCenterCalibrationRunning)
@@ -1771,6 +1928,10 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("CoveredRightStickRange");
             OnPropertyChanged("HealthScore");
             OnPropertyChanged("HealthLabel");
+            OnPropertyChanged("HealthSummaryLabel");
+            OnPropertyChanged("HealthDriftFactorLabel");
+            OnPropertyChanged("HealthRangeFactorLabel");
+            OnPropertyChanged("HealthCoverageFactorLabel");
             OnPropertyChanged("ControllerSummary");
             OnPropertyChanged("DeviceIdLabel");
             OnPropertyChanged("DeviceModelLabel");
