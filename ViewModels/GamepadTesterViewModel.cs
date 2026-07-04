@@ -31,6 +31,7 @@ namespace GamepadTester.ViewModels
         private readonly RelayCommand startCenterCalibrationCommand;
         private readonly RelayCommand resetCalibrationCommand;
         private readonly RelayCommand resetLatencyCommand;
+        private readonly RelayCommand startLatencyTestCommand;
         private readonly StickDiagnosticsTracker leftStickDiagnostics;
         private readonly StickDiagnosticsTracker rightStickDiagnostics;
         private GamepadState state;
@@ -74,6 +75,12 @@ namespace GamepadTester.ViewModels
         private double inputEventIntervalMaxMs;
         private int inputEventIntervalSamples;
         private string latencyStatusLabel;
+        private bool isLatencyTestRunning;
+        private DateTime latencyTestStartedAt;
+        private double lastLatencyMs;
+        private double bestLatencyMs;
+        private double latencyTestSumMs;
+        private int latencyTestSamples;
 
         public GamepadTesterViewModel(GamepadPollingService pollingService, GamepadTesterSettings settings = null, Func<string, string> localizer = null)
         {
@@ -96,6 +103,7 @@ namespace GamepadTester.ViewModels
             startCenterCalibrationCommand = new RelayCommand(StartCenterCalibration, () => State.IsConnected && !isCenterCalibrationRunning);
             resetCalibrationCommand = new RelayCommand(ResetCalibration);
             resetLatencyCommand = new RelayCommand(ResetLatency);
+            startLatencyTestCommand = new RelayCommand(StartLatencyTest, () => State.IsConnected && !isLatencyTestRunning);
             leftStickDiagnostics = new StickDiagnosticsTracker();
             rightStickDiagnostics = new StickDiagnosticsTracker();
             coveredButtons = new GamepadButtonState();
@@ -182,6 +190,11 @@ namespace GamepadTester.ViewModels
         public ICommand ResetLatencyCommand
         {
             get { return resetLatencyCommand; }
+        }
+
+        public ICommand StartLatencyTestCommand
+        {
+            get { return startLatencyTestCommand; }
         }
 
         public GamepadControllerInfo SelectedController
@@ -589,6 +602,50 @@ namespace GamepadTester.ViewModels
             get { return latencyStatusLabel; }
         }
 
+        public string StartLatencyButtonLabel
+        {
+            get
+            {
+                return isLatencyTestRunning
+                    ? L("LOCGT_WaitingForPress", "Waiting...")
+                    : L("LOCGT_StartLatency", "Start latency");
+            }
+        }
+
+        public string LatencyResultLabel
+        {
+            get
+            {
+                if (isLatencyTestRunning)
+                {
+                    return L("LOCGT_PressAnyGamepadButton", "Press any gamepad button");
+                }
+
+                if (latencyTestSamples == 0)
+                {
+                    return "-- ms";
+                }
+
+                return string.Format("{0:0} ms", lastLatencyMs);
+            }
+        }
+
+        public string LatencyStatsLabel
+        {
+            get
+            {
+                if (latencyTestSamples == 0)
+                {
+                    return L("LOCGT_LatencyReadyHelp", "Click start, then press a button on the controller.");
+                }
+
+                return string.Format(L("LOCGT_LatencyStatsFormat", "Best {0:0} ms  Average {1:0} ms  Samples {2}"),
+                    bestLatencyMs,
+                    latencyTestSumMs / latencyTestSamples,
+                    latencyTestSamples);
+            }
+        }
+
         public string PollingLatencyAverageLabel
         {
             get
@@ -598,39 +655,7 @@ namespace GamepadTester.ViewModels
                     return L("LOCGT_NoSamples", "No samples");
                 }
 
-                return string.Format(L("LOCGT_AverageMsFormat", "Average: {0:0.0} ms"), pollingIntervalSumMs / pollingIntervalSamples);
-            }
-        }
-
-        public string PollingLatencyCurrentLabel
-        {
-            get { return string.Format(L("LOCGT_CurrentMsFormat", "Current: {0:0.0} ms"), currentPollingIntervalMs); }
-        }
-
-        public string PollingLatencyRangeLabel
-        {
-            get
-            {
-                if (pollingIntervalSamples == 0)
-                {
-                    return L("LOCGT_RangeNoSamples", "Range: no samples");
-                }
-
-                return string.Format(L("LOCGT_MinMaxMsFormat", "Min {0:0.0} ms  Max {1:0.0} ms"), pollingIntervalMinMs, pollingIntervalMaxMs);
-            }
-        }
-
-        public int PollingLatencyScore
-        {
-            get
-            {
-                if (pollingIntervalSamples == 0)
-                {
-                    return 0;
-                }
-
-                var average = pollingIntervalSumMs / pollingIntervalSamples;
-                return Math.Max(0, Math.Min(100, (int)Math.Round(100d - Math.Max(0d, average - 8d) * 2.5d)));
+                return string.Format(L("LOCGT_PollingHintFormat", "Polling avg {0:0.0} ms"), pollingIntervalSumMs / pollingIntervalSamples);
             }
         }
 
@@ -1002,6 +1027,7 @@ namespace GamepadTester.ViewModels
                 State = nextState;
                 RaiseRumbleCanExecuteChanged();
                 startCenterCalibrationCommand.RaiseCanExecuteChanged();
+                startLatencyTestCommand.RaiseCanExecuteChanged();
             }));
         }
 
@@ -1060,6 +1086,7 @@ namespace GamepadTester.ViewModels
             }
 
             TrackInputEventLatency();
+            TrackLatencyTest(current);
 
             InputHistory.Insert(0, new InputHistoryItem
             {
@@ -1289,13 +1316,36 @@ namespace GamepadTester.ViewModels
             inputEventIntervalMinMs = double.MaxValue;
             inputEventIntervalMaxMs = 0d;
             inputEventIntervalSamples = 0;
+            isLatencyTestRunning = false;
+            lastLatencyMs = 0d;
+            bestLatencyMs = 0d;
+            latencyTestSumMs = 0d;
+            latencyTestSamples = 0;
             latencyStatusLabel = L("LOCGT_LatencyWaiting", "Waiting for input changes.");
             OnPropertyChanged("LatencyStatusLabel");
+            OnPropertyChanged("StartLatencyButtonLabel");
+            OnPropertyChanged("LatencyResultLabel");
+            OnPropertyChanged("LatencyStatsLabel");
             OnPropertyChanged("PollingLatencyAverageLabel");
-            OnPropertyChanged("PollingLatencyCurrentLabel");
-            OnPropertyChanged("PollingLatencyRangeLabel");
-            OnPropertyChanged("PollingLatencyScore");
             OnPropertyChanged("InputEventLatencyAverageLabel");
+            startLatencyTestCommand.RaiseCanExecuteChanged();
+        }
+
+        private void StartLatencyTest()
+        {
+            if (!State.IsConnected || isLatencyTestRunning)
+            {
+                return;
+            }
+
+            isLatencyTestRunning = true;
+            latencyTestStartedAt = DateTime.UtcNow;
+            latencyStatusLabel = L("LOCGT_LatencyArmed", "Latency test armed. Press any controller button.");
+            OnPropertyChanged("LatencyStatusLabel");
+            OnPropertyChanged("StartLatencyButtonLabel");
+            OnPropertyChanged("LatencyResultLabel");
+            OnPropertyChanged("LatencyStatsLabel");
+            startLatencyTestCommand.RaiseCanExecuteChanged();
         }
 
         private void UpdateCenterCalibration(GamepadState nextState)
@@ -1373,6 +1423,26 @@ namespace GamepadTester.ViewModels
             }
 
             lastInputEventAt = now;
+        }
+
+        private void TrackLatencyTest(bool isPressed)
+        {
+            if (!isLatencyTestRunning || !isPressed)
+            {
+                return;
+            }
+
+            lastLatencyMs = Math.Max(0d, (DateTime.UtcNow - latencyTestStartedAt).TotalMilliseconds);
+            latencyTestSamples++;
+            latencyTestSumMs += lastLatencyMs;
+            bestLatencyMs = latencyTestSamples == 1 ? lastLatencyMs : Math.Min(bestLatencyMs, lastLatencyMs);
+            isLatencyTestRunning = false;
+            latencyStatusLabel = string.Format(L("LOCGT_LatencyCapturedFormat", "Captured {0:0} ms."), lastLatencyMs);
+            OnPropertyChanged("LatencyStatusLabel");
+            OnPropertyChanged("StartLatencyButtonLabel");
+            OnPropertyChanged("LatencyResultLabel");
+            OnPropertyChanged("LatencyStatsLabel");
+            startLatencyTestCommand.RaiseCanExecuteChanged();
         }
 
         private void UpdateCoverage(GamepadState nextState)
@@ -1646,10 +1716,10 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("LeftRangeQualityPercent");
             OnPropertyChanged("RightRangeQualityPercent");
             OnPropertyChanged("LatencyStatusLabel");
+            OnPropertyChanged("StartLatencyButtonLabel");
+            OnPropertyChanged("LatencyResultLabel");
+            OnPropertyChanged("LatencyStatsLabel");
             OnPropertyChanged("PollingLatencyAverageLabel");
-            OnPropertyChanged("PollingLatencyCurrentLabel");
-            OnPropertyChanged("PollingLatencyRangeLabel");
-            OnPropertyChanged("PollingLatencyScore");
             OnPropertyChanged("InputEventLatencyAverageLabel");
             OnPropertyChanged("QuickTestProgress");
             OnPropertyChanged("QuickTestLabel");
