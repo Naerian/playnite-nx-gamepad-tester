@@ -132,4 +132,15 @@
     <sys:String x:Key="LOCGT_EventIntervalFormat">Intervalo observado entre eventos: {0:0.0} ms de media</sys:String>
     <sys:String x:Key="LOCGT_LastInputObservedFormat">Ultimo input observado tras {0:0.0} ms.</sys:String>
     <sys:String x:Key="LOCGT_FirstInputObserved">Primer input observado. Pulsa repetidamente para calcular una media.</sys:String>
+    <sys:String x:Key="LOCGT_HealthSummaryCentered">Los sticks centrados parecen estables ahora mismo.</sys:String>
+    <sys:String x:Key="LOCGT_HealthSummarySmallDrift">Se aprecia un pequeno movimiento con los sticks centrados. Sueltalos y comprueba si se estabiliza.</sys:String>
+    <sys:String x:Key="LOCGT_HealthSummaryReview">El drift con los sticks centrados es lo bastante alto como para revisar zona muerta, calibracion o estado fisico.</sys:String>
+    <sys:String x:Key="LOCGT_HealthFactors">Factores del diagnostico</sys:String>
+    <sys:String x:Key="LOCGT_HealthDriftFactorFormat">Drift centrado actual: {0:0.000} ({1})</sys:String>
+    <sys:String x:Key="LOCGT_HealthRangeFactorFormat">Rango exterior detectado: LS {0}% / RS {1}%</sys:String>
+    <sys:String x:Key="LOCGT_HealthCoverageFactorFormat">Comprobaciones rapidas: {0}% ({1})</sys:String>
+    <sys:String x:Key="LOCGT_ExportReport">Exportar informe</sys:String>
+    <sys:String x:Key="LOCGT_ReportReady">Informe listo para exportar.</sys:String>
+    <sys:String x:Key="LOCGT_ReportExportedFormat">Informe exportado en {0}</sys:String>
+    <sys:String x:Key="LOCGT_ReportExportFailedFormat">No se pudo exportar el informe: {0}</sys:String>
 </ResourceDictionary>

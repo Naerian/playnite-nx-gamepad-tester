@@ -132,4 +132,15 @@
     <sys:String x:Key="LOCGT_EventIntervalFormat">Observed input event interval: {0:0.0} ms avg</sys:String>
     <sys:String x:Key="LOCGT_LastInputObservedFormat">Last input observed after {0:0.0} ms.</sys:String>
     <sys:String x:Key="LOCGT_FirstInputObserved">First input observed. Press repeatedly for an average.</sys:String>
+    <sys:String x:Key="LOCGT_HealthSummaryCentered">Centered sticks look stable right now.</sys:String>
+    <sys:String x:Key="LOCGT_HealthSummarySmallDrift">Small centered-stick movement is visible. Release the sticks and watch whether it settles.</sys:String>
+    <sys:String x:Key="LOCGT_HealthSummaryReview">Centered-stick drift is high enough to review deadzone, calibration, or hardware condition.</sys:String>
+    <sys:String x:Key="LOCGT_HealthFactors">Diagnostic factors</sys:String>
+    <sys:String x:Key="LOCGT_HealthDriftFactorFormat">Current center drift: {0:0.000} ({1})</sys:String>
+    <sys:String x:Key="LOCGT_HealthRangeFactorFormat">Outer range seen: LS {0}% / RS {1}%</sys:String>
+    <sys:String x:Key="LOCGT_HealthCoverageFactorFormat">Quick checks: {0}% ({1})</sys:String>
+    <sys:String x:Key="LOCGT_ExportReport">Export report</sys:String>
+    <sys:String x:Key="LOCGT_ReportReady">Report ready to export.</sys:String>
+    <sys:String x:Key="LOCGT_ReportExportedFormat">Report exported to {0}</sys:String>
+    <sys:String x:Key="LOCGT_ReportExportFailedFormat">Could not export report: {0}</sys:String>
 </ResourceDictionary>
