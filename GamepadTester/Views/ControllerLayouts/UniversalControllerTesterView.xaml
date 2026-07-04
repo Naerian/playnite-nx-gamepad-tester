@@ -4,7 +4,7 @@
              xmlns:converters="clr-namespace:GamepadTester.Converters"
              IsHitTestVisible="False">
     <UserControl.Resources>
-        <SolidColorBrush x:Key="ControllerFill" Color="{DynamicResource ControlBackgroundColorDark}" />
+        <SolidColorBrush x:Key="ControllerFill" Color="{DynamicResource ControlBackgroundColorDarker}" />
         <SolidColorBrush x:Key="SurfaceFill" Color="{DynamicResource ControlBackgroundColor}" />
         <SolidColorBrush x:Key="LineBrush" Color="{DynamicResource TextColor}" />
         <SolidColorBrush x:Key="MutedLineBrush" Color="{DynamicResource TextColorDarker}" />
@@ -62,7 +62,7 @@
                            Width="50"
                            Style="{StaticResource SmallMapText}" />
                 <Border Canvas.Left="0"
-                        Canvas.Top="85"
+                        Canvas.Top="92"
                         Width="122"
                         Height="6"
                         CornerRadius="3"
@@ -98,7 +98,7 @@
                            Width="50"
                            Style="{StaticResource SmallMapText}" />
                 <Border Canvas.Left="0"
-                        Canvas.Top="85"
+                        Canvas.Top="92"
                         Width="122"
                         Height="6"
                         CornerRadius="3"

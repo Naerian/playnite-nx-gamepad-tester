@@ -56,12 +56,12 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid Margin="22" TextElement.Foreground="{DynamicResource TextBrush}">
+    <Grid Margin="12" TextElement.Foreground="{DynamicResource TextBrush}">
         <Border Background="{StaticResource PanelBrush}"
                 BorderBrush="{StaticResource LineBrush}"
-                BorderThickness="1"
-                CornerRadius="8"
-                Padding="16">
+                BorderThickness="0"
+                CornerRadius="0"
+                Padding="8">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -75,7 +75,7 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Text="Device"
+                    <TextBlock Text="{DynamicResource LOCGT_Device}"
                                VerticalAlignment="Center"
                                Foreground="{StaticResource TextMutedBrush}" />
 
@@ -97,7 +97,7 @@
                 </Grid>
 
                 <TabControl Grid.Row="1">
-                <TabItem Header="Test">
+                <TabItem Header="{DynamicResource LOCGT_TabTest}">
                     <Grid Margin="0,14,0,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -114,7 +114,7 @@
 
                             <Border Grid.Column="0" Style="{StaticResource PanelBorder}" Margin="0,0,8,0">
                                 <StackPanel>
-                                    <TextBlock Text="Health" Style="{StaticResource MetricLabel}" />
+                                    <TextBlock Text="{DynamicResource LOCGT_Health}" Style="{StaticResource MetricLabel}" />
                                     <TextBlock Text="{Binding HealthScore, StringFormat={}{0}%}" Style="{StaticResource MetricValue}" />
                                     <TextBlock Text="{Binding HealthLabel}" Foreground="{StaticResource TextMutedBrush}" />
                                 </StackPanel>
@@ -122,23 +122,23 @@
 
                             <Border Grid.Column="1" Style="{StaticResource PanelBorder}" Margin="0,0,8,0">
                                 <StackPanel>
-                                    <TextBlock Text="Active inputs" Style="{StaticResource MetricLabel}" />
+                                    <TextBlock Text="{DynamicResource LOCGT_ActiveInputs}" Style="{StaticResource MetricLabel}" />
                                     <TextBlock Text="{Binding ActiveButtonCount}" Style="{StaticResource MetricValue}" />
-                                    <TextBlock Text="Buttons currently pressed" Foreground="{StaticResource TextMutedBrush}" />
+                                    <TextBlock Text="{DynamicResource LOCGT_ButtonsCurrentlyPressed}" Foreground="{StaticResource TextMutedBrush}" />
                                 </StackPanel>
                             </Border>
 
                             <Border Grid.Column="2" Style="{StaticResource PanelBorder}" Margin="0,0,8,0">
                                 <StackPanel>
-                                    <TextBlock Text="Rest drift" Style="{StaticResource MetricLabel}" />
+                                    <TextBlock Text="{DynamicResource LOCGT_CenterDrift}" Style="{StaticResource MetricLabel}" />
                                     <TextBlock Text="{Binding MaxDriftLabel}" Style="{StaticResource MetricValue}" />
-                                    <TextBlock Text="Peak while idle" Foreground="{StaticResource TextMutedBrush}" />
+                                    <TextBlock Text="{DynamicResource LOCGT_Current}" Foreground="{StaticResource TextMutedBrush}" />
                                 </StackPanel>
                             </Border>
 
                             <Border Grid.Column="3" Style="{StaticResource PanelBorder}">
                                 <StackPanel>
-                                    <TextBlock Text="Device" Style="{StaticResource MetricLabel}" />
+                                    <TextBlock Text="{DynamicResource LOCGT_Device}" Style="{StaticResource MetricLabel}" />
                                     <TextBlock Text="{Binding DeviceModelLabel}" Style="{StaticResource MetricValue}" />
                                     <TextBlock Text="{Binding DeviceIdLabel}" Foreground="{StaticResource TextMutedBrush}" />
                                 </StackPanel>
@@ -157,7 +157,7 @@
                             </Grid.ColumnDefinitions>
 
                             <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                                <TextBlock Text="Left stick" FontWeight="SemiBold" Margin="0,0,0,8" />
+                                <TextBlock Text="{DynamicResource LOCGT_LeftStick}" FontWeight="SemiBold" Margin="0,0,0,8" />
                                 <Grid Width="128" Height="128">
                                     <Ellipse Stroke="{StaticResource LineBrush}" StrokeThickness="2" Fill="#11151B" />
                                     <Ellipse Width="16" Height="16" Stroke="#384252" StrokeThickness="1" />
@@ -179,7 +179,7 @@
                             </Grid>
 
                             <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                                <TextBlock Text="Right stick" FontWeight="SemiBold" Margin="0,0,0,8" />
+                                <TextBlock Text="{DynamicResource LOCGT_RightStick}" FontWeight="SemiBold" Margin="0,0,0,8" />
                                 <Grid Width="128" Height="128">
                                     <Ellipse Stroke="{StaticResource LineBrush}" StrokeThickness="2" Fill="#11151B" />
                                     <Ellipse Width="16" Height="16" Stroke="#384252" StrokeThickness="1" />
@@ -199,7 +199,7 @@
                     </Grid>
                 </TabItem>
 
-                <TabItem Header="Checks">
+                <TabItem Header="{DynamicResource LOCGT_TabChecks}">
                     <Grid Margin="0,14,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.8*" />
@@ -208,13 +208,13 @@
 
                         <Border Style="{StaticResource PanelBorder}" Margin="0,0,12,0">
                             <StackPanel>
-                                <TextBlock Text="Session coverage" FontSize="18" FontWeight="SemiBold" />
+                                <TextBlock Text="{DynamicResource LOCGT_SessionCoverage}" FontSize="18" FontWeight="SemiBold" />
                                 <TextBlock Text="{Binding QuickTestProgress, StringFormat={}{0}%}" FontSize="44" FontWeight="SemiBold" Margin="0,14,0,0" />
                                 <ProgressBar Minimum="0" Maximum="100" Value="{Binding QuickTestProgress, Mode=OneWay}" Height="18" />
                                 <TextBlock Text="{Binding QuickTestLabel}" Margin="0,10,0,0" Foreground="{StaticResource TextMutedBrush}" />
                                 <TextBlock Text="{Binding ButtonCoverageLabel}" Margin="0,18,0,0" />
                                 <TextBlock Text="{Binding AnalogCoverageLabel}" Margin="0,6,0,0" />
-                                <Button Content="Reset session"
+                                <Button Content="{DynamicResource LOCGT_ResetSession}"
                                         Command="{Binding ResetDiagnosticsCommand}"
                                         Height="38"
                                         Margin="0,22,0,0"
@@ -226,13 +226,13 @@
                         <Border Grid.Column="1" Style="{StaticResource PanelBorder}">
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <StackPanel>
-                                    <TextBlock Text="Checklist" FontSize="18" FontWeight="SemiBold" />
-                                    <TextBlock Text="Completed controls are highlighted. Use Reset session for a clean pass."
+                                    <TextBlock Text="{DynamicResource LOCGT_Checklist}" FontSize="18" FontWeight="SemiBold" />
+                                    <TextBlock Text="{DynamicResource LOCGT_ChecklistHelp}"
                                                TextWrapping="Wrap"
                                                Margin="0,8,0,6"
                                                Foreground="{StaticResource TextMutedBrush}" />
 
-                                    <TextBlock Text="Face buttons" Style="{StaticResource SectionHeading}" />
+                                    <TextBlock Text="{DynamicResource LOCGT_FaceButtons}" Style="{StaticResource SectionHeading}" />
                                     <UniformGrid Columns="4">
                                         <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredSouth, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding SouthLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
                                         <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredEast, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding EastLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
@@ -240,7 +240,7 @@
                                         <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredNorth, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding NorthLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
                                     </UniformGrid>
 
-                                    <TextBlock Text="Shoulders and triggers" Style="{StaticResource SectionHeading}" />
+                                    <TextBlock Text="{DynamicResource LOCGT_ShouldersAndTriggers}" Style="{StaticResource SectionHeading}" />
                                     <UniformGrid Columns="4">
                                         <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredLeftShoulder, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding LeftShoulderLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
                                         <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredRightShoulder, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding RightShoulderLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
@@ -248,7 +248,7 @@
                                         <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredRightTrigger, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding RightTriggerLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
                                     </UniformGrid>
 
-                                    <TextBlock Text="Sticks" Style="{StaticResource SectionHeading}" />
+                                    <TextBlock Text="{DynamicResource LOCGT_Sticks}" Style="{StaticResource SectionHeading}" />
                                     <UniformGrid Columns="4">
                                         <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredLeftStickButton, Converter={StaticResource InputFillBrush}}"><TextBlock Text="L3 click" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
                                         <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredRightStickButton, Converter={StaticResource InputFillBrush}}"><TextBlock Text="R3 click" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
@@ -256,7 +256,7 @@
                                         <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredRightStickRange, Converter={StaticResource InputFillBrush}}"><TextBlock Text="RS edge" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
                                     </UniformGrid>
 
-                                    <TextBlock Text="D-pad and system" Style="{StaticResource SectionHeading}" />
+                                    <TextBlock Text="{DynamicResource LOCGT_DpadAndSystem}" Style="{StaticResource SectionHeading}" />
                                     <UniformGrid Columns="4">
                                         <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredDpadUp, Converter={StaticResource InputFillBrush}}"><TextBlock Text="D-Up" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
                                         <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredDpadDown, Converter={StaticResource InputFillBrush}}"><TextBlock Text="D-Down" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
@@ -272,7 +272,7 @@
                     </Grid>
                 </TabItem>
 
-                <TabItem Header="Input log">
+                <TabItem Header="{DynamicResource LOCGT_TabInputLog}">
                     <Grid Margin="0,14,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1.15*" />
@@ -281,7 +281,7 @@
 
                         <Border Style="{StaticResource PanelBorder}" Margin="0,0,12,0">
                             <StackPanel>
-                                <TextBlock Text="Button matrix" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12" />
+                                <TextBlock Text="{DynamicResource LOCGT_ButtonMatrix}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12" />
                                 <UniformGrid Columns="4">
                                     <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.South, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding SouthLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
                                     <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.East, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding EastLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
@@ -308,18 +308,25 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
-                                <TextBlock Text="Input history" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12" />
+                                <TextBlock Text="{DynamicResource LOCGT_InputHistory}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12" />
                                 <ListBox Grid.Row="1"
                                          ItemsSource="{Binding InputHistory}"
-                                         DisplayMemberPath="DisplayText"
-                                         Background="#11151B"
-                                         BorderBrush="{StaticResource LineBrush}" />
+                                         Background="{DynamicResource ListBoxBackgroundBrush}"
+                                         BorderBrush="{StaticResource LineBrush}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding DisplayText}"
+                                                       Foreground="{DynamicResource TextBrush}"
+                                                       Margin="4,2" />
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
                             </Grid>
                         </Border>
                     </Grid>
                 </TabItem>
 
-                <TabItem Header="Health">
+                <TabItem Header="{DynamicResource LOCGT_TabHealth}">
                     <Grid Margin="0,14,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -328,12 +335,12 @@
 
                         <Border Style="{StaticResource PanelBorder}" Margin="0,0,12,0">
                             <StackPanel>
-                                <TextBlock Text="Controller health" FontSize="18" FontWeight="SemiBold" />
+                                <TextBlock Text="{DynamicResource LOCGT_ControllerHealth}" FontSize="18" FontWeight="SemiBold" />
                                 <TextBlock Text="{Binding HealthScore, StringFormat={}{0}%}" FontSize="44" FontWeight="SemiBold" Margin="0,14,0,0" />
                                 <ProgressBar Minimum="0" Maximum="100" Value="{Binding HealthScore, Mode=OneWay}" Height="18" />
                                 <TextBlock Text="{Binding HealthLabel}" Margin="0,10,0,0" Foreground="{StaticResource TextMutedBrush}" />
-                                <TextBlock Text="Health is estimated from rest drift. Quick test coverage is tracked separately so moving the sticks during testing does not make a new controller look unhealthy." TextWrapping="Wrap" Margin="0,12,0,0" Foreground="{StaticResource TextMutedBrush}" />
-                                <Button Content="Reset diagnostics"
+                                <TextBlock Text="{DynamicResource LOCGT_HealthHelp}" TextWrapping="Wrap" Margin="0,12,0,0" Foreground="{StaticResource TextMutedBrush}" />
+                                <Button Content="{DynamicResource LOCGT_ResetDiagnostics}"
                                         Command="{Binding ResetDiagnosticsCommand}"
                                         Height="38"
                                         Margin="0,18,0,0"
@@ -344,21 +351,22 @@
 
                         <Border Grid.Column="1" Style="{StaticResource PanelBorder}">
                             <StackPanel>
-                                <TextBlock Text="Analog diagnostics" FontSize="18" FontWeight="SemiBold" />
-                                <TextBlock Text="Drift bands: Safe below 0.05, minor from 0.05 to 0.15, major above 0.15." TextWrapping="Wrap" Margin="0,10,0,16" Foreground="{StaticResource TextMutedBrush}" />
+                                <TextBlock Text="{DynamicResource LOCGT_AnalogDiagnostics}" FontSize="18" FontWeight="SemiBold" />
+                                <TextBlock Text="{DynamicResource LOCGT_DriftBandsHelp}" TextWrapping="Wrap" Margin="0,10,0,16" Foreground="{StaticResource TextMutedBrush}" />
                                 <TextBlock Text="{Binding LeftStickVector, StringFormat=Left stick  {0}}" />
                                 <TextBlock Text="{Binding LeftStickDriftStatus}" Foreground="{StaticResource TextMutedBrush}" Margin="0,2,0,12" />
                                 <TextBlock Text="{Binding RightStickVector, StringFormat=Right stick  {0}}" />
                                 <TextBlock Text="{Binding RightStickDriftStatus}" Foreground="{StaticResource TextMutedBrush}" Margin="0,2,0,12" />
                                 <TextBlock Text="{Binding LeftTriggerPercent, StringFormat=LT range  {0}%}" />
                                 <TextBlock Text="{Binding RightTriggerPercent, StringFormat=RT range  {0}%}" />
-                                <TextBlock Text="{Binding MaxDriftLabel, StringFormat=Session rest drift  {0}}" Margin="0,12,0,0" />
+                                <TextBlock Text="{Binding MaxDriftLabel, StringFormat=Center drift now  {0}}" Margin="0,12,0,0" />
+                                <TextBlock Text="{Binding SessionRestDriftLabel, StringFormat=Session rest peak  {0}}" Foreground="{StaticResource TextMutedBrush}" Margin="0,2,0,0" />
                             </StackPanel>
                         </Border>
                     </Grid>
                 </TabItem>
 
-                <TabItem Header="Sticks">
+                <TabItem Header="{DynamicResource LOCGT_TabSticks}">
                     <Grid Margin="0,14,0,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -372,14 +380,14 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <StackPanel>
-                                    <TextBlock Text="Stick path and circular test" FontSize="18" FontWeight="SemiBold" />
-                                    <TextBlock Text="Move each stick slowly around the outer edge. The ring fills as sectors reach the expected outer range; the line shows the latest movement path."
+                                    <TextBlock Text="{DynamicResource LOCGT_StickPathCircularTest}" FontSize="18" FontWeight="SemiBold" />
+                                    <TextBlock Text="{DynamicResource LOCGT_StickPathHelp}"
                                                TextWrapping="Wrap"
                                                Margin="0,8,0,0"
                                                Foreground="{StaticResource TextMutedBrush}" />
                                 </StackPanel>
                                 <Button Grid.Column="1"
-                                        Content="Reset sticks"
+                                        Content="{DynamicResource LOCGT_ResetSticks}"
                                         Command="{Binding ResetDiagnosticsCommand}"
                                         Height="38"
                                         MinWidth="130"
@@ -402,7 +410,7 @@
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
 
-                                    <TextBlock Text="Left stick" FontSize="18" FontWeight="SemiBold" />
+                                    <TextBlock Text="{DynamicResource LOCGT_LeftStick}" FontSize="18" FontWeight="SemiBold" />
 
                                     <Grid Grid.Row="1" Width="280" Height="280" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10">
                                         <Ellipse Stroke="#2F3746" StrokeThickness="1" Fill="#11151B" />
@@ -463,7 +471,7 @@
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
 
-                                    <TextBlock Text="Right stick" FontSize="18" FontWeight="SemiBold" />
+                                    <TextBlock Text="{DynamicResource LOCGT_RightStick}" FontSize="18" FontWeight="SemiBold" />
 
                                     <Grid Grid.Row="1" Width="280" Height="280" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10">
                                         <Ellipse Stroke="#2F3746" StrokeThickness="1" Fill="#11151B" />
@@ -519,7 +527,7 @@
                     </Grid>
                 </TabItem>
 
-                <TabItem Header="Hardware">
+                <TabItem Header="{DynamicResource LOCGT_TabHardware}">
                     <Grid Margin="0,14,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -528,18 +536,18 @@
 
                         <Border Style="{StaticResource PanelBorder}" Margin="0,0,12,0">
                             <StackPanel>
-                                <TextBlock Text="Rumble tests" FontSize="18" FontWeight="SemiBold" />
+                                <TextBlock Text="{DynamicResource LOCGT_RumbleTests}" FontSize="18" FontWeight="SemiBold" />
                                 <TextBlock Text="{Binding RumbleStatusLabel}" Margin="0,8,0,18" Foreground="{StaticResource TextMutedBrush}" />
                                 <UniformGrid Columns="2">
-                                    <Button Content="Standard" Height="42" Margin="0,0,8,8" Command="{Binding RumbleCommand}" />
-                                    <Button Content="Light" Height="42" Margin="0,0,0,8" Command="{Binding LightRumbleCommand}" />
-                                    <Button Content="Medium" Height="42" Margin="0,0,8,8" Command="{Binding MediumRumbleCommand}" />
-                                    <Button Content="Heavy" Height="42" Margin="0,0,0,8" Command="{Binding HeavyRumbleCommand}" />
-                                    <Button Content="Low motor" Height="42" Margin="0,0,8,8" Command="{Binding LowMotorRumbleCommand}" />
-                                    <Button Content="High motor" Height="42" Margin="0,0,0,8" Command="{Binding HighMotorRumbleCommand}" />
-                                    <Button Content="Pulse" Height="42" Margin="0,0,8,8" Command="{Binding PulseRumbleCommand}" />
-                                    <Button Content="Alternating" Height="42" Margin="0,0,0,8" Command="{Binding AlternatingRumbleCommand}" />
-                                    <Button Content="Ramp" Height="42" Margin="0,0,8,0" Command="{Binding RampRumbleCommand}" />
+                                    <Button Content="{DynamicResource LOCGT_Standard}" Height="42" Margin="0,0,8,8" Command="{Binding RumbleCommand}" />
+                                    <Button Content="{DynamicResource LOCGT_Light}" Height="42" Margin="0,0,0,8" Command="{Binding LightRumbleCommand}" />
+                                    <Button Content="{DynamicResource LOCGT_Medium}" Height="42" Margin="0,0,8,8" Command="{Binding MediumRumbleCommand}" />
+                                    <Button Content="{DynamicResource LOCGT_Heavy}" Height="42" Margin="0,0,0,8" Command="{Binding HeavyRumbleCommand}" />
+                                    <Button Content="{DynamicResource LOCGT_LowMotor}" Height="42" Margin="0,0,8,8" Command="{Binding LowMotorRumbleCommand}" />
+                                    <Button Content="{DynamicResource LOCGT_HighMotor}" Height="42" Margin="0,0,0,8" Command="{Binding HighMotorRumbleCommand}" />
+                                    <Button Content="{DynamicResource LOCGT_Pulse}" Height="42" Margin="0,0,8,8" Command="{Binding PulseRumbleCommand}" />
+                                    <Button Content="{DynamicResource LOCGT_Alternating}" Height="42" Margin="0,0,0,8" Command="{Binding AlternatingRumbleCommand}" />
+                                    <Button Content="{DynamicResource LOCGT_Ramp}" Height="42" Margin="0,0,8,0" Command="{Binding RampRumbleCommand}" />
                                 </UniformGrid>
 
                                 <Grid Margin="0,22,0,0">
@@ -549,14 +557,14 @@
                                     </Grid.ColumnDefinitions>
                                     <Border Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,8,0">
                                         <StackPanel>
-                                            <TextBlock Text="Low-frequency" FontWeight="SemiBold" />
-                                            <TextBlock Text="Usually the stronger motor. Useful to detect weak startup or uneven vibration." TextWrapping="Wrap" Margin="0,8,0,0" Foreground="{StaticResource TextMutedBrush}" />
+                                            <TextBlock Text="{DynamicResource LOCGT_LowFrequency}" FontWeight="SemiBold" />
+                                            <TextBlock Text="{DynamicResource LOCGT_LowFrequencyHelp}" TextWrapping="Wrap" Margin="0,8,0,0" Foreground="{StaticResource TextMutedBrush}" />
                                         </StackPanel>
                                     </Border>
                                     <Border Grid.Column="1" Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" CornerRadius="8" Padding="14">
                                         <StackPanel>
-                                            <TextBlock Text="High-frequency" FontWeight="SemiBold" />
-                                            <TextBlock Text="Usually the finer motor. Alternating and ramp tests make differences easier to feel." TextWrapping="Wrap" Margin="0,8,0,0" Foreground="{StaticResource TextMutedBrush}" />
+                                            <TextBlock Text="{DynamicResource LOCGT_HighFrequency}" FontWeight="SemiBold" />
+                                            <TextBlock Text="{DynamicResource LOCGT_HighFrequencyHelp}" TextWrapping="Wrap" Margin="0,8,0,0" Foreground="{StaticResource TextMutedBrush}" />
                                         </StackPanel>
                                     </Border>
                                 </Grid>
@@ -580,19 +588,19 @@
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
 
-                                <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="Device" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,16" />
-                                <TextBlock Grid.Row="1" Text="Name" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
+                                <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="{DynamicResource LOCGT_DeviceSection}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,16" />
+                                <TextBlock Grid.Row="1" Text="{DynamicResource LOCGT_Name}" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
                                 <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding State.ControllerName}" Margin="0,0,0,10" TextWrapping="Wrap" />
-                                <TextBlock Grid.Row="2" Text="Detected model" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
+                                <TextBlock Grid.Row="2" Text="{DynamicResource LOCGT_DetectedModel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
                                 <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding DeviceModelLabel}" Margin="0,0,0,10" />
-                                <TextBlock Grid.Row="3" Text="VID / PID" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
+                                <TextBlock Grid.Row="3" Text="{DynamicResource LOCGT_VidPid}" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
                                 <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding DeviceIdLabel}" Margin="0,0,0,10" />
-                                <TextBlock Grid.Row="4" Text="Layout" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
+                                <TextBlock Grid.Row="4" Text="{DynamicResource LOCGT_Layout}" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
                                 <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding State.Layout}" Margin="0,0,0,10" />
-                                <TextBlock Grid.Row="5" Text="Backend" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
+                                <TextBlock Grid.Row="5" Text="{DynamicResource LOCGT_Backend}" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
                                 <TextBlock Grid.Row="5" Grid.Column="1" Text="SDL GameController" Margin="0,0,0,10" />
-                                <TextBlock Grid.Row="6" Text="Notes" Foreground="{StaticResource TextMutedBrush}" />
-                                <TextBlock Grid.Row="6" Grid.Column="1" Text="Sticks are normalized to -1..1 and triggers to 0..1. Rumble support depends on controller mode, driver, and SDL support." TextWrapping="Wrap" />
+                                <TextBlock Grid.Row="6" Text="{DynamicResource LOCGT_Notes}" Foreground="{StaticResource TextMutedBrush}" />
+                                <TextBlock Grid.Row="6" Grid.Column="1" Text="{DynamicResource LOCGT_DeviceNotes}" TextWrapping="Wrap" />
                             </Grid>
                         </Border>
                     </Grid>

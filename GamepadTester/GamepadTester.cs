@@ -6,8 +6,11 @@ using Playnite.SDK.Events;
 using Playnite.SDK.Plugins;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Markup;
 
 namespace GamepadTester
 {
@@ -18,6 +21,7 @@ namespace GamepadTester
 
         private GamepadTesterSettingsViewModel settings { get; set; }
         private GamepadTesterViewModel sidebarViewModel;
+        private ResourceDictionary englishFallbackResources;
 
         public override Guid Id
         {
@@ -31,6 +35,7 @@ namespace GamepadTester
             {
                 HasSettings = true
             };
+            EnsureEnglishFallbackResources();
         }
 
         public override void OnGameInstalled(OnGameInstalledEventArgs args)
@@ -80,8 +85,8 @@ namespace GamepadTester
         {
             yield return new MainMenuItem
             {
-                MenuSection = "@Gamepad Tester",
-                Description = "Open Gamepad Tester",
+                MenuSection = "@" + Loc("LOCGT_PluginName"),
+                Description = Loc("LOCGT_OpenGamepadTester"),
                 Action = args2 => OpenTesterWindow()
             };
         }
@@ -96,7 +101,7 @@ namespace GamepadTester
             yield return new SidebarItem
             {
                 Type = SiderbarItemType.View,
-                Title = "Gamepad Tester",
+                Title = Loc("LOCGT_PluginName"),
                 Visible = true,
                 Icon = new TextBlock
                 {
@@ -129,7 +134,7 @@ namespace GamepadTester
                     ShowMaximizeButton = true
                 });
 
-                window.Title = "Gamepad Tester";
+                window.Title = Loc("LOCGT_PluginName");
                 window.Width = 1280;
                 window.Height = 820;
                 window.MinWidth = 1180;
@@ -144,14 +149,80 @@ namespace GamepadTester
             catch (Exception exception)
             {
                 logger.Error(exception, "Failed to open Gamepad Tester.");
-                PlayniteApi.Dialogs.ShowErrorMessage(exception.Message, "Gamepad Tester");
+                PlayniteApi.Dialogs.ShowErrorMessage(exception.Message, Loc("LOCGT_PluginName"));
             }
+        }
+
+        public string Loc(string key)
+        {
+            var value = PlayniteApi.Resources.GetString(key);
+            if (!string.IsNullOrWhiteSpace(value) && value != key)
+            {
+                return value;
+            }
+
+            return GetEnglishFallbackString(key) ?? key;
+        }
+
+        private void EnsureEnglishFallbackResources()
+        {
+            try
+            {
+                englishFallbackResources = LoadEnglishFallbackResources();
+                if (englishFallbackResources == null || Application.Current == null || Application.Current.Resources == null)
+                {
+                    return;
+                }
+
+                var alreadyLoaded = Application.Current.Resources.MergedDictionaries
+                    .OfType<ResourceDictionary>()
+                    .Any(a => ReferenceEquals(a, englishFallbackResources) ||
+                        a.Contains("LOCGT_PluginName") && Equals(a["LOCGT_PluginName"], "Gamepad Tester"));
+                if (!alreadyLoaded)
+                {
+                    Application.Current.Resources.MergedDictionaries.Insert(0, englishFallbackResources);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Warn(ex, "Failed to load English fallback resources.");
+            }
+        }
+
+        private ResourceDictionary LoadEnglishFallbackResources()
+        {
+            var path = Path.Combine(Path.GetDirectoryName(GetType().Assembly.Location), "Localization", "en_US.xaml");
+            if (!File.Exists(path))
+            {
+                return null;
+            }
+
+            using (var stream = File.OpenRead(path))
+            {
+                return XamlReader.Load(stream) as ResourceDictionary;
+            }
+        }
+
+        private string GetEnglishFallbackString(string key)
+        {
+            if (englishFallbackResources == null)
+            {
+                englishFallbackResources = LoadEnglishFallbackResources();
+            }
+
+            if (englishFallbackResources != null && englishFallbackResources.Contains(key))
+            {
+                var value = englishFallbackResources[key];
+                return value == null ? null : value.ToString();
+            }
+
+            return null;
         }
 
         private GamepadTesterView CreateTesterView(out GamepadTesterViewModel viewModel)
         {
             var pollingService = new GamepadPollingService(new SdlGamepadProvider());
-            viewModel = new GamepadTesterViewModel(pollingService, settings.Settings);
+            viewModel = new GamepadTesterViewModel(pollingService, settings.Settings, Loc);
             var view = new GamepadTesterView
             {
                 DataContext = viewModel

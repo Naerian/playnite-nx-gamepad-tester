@@ -85,7 +85,7 @@ $localizationSource = Join-Path $outputDir "Localization"
 $localizationDestination = Join-Path $playniteExtensionDir "Localization"
 if (Test-Path -LiteralPath $localizationSource) {
     New-Item -ItemType Directory -Force -Path $localizationDestination | Out-Null
-    Copy-Item -LiteralPath (Join-Path $localizationSource "en_US.xaml") -Destination $localizationDestination -Force
+    Copy-Item -Path (Join-Path $localizationSource "*.xaml") -Destination $localizationDestination -Force
 }
 
 Write-Host "Gamepad Tester deployed to $playniteExtensionDir"
