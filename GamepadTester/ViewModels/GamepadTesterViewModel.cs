@@ -17,6 +17,12 @@ namespace GamepadTester.ViewModels
     public sealed class GamepadTesterViewModel : ObservableObject, IDisposable
     {
         private const double StickRadius = 34d;
+        private const double HealthDeadzone = 0.08d;
+        private const double HealthMinorDrift = 0.14d;
+        private const double HealthAttentionDrift = 0.20d;
+        private const double RestStabilityDelta = 0.015d;
+        private const double RestObservationMilliseconds = 450d;
+        private const double MaximumRestDriftCandidate = 0.35d;
         private readonly GamepadPollingService pollingService;
         private readonly GamepadTesterSettings settings;
         private readonly Func<string, string> localizer;
@@ -41,14 +47,21 @@ namespace GamepadTester.ViewModels
         private GamepadControllerInfo selectedController;
         private int controllerRefreshTick;
         private GamepadButtonState previousButtons;
+        private List<ExtraButtonState> previousExtraButtons;
         private GamepadButtonState coveredButtons;
         private double maxLeftRestDrift;
         private double maxRightRestDrift;
+        private DateTime? restCandidateStartedAt;
+        private double lastRestCandidateLeftX;
+        private double lastRestCandidateLeftY;
+        private double lastRestCandidateRightX;
+        private double lastRestCandidateRightY;
         private double maxLeftStickMagnitude;
         private double maxRightStickMagnitude;
         private float maxLeftTrigger;
         private float maxRightTrigger;
         private bool isControllerSelectorOpen;
+        private bool isInputLogEnabled;
         private bool isRumbleRunning;
         private string rumbleStatusLabel;
         private bool isCenterCalibrationRunning;
@@ -85,6 +98,8 @@ namespace GamepadTester.ViewModels
         private double latencyTestSumMs;
         private int latencyTestSamples;
         private string exportReportStatusLabel;
+        private string selectedVisualSchemeKey;
+        private bool isVisualSchemeManuallySelected;
 
         public GamepadTesterViewModel(GamepadPollingService pollingService, GamepadTesterSettings settings = null, Func<string, string> localizer = null)
         {
@@ -94,6 +109,8 @@ namespace GamepadTester.ViewModels
             state = new GamepadState();
             Controllers = new ObservableCollection<GamepadControllerInfo>();
             InputHistory = new ObservableCollection<InputHistoryItem>();
+            VisualSchemeOptions = new ObservableCollection<ControllerVisualSchemeOption>();
+            InitializeVisualSchemeOptions();
             rumbleCommand = new RelayCommand(() => RunSimpleRumble("Standard rumble", 42000, 52000, 350), CanRunRumble);
             lightRumbleCommand = new RelayCommand(() => RunSimpleRumble("Light rumble", 14000, 18000, 260), CanRunRumble);
             mediumRumbleCommand = new RelayCommand(() => RunSimpleRumble("Medium rumble", 28000, 36000, 360), CanRunRumble);
@@ -122,6 +139,7 @@ namespace GamepadTester.ViewModels
 
         public ObservableCollection<GamepadControllerInfo> Controllers { get; private set; }
         public ObservableCollection<InputHistoryItem> InputHistory { get; private set; }
+        public ObservableCollection<ControllerVisualSchemeOption> VisualSchemeOptions { get; private set; }
 
         public GamepadState State
         {
@@ -223,6 +241,7 @@ namespace GamepadTester.ViewModels
 
                 if (selectedController != null)
                 {
+                    isVisualSchemeManuallySelected = false;
                     pollingService.SelectController(selectedController.InstanceId);
                     if (this.settings.AutoResetDiagnosticsOnControllerChange)
                     {
@@ -249,6 +268,73 @@ namespace GamepadTester.ViewModels
 
                 isControllerSelectorOpen = value;
                 OnPropertyChanged("IsControllerSelectorOpen");
+            }
+        }
+
+        public bool HasController
+        {
+            get { return State.IsConnected; }
+        }
+
+        public bool IsNoControllerVisible
+        {
+            get { return !State.IsConnected; }
+        }
+
+        public bool IsInputLogEnabled
+        {
+            get { return isInputLogEnabled; }
+            set
+            {
+                if (isInputLogEnabled == value)
+                {
+                    return;
+                }
+
+                isInputLogEnabled = value;
+                if (!isInputLogEnabled)
+                {
+                    ClearInputHistory();
+                }
+
+                OnPropertyChanged("IsInputLogEnabled");
+                OnPropertyChanged("IsInputLogDisabled");
+                OnPropertyChanged("InputLogStatusLabel");
+            }
+        }
+
+        public bool IsInputLogDisabled
+        {
+            get { return !isInputLogEnabled; }
+        }
+
+        public string InputLogStatusLabel
+        {
+            get
+            {
+                return isInputLogEnabled
+                    ? L("LOCGT_InputLogEnabledHelp", "Input history is recording button changes for this session.")
+                    : L("LOCGT_InputLogDisabledHelp", "Input history is paused. Enable it only when you need a detailed event log.");
+            }
+        }
+
+        public string BackendLabel
+        {
+            get { return L("LOCGT_PlayniteSdlBackend", "Playnite SDL2 / SDL GameController"); }
+        }
+
+        public string MappingStatusLabel
+        {
+            get
+            {
+                if (State.IsConnected)
+                {
+                    return L("LOCGT_MappingRecognized", "Mapped by SDL GameController");
+                }
+
+                return Controllers.Count == 0
+                    ? L("LOCGT_MappingNoController", "No mapped controller detected")
+                    : L("LOCGT_MappingWaiting", "Waiting for selected controller");
             }
         }
 
@@ -367,7 +453,30 @@ namespace GamepadTester.ViewModels
 
         public int ActiveButtonCount
         {
-            get { return CountPressedButtons(State.Buttons); }
+            get { return CountPressedButtons(State.Buttons) + ExtraActiveButtonCount + (IsLeftTriggerActive ? 1 : 0) + (IsRightTriggerActive ? 1 : 0); }
+        }
+
+        public int ExtraActiveButtonCount
+        {
+            get { return CountPressedExtraButtons(State.ExtraButtons); }
+        }
+
+        public bool HasExtraButtons
+        {
+            get { return State.ExtraButtons != null && State.ExtraButtons.Count > 0; }
+        }
+
+        public string ExtraButtonSummaryLabel
+        {
+            get
+            {
+                if (!HasExtraButtons)
+                {
+                    return L("LOCGT_NoExtraButtons", "No additional buttons exposed by SDL.");
+                }
+
+                return string.Format(L("LOCGT_ExtraButtonsFormat", "{0} additional controls exposed by SDL"), State.ExtraButtons.Count);
+            }
         }
 
         public string LeftStickVector
@@ -403,6 +512,11 @@ namespace GamepadTester.ViewModels
         private double CurrentCenterDrift
         {
             get { return Math.Max(State.LeftStick.Magnitude, State.RightStick.Magnitude); }
+        }
+
+        private double EvaluatedRestDrift
+        {
+            get { return Math.Max(maxLeftRestDrift, maxRightRestDrift); }
         }
 
         public PointCollection LeftStickPathPoints
@@ -751,8 +865,10 @@ namespace GamepadTester.ViewModels
         {
             get
             {
-                return string.Format("LT {0}%  RT {1}%  LS {2}%  RS {3}%",
+                return string.Format("{0} {1}%  {2} {3}%  LS {4}%  RS {5}%",
+                    LeftTriggerLabel,
                     (int)Math.Round(maxLeftTrigger * 100),
+                    RightTriggerLabel,
                     (int)Math.Round(maxRightTrigger * 100),
                     (int)Math.Round(maxLeftStickMagnitude * 100),
                     (int)Math.Round(maxRightStickMagnitude * 100));
@@ -768,36 +884,36 @@ namespace GamepadTester.ViewModels
                 AddMissingButton(missing, coveredButtons.East, EastLabel);
                 AddMissingButton(missing, coveredButtons.West, WestLabel);
                 AddMissingButton(missing, coveredButtons.North, NorthLabel);
-                AddMissingButton(missing, coveredButtons.LeftShoulder, "LB / L1");
-                AddMissingButton(missing, coveredButtons.RightShoulder, "RB / R1");
-                AddMissingButton(missing, coveredButtons.LeftStick, "L3");
-                AddMissingButton(missing, coveredButtons.RightStick, "R3");
-                AddMissingButton(missing, coveredButtons.Back, "Back / Share");
-                AddMissingButton(missing, coveredButtons.Start, "Start / Options");
-                AddMissingButton(missing, coveredButtons.Guide, "Guide");
-                AddMissingButton(missing, coveredButtons.DpadUp, "D-Up");
-                AddMissingButton(missing, coveredButtons.DpadDown, "D-Down");
-                AddMissingButton(missing, coveredButtons.DpadLeft, "D-Left");
-                AddMissingButton(missing, coveredButtons.DpadRight, "D-Right");
+                AddMissingButton(missing, coveredButtons.LeftShoulder, LeftShoulderLabel);
+                AddMissingButton(missing, coveredButtons.RightShoulder, RightShoulderLabel);
+                AddMissingButton(missing, coveredButtons.LeftStick, LeftStickButtonLabel);
+                AddMissingButton(missing, coveredButtons.RightStick, RightStickButtonLabel);
+                AddMissingButton(missing, coveredButtons.Back, BackButtonLabel);
+                AddMissingButton(missing, coveredButtons.Start, StartButtonLabel);
+                AddMissingButton(missing, coveredButtons.Guide, GuideButtonLabel);
+                AddMissingButton(missing, coveredButtons.DpadUp, DpadUpLabel);
+                AddMissingButton(missing, coveredButtons.DpadDown, DpadDownLabel);
+                AddMissingButton(missing, coveredButtons.DpadLeft, DpadLeftLabel);
+                AddMissingButton(missing, coveredButtons.DpadRight, DpadRightLabel);
 
                 if (maxLeftTrigger < 0.95f)
                 {
-                    missing.Add("LT 100%");
+                    missing.Add(LeftTriggerLabel + " 100%");
                 }
 
                 if (maxRightTrigger < 0.95f)
                 {
-                    missing.Add("RT 100%");
+                    missing.Add(RightTriggerLabel + " 100%");
                 }
 
                 if (maxLeftStickMagnitude < 0.85d)
                 {
-                    missing.Add("Left stick edge");
+                    missing.Add("LS edge");
                 }
 
                 if (maxRightStickMagnitude < 0.85d)
                 {
-                    missing.Add("Right stick edge");
+                    missing.Add("RS edge");
                 }
 
                 return missing.Count == 0 ? L("LOCGT_NothingMissing", "Nothing missing.") : string.Join(", ", missing);
@@ -828,8 +944,8 @@ namespace GamepadTester.ViewModels
         {
             get
             {
-                var currentDrift = CurrentCenterDrift;
-                var driftPenalty = currentDrift <= 0.03d ? 0d : Math.Min(100d, (currentDrift - 0.03d) * 400d);
+                var drift = EvaluatedRestDrift;
+                var driftPenalty = drift <= HealthDeadzone ? 0d : Math.Min(100d, (drift - HealthDeadzone) * 600d);
                 return Math.Max(0, Math.Min(100, (int)Math.Round(100d - driftPenalty)));
             }
         }
@@ -843,6 +959,17 @@ namespace GamepadTester.ViewModels
                     return L("LOCGT_NoController", "No controller");
                 }
 
+                var drift = EvaluatedRestDrift;
+                if (drift >= HealthAttentionDrift)
+                {
+                    return L("LOCGT_HealthAttentionRequired", "Attention required");
+                }
+
+                if (drift >= HealthMinorDrift)
+                {
+                    return L("LOCGT_HealthNeedsReview", "Needs review");
+                }
+
                 if (HealthScore >= 90)
                 {
                     return L("LOCGT_HealthExcellent", "Excellent");
@@ -853,12 +980,7 @@ namespace GamepadTester.ViewModels
                     return L("LOCGT_HealthGood", "Good");
                 }
 
-                if (HealthScore >= 55)
-                {
-                    return L("LOCGT_HealthNeedsReview", "Needs review");
-                }
-
-                return L("LOCGT_HealthAttentionRequired", "Attention required");
+                return L("LOCGT_HealthGood", "Good");
             }
         }
 
@@ -871,12 +993,12 @@ namespace GamepadTester.ViewModels
                     return L("LOCGT_ConnectControllerToStart", "Connect a controller to start.");
                 }
 
-                if (CurrentCenterDrift < 0.03d)
+                if (EvaluatedRestDrift < HealthDeadzone)
                 {
                     return L("LOCGT_HealthSummaryCentered", "Centered sticks look stable right now.");
                 }
 
-                if (CurrentCenterDrift < 0.08d)
+                if (EvaluatedRestDrift < HealthAttentionDrift)
                 {
                     return L("LOCGT_HealthSummarySmallDrift", "Small centered-stick movement is visible. Release the sticks and watch whether it settles.");
                 }
@@ -889,9 +1011,9 @@ namespace GamepadTester.ViewModels
         {
             get
             {
-                return string.Format(L("LOCGT_HealthDriftFactorFormat", "Current center drift: {0:0.000} ({1})"),
-                    CurrentCenterDrift,
-                    GetDriftStatus(CurrentCenterDrift));
+                return string.Format(L("LOCGT_HealthDriftFactorFormat", "Rest drift used for health: {0:0.000} ({1})"),
+                    EvaluatedRestDrift,
+                    GetDriftStatus(EvaluatedRestDrift));
             }
         }
 
@@ -963,36 +1085,84 @@ namespace GamepadTester.ViewModels
             }
         }
 
+        public string SelectedVisualSchemeKey
+        {
+            get { return selectedVisualSchemeKey; }
+            set
+            {
+                if (selectedVisualSchemeKey == value)
+                {
+                    return;
+                }
+
+                selectedVisualSchemeKey = value;
+                isVisualSchemeManuallySelected = true;
+                NotifyVisualSchemeChanged();
+            }
+        }
+
         public string SouthLabel
         {
-            get { return State.Layout == GamepadLayout.PlayStation ? "Cross" : "A"; }
+            get
+            {
+                if (UsesPlayStationLabels)
+                {
+                    return "Cross";
+                }
+
+                return UsesSwitchProLabels ? "B" : "A";
+            }
         }
 
         public string EastLabel
         {
-            get { return State.Layout == GamepadLayout.PlayStation ? "Circle" : "B"; }
+            get
+            {
+                if (UsesPlayStationLabels)
+                {
+                    return "Circle";
+                }
+
+                return UsesSwitchProLabels ? "A" : "B";
+            }
         }
 
         public string WestLabel
         {
-            get { return State.Layout == GamepadLayout.PlayStation ? "Square" : "X"; }
+            get
+            {
+                if (UsesPlayStationLabels)
+                {
+                    return "Square";
+                }
+
+                return UsesSwitchProLabels ? "Y" : "X";
+            }
         }
 
         public string NorthLabel
         {
-            get { return State.Layout == GamepadLayout.PlayStation ? "Triangle" : "Y"; }
+            get
+            {
+                if (UsesPlayStationLabels)
+                {
+                    return "Triangle";
+                }
+
+                return UsesSwitchProLabels ? "X" : "Y";
+            }
         }
 
         public string LeftShoulderLabel
         {
             get
             {
-                if (State.Layout == GamepadLayout.PlayStation)
+                if (UsesPlayStationLabels)
                 {
                     return "L1";
                 }
 
-                return State.Layout == GamepadLayout.SwitchPro ? "L" : "LB";
+                return UsesSwitchProLabels ? "L" : "LB";
             }
         }
 
@@ -1000,12 +1170,12 @@ namespace GamepadTester.ViewModels
         {
             get
             {
-                if (State.Layout == GamepadLayout.PlayStation)
+                if (UsesPlayStationLabels)
                 {
                     return "R1";
                 }
 
-                return State.Layout == GamepadLayout.SwitchPro ? "R" : "RB";
+                return UsesSwitchProLabels ? "R" : "RB";
             }
         }
 
@@ -1013,12 +1183,12 @@ namespace GamepadTester.ViewModels
         {
             get
             {
-                if (State.Layout == GamepadLayout.PlayStation)
+                if (UsesPlayStationLabels)
                 {
                     return "L2";
                 }
 
-                return State.Layout == GamepadLayout.SwitchPro ? "ZL" : "LT";
+                return UsesSwitchProLabels ? "ZL" : "LT";
             }
         }
 
@@ -1026,13 +1196,68 @@ namespace GamepadTester.ViewModels
         {
             get
             {
-                if (State.Layout == GamepadLayout.PlayStation)
+                if (UsesPlayStationLabels)
                 {
                     return "R2";
                 }
 
-                return State.Layout == GamepadLayout.SwitchPro ? "ZR" : "RT";
+                return UsesSwitchProLabels ? "ZR" : "RT";
             }
+        }
+
+        public string LeftStickButtonLabel
+        {
+            get { return UsesPlayStationLabels ? "L3" : UsesSwitchProLabels ? "L Stick" : "LS"; }
+        }
+
+        public string RightStickButtonLabel
+        {
+            get { return UsesPlayStationLabels ? "R3" : UsesSwitchProLabels ? "R Stick" : "RS"; }
+        }
+
+        public string BackButtonLabel
+        {
+            get { return UsesPlayStationLabels ? "Share" : UsesSwitchProLabels ? "Minus" : "View"; }
+        }
+
+        public string StartButtonLabel
+        {
+            get { return UsesPlayStationLabels ? "Options" : UsesSwitchProLabels ? "Plus" : "Menu"; }
+        }
+
+        public string GuideButtonLabel
+        {
+            get { return UsesPlayStationLabels ? "PS" : "Guide"; }
+        }
+
+        public string DpadUpLabel
+        {
+            get { return UsesPlayStationLabels ? "D-pad Up" : "D-Up"; }
+        }
+
+        public string DpadDownLabel
+        {
+            get { return UsesPlayStationLabels ? "D-pad Down" : "D-Down"; }
+        }
+
+        public string DpadLeftLabel
+        {
+            get { return UsesPlayStationLabels ? "D-pad Left" : "D-Left"; }
+        }
+
+        public string DpadRightLabel
+        {
+            get { return UsesPlayStationLabels ? "D-pad Right" : "D-Right"; }
+        }
+
+        private bool UsesSwitchProLabels
+        {
+            get { return EffectiveVisualSchemeKey == "SwitchPro"; }
+        }
+
+        private bool UsesPlayStationLabels
+        {
+            get { return EffectiveVisualSchemeKey == "DualSense" || EffectiveVisualSchemeKey == "PlayStation"; }
         }
 
         public bool IsEightBitDoLayout
@@ -1083,12 +1308,27 @@ namespace GamepadTester.ViewModels
 
         public bool IsDualSenseLayout
         {
-            get { return State.Layout == GamepadLayout.PlayStation && GamepadDeviceNames.IsDualSense(State.VendorId, State.ProductId); }
+            get { return EffectiveVisualSchemeKey == "DualSense"; }
+        }
+
+        public bool IsXboxVisualScheme
+        {
+            get { return EffectiveVisualSchemeKey == "Xbox"; }
+        }
+
+        public bool IsPlayStationVisualScheme
+        {
+            get { return EffectiveVisualSchemeKey == "PlayStation"; }
+        }
+
+        public bool IsSwitchProVisualScheme
+        {
+            get { return EffectiveVisualSchemeKey == "SwitchPro"; }
         }
 
         public bool IsUniversalControllerArtwork
         {
-            get { return !IsDualSenseLayout; }
+            get { return EffectiveVisualSchemeKey == "Universal"; }
         }
 
         public bool IsGenericLayout
@@ -1114,10 +1354,106 @@ namespace GamepadTester.ViewModels
 
                 UpdateDiagnostics(nextState);
                 State = nextState;
+                SyncDetectedVisualScheme();
                 RaiseRumbleCanExecuteChanged();
                 startCenterCalibrationCommand.RaiseCanExecuteChanged();
                 startLatencyTestCommand.RaiseCanExecuteChanged();
             }));
+        }
+
+        private string EffectiveVisualSchemeKey
+        {
+            get
+            {
+                return string.IsNullOrEmpty(selectedVisualSchemeKey)
+                    ? GetDetectedVisualSchemeKey(State)
+                    : selectedVisualSchemeKey;
+            }
+        }
+
+        private void InitializeVisualSchemeOptions()
+        {
+            VisualSchemeOptions.Add(new ControllerVisualSchemeOption { Key = "Universal", DisplayName = L("LOCGT_VisualSchemeUniversal", "Universal") });
+            VisualSchemeOptions.Add(new ControllerVisualSchemeOption { Key = "Xbox", DisplayName = L("LOCGT_VisualSchemeXbox", "Xbox") });
+            VisualSchemeOptions.Add(new ControllerVisualSchemeOption { Key = "PlayStation", DisplayName = L("LOCGT_VisualSchemePlayStation", "PlayStation") });
+            VisualSchemeOptions.Add(new ControllerVisualSchemeOption { Key = "DualSense", DisplayName = L("LOCGT_VisualSchemeDualSense", "DualSense") });
+            VisualSchemeOptions.Add(new ControllerVisualSchemeOption { Key = "SwitchPro", DisplayName = L("LOCGT_VisualSchemeSwitchPro", "Switch Pro") });
+        }
+
+        private void SyncDetectedVisualScheme()
+        {
+            if (isVisualSchemeManuallySelected)
+            {
+                return;
+            }
+
+            var detectedSchemeKey = GetDetectedVisualSchemeKey(State);
+            if (selectedVisualSchemeKey == detectedSchemeKey)
+            {
+                return;
+            }
+
+            selectedVisualSchemeKey = detectedSchemeKey;
+            NotifyVisualSchemeChanged();
+        }
+
+        private static string GetDetectedVisualSchemeKey(GamepadState state)
+        {
+            if (state == null || !state.IsConnected)
+            {
+                return "Universal";
+            }
+
+            if (state.Layout == GamepadLayout.PlayStation && GamepadDeviceNames.IsDualSense(state.VendorId, state.ProductId))
+            {
+                return "DualSense";
+            }
+
+            if (state.Layout == GamepadLayout.PlayStation)
+            {
+                return "PlayStation";
+            }
+
+            if (state.Layout == GamepadLayout.SwitchPro)
+            {
+                return "SwitchPro";
+            }
+
+            if (state.Layout == GamepadLayout.Xbox)
+            {
+                return "Xbox";
+            }
+
+            return "Universal";
+        }
+
+        private void NotifyVisualSchemeChanged()
+        {
+            OnPropertyChanged("SelectedVisualSchemeKey");
+            OnPropertyChanged("IsDualSenseLayout");
+            OnPropertyChanged("IsXboxVisualScheme");
+            OnPropertyChanged("IsPlayStationVisualScheme");
+            OnPropertyChanged("IsSwitchProVisualScheme");
+            OnPropertyChanged("IsUniversalControllerArtwork");
+            OnPropertyChanged("SouthLabel");
+            OnPropertyChanged("EastLabel");
+            OnPropertyChanged("WestLabel");
+            OnPropertyChanged("NorthLabel");
+            OnPropertyChanged("LeftShoulderLabel");
+            OnPropertyChanged("RightShoulderLabel");
+            OnPropertyChanged("LeftTriggerLabel");
+            OnPropertyChanged("RightTriggerLabel");
+            OnPropertyChanged("LeftStickButtonLabel");
+            OnPropertyChanged("RightStickButtonLabel");
+            OnPropertyChanged("BackButtonLabel");
+            OnPropertyChanged("StartButtonLabel");
+            OnPropertyChanged("GuideButtonLabel");
+            OnPropertyChanged("DpadUpLabel");
+            OnPropertyChanged("DpadDownLabel");
+            OnPropertyChanged("DpadLeftLabel");
+            OnPropertyChanged("DpadRightLabel");
+            OnPropertyChanged("AnalogCoverageLabel");
+            OnPropertyChanged("QuickTestMissingLabel");
         }
 
         private void UpdateDiagnostics(GamepadState nextState)
@@ -1127,16 +1463,13 @@ namespace GamepadTester.ViewModels
             if (!nextState.IsConnected)
             {
                 previousButtons = null;
+                previousExtraButtons = null;
                 return;
             }
 
             UpdateCenterCalibration(nextState);
 
-            if (IsResting(nextState))
-            {
-                maxLeftRestDrift = Math.Max(maxLeftRestDrift, nextState.LeftStick.Magnitude);
-                maxRightRestDrift = Math.Max(maxRightRestDrift, nextState.RightStick.Magnitude);
-            }
+            TrackRestDrift(nextState);
 
             leftStickDiagnostics.AddSample(nextState.LeftStick);
             rightStickDiagnostics.AddSample(nextState.RightStick);
@@ -1145,27 +1478,59 @@ namespace GamepadTester.ViewModels
             if (previousButtons == null)
             {
                 previousButtons = CopyButtons(nextState.Buttons);
+                previousExtraButtons = CopyExtraButtons(nextState.ExtraButtons);
                 return;
             }
 
-            TrackButtonChange("A / Cross", previousButtons.South, nextState.Buttons.South);
-            TrackButtonChange("B / Circle", previousButtons.East, nextState.Buttons.East);
-            TrackButtonChange("X / Square", previousButtons.West, nextState.Buttons.West);
-            TrackButtonChange("Y / Triangle", previousButtons.North, nextState.Buttons.North);
-            TrackButtonChange("LB / L1", previousButtons.LeftShoulder, nextState.Buttons.LeftShoulder);
-            TrackButtonChange("RB / R1", previousButtons.RightShoulder, nextState.Buttons.RightShoulder);
-            TrackButtonChange("Back / Share", previousButtons.Back, nextState.Buttons.Back);
-            TrackButtonChange("Start / Options", previousButtons.Start, nextState.Buttons.Start);
-            TrackButtonChange("Guide", previousButtons.Guide, nextState.Buttons.Guide);
+            TrackButtonChange(SouthLabel, previousButtons.South, nextState.Buttons.South);
+            TrackButtonChange(EastLabel, previousButtons.East, nextState.Buttons.East);
+            TrackButtonChange(WestLabel, previousButtons.West, nextState.Buttons.West);
+            TrackButtonChange(NorthLabel, previousButtons.North, nextState.Buttons.North);
+            TrackButtonChange(LeftShoulderLabel, previousButtons.LeftShoulder, nextState.Buttons.LeftShoulder);
+            TrackButtonChange(RightShoulderLabel, previousButtons.RightShoulder, nextState.Buttons.RightShoulder);
+            TrackButtonChange(BackButtonLabel, previousButtons.Back, nextState.Buttons.Back);
+            TrackButtonChange(StartButtonLabel, previousButtons.Start, nextState.Buttons.Start);
+            TrackButtonChange(GuideButtonLabel, previousButtons.Guide, nextState.Buttons.Guide);
             TrackButtonChange("Touchpad", previousButtons.Touchpad, nextState.Buttons.Touchpad);
-            TrackButtonChange("L3", previousButtons.LeftStick, nextState.Buttons.LeftStick);
-            TrackButtonChange("R3", previousButtons.RightStick, nextState.Buttons.RightStick);
-            TrackButtonChange("D-Pad Up", previousButtons.DpadUp, nextState.Buttons.DpadUp);
-            TrackButtonChange("D-Pad Down", previousButtons.DpadDown, nextState.Buttons.DpadDown);
-            TrackButtonChange("D-Pad Left", previousButtons.DpadLeft, nextState.Buttons.DpadLeft);
-            TrackButtonChange("D-Pad Right", previousButtons.DpadRight, nextState.Buttons.DpadRight);
+            TrackButtonChange(LeftStickButtonLabel, previousButtons.LeftStick, nextState.Buttons.LeftStick);
+            TrackButtonChange(RightStickButtonLabel, previousButtons.RightStick, nextState.Buttons.RightStick);
+            TrackButtonChange(LeftTriggerLabel, State.LeftTrigger > 0.02f, nextState.LeftTrigger > 0.02f);
+            TrackButtonChange(RightTriggerLabel, State.RightTrigger > 0.02f, nextState.RightTrigger > 0.02f);
+            TrackButtonChange(DpadUpLabel, previousButtons.DpadUp, nextState.Buttons.DpadUp);
+            TrackButtonChange(DpadDownLabel, previousButtons.DpadDown, nextState.Buttons.DpadDown);
+            TrackButtonChange(DpadLeftLabel, previousButtons.DpadLeft, nextState.Buttons.DpadLeft);
+            TrackButtonChange(DpadRightLabel, previousButtons.DpadRight, nextState.Buttons.DpadRight);
+            TrackExtraButtonChanges(previousExtraButtons, nextState.ExtraButtons);
 
             previousButtons = CopyButtons(nextState.Buttons);
+            previousExtraButtons = CopyExtraButtons(nextState.ExtraButtons);
+        }
+
+        private void TrackExtraButtonChanges(IList<ExtraButtonState> previous, IList<ExtraButtonState> current)
+        {
+            if (current == null)
+            {
+                return;
+            }
+
+            for (var index = 0; index < current.Count; index++)
+            {
+                var currentButton = current[index];
+                var previousPressed = false;
+                if (previous != null)
+                {
+                    for (var previousIndex = 0; previousIndex < previous.Count; previousIndex++)
+                    {
+                        if (previous[previousIndex].RawIndex == currentButton.RawIndex)
+                        {
+                            previousPressed = previous[previousIndex].IsPressed;
+                            break;
+                        }
+                    }
+                }
+
+                TrackButtonChange(currentButton.Label, previousPressed, currentButton.IsPressed);
+            }
         }
 
         private void TrackButtonChange(string inputName, bool previous, bool current)
@@ -1177,6 +1542,11 @@ namespace GamepadTester.ViewModels
 
             TrackInputEventLatency();
             TrackLatencyTest(current);
+
+            if (!isInputLogEnabled)
+            {
+                return;
+            }
 
             InputHistory.Insert(0, new InputHistoryItem
             {
@@ -1207,6 +1577,7 @@ namespace GamepadTester.ViewModels
                 selectedController = null;
                 OnPropertyChanged("SelectedController");
                 OnPropertyChanged("IsControllerSelectorVisible");
+                OnPropertyChanged("MappingStatusLabel");
                 return;
             }
 
@@ -1231,6 +1602,7 @@ namespace GamepadTester.ViewModels
             selectedController = nextSelection;
             OnPropertyChanged("SelectedController");
             OnPropertyChanged("IsControllerSelectorVisible");
+            OnPropertyChanged("MappingStatusLabel");
         }
 
         private bool CanRunRumble()
@@ -1332,6 +1704,7 @@ namespace GamepadTester.ViewModels
         {
             maxLeftRestDrift = 0d;
             maxRightRestDrift = 0d;
+            ResetRestDriftCandidate();
             maxLeftStickMagnitude = 0d;
             maxRightStickMagnitude = 0d;
             maxLeftTrigger = 0f;
@@ -1339,10 +1712,16 @@ namespace GamepadTester.ViewModels
             coveredButtons = new GamepadButtonState();
             leftStickDiagnostics.Reset();
             rightStickDiagnostics.Reset();
-            InputHistory.Clear();
+            ClearInputHistory();
             ResetCalibration();
             ResetLatency();
             NotifyStateChanged();
+        }
+
+        private void ClearInputHistory()
+        {
+            InputHistory.Clear();
+            OnPropertyChanged("InputHistory");
         }
 
         private void StartCenterCalibration()
@@ -1678,13 +2057,94 @@ namespace GamepadTester.ViewModels
             };
         }
 
-        private static bool IsResting(GamepadState state)
+        private static List<ExtraButtonState> CopyExtraButtons(IList<ExtraButtonState> buttons)
+        {
+            var copy = new List<ExtraButtonState>();
+            if (buttons == null)
+            {
+                return copy;
+            }
+
+            for (var index = 0; index < buttons.Count; index++)
+            {
+                copy.Add(new ExtraButtonState
+                {
+                    RawIndex = buttons[index].RawIndex,
+                    Label = buttons[index].Label,
+                    IsPressed = buttons[index].IsPressed
+                });
+            }
+
+            return copy;
+        }
+
+        private void TrackRestDrift(GamepadState nextState)
+        {
+            if (!IsRestDriftCandidate(nextState))
+            {
+                ResetRestDriftCandidate();
+                return;
+            }
+
+            var now = DateTime.UtcNow;
+            if (!restCandidateStartedAt.HasValue)
+            {
+                StartRestDriftCandidate(nextState, now);
+                return;
+            }
+
+            var moved = Math.Abs(nextState.LeftStick.X - lastRestCandidateLeftX) > RestStabilityDelta ||
+                        Math.Abs(nextState.LeftStick.Y - lastRestCandidateLeftY) > RestStabilityDelta ||
+                        Math.Abs(nextState.RightStick.X - lastRestCandidateRightX) > RestStabilityDelta ||
+                        Math.Abs(nextState.RightStick.Y - lastRestCandidateRightY) > RestStabilityDelta;
+
+            if (moved)
+            {
+                StartRestDriftCandidate(nextState, now);
+                return;
+            }
+
+            StoreRestCandidatePosition(nextState);
+
+            if ((now - restCandidateStartedAt.Value).TotalMilliseconds < RestObservationMilliseconds)
+            {
+                return;
+            }
+
+            maxLeftRestDrift = Math.Max(maxLeftRestDrift, nextState.LeftStick.Magnitude);
+            maxRightRestDrift = Math.Max(maxRightRestDrift, nextState.RightStick.Magnitude);
+        }
+
+        private static bool IsRestDriftCandidate(GamepadState state)
         {
             return CountPressedButtons(state.Buttons) == 0 &&
                    state.LeftTrigger < 0.02f &&
                    state.RightTrigger < 0.02f &&
-                   state.LeftStick.Magnitude < 0.08d &&
-                   state.RightStick.Magnitude < 0.08d;
+                   state.LeftStick.Magnitude < MaximumRestDriftCandidate &&
+                   state.RightStick.Magnitude < MaximumRestDriftCandidate;
+        }
+
+        private void StartRestDriftCandidate(GamepadState state, DateTime now)
+        {
+            restCandidateStartedAt = now;
+            StoreRestCandidatePosition(state);
+        }
+
+        private void StoreRestCandidatePosition(GamepadState state)
+        {
+            lastRestCandidateLeftX = state.LeftStick.X;
+            lastRestCandidateLeftY = state.LeftStick.Y;
+            lastRestCandidateRightX = state.RightStick.X;
+            lastRestCandidateRightY = state.RightStick.Y;
+        }
+
+        private void ResetRestDriftCandidate()
+        {
+            restCandidateStartedAt = null;
+            lastRestCandidateLeftX = 0d;
+            lastRestCandidateLeftY = 0d;
+            lastRestCandidateRightX = 0d;
+            lastRestCandidateRightY = 0d;
         }
 
         private static int CountPressedButtons(GamepadButtonState buttons)
@@ -1693,6 +2153,25 @@ namespace GamepadTester.ViewModels
             foreach (var pressed in EnumerateButtonValues(buttons))
             {
                 if (pressed)
+                {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+        private static int CountPressedExtraButtons(IList<ExtraButtonState> buttons)
+        {
+            if (buttons == null)
+            {
+                return 0;
+            }
+
+            var count = 0;
+            for (var index = 0; index < buttons.Count; index++)
+            {
+                if (buttons[index].IsPressed)
                 {
                     count++;
                 }
@@ -1722,17 +2201,17 @@ namespace GamepadTester.ViewModels
 
         private string GetDriftStatus(double magnitude)
         {
-            if (magnitude < 0.01d)
+            if (magnitude < HealthDeadzone)
             {
                 return L("LOCGT_NoDrift", "No drift");
             }
 
-            if (magnitude < 0.05d)
+            if (magnitude < HealthMinorDrift)
             {
                 return L("LOCGT_DriftSafe", "Safe");
             }
 
-            if (magnitude < 0.15d)
+            if (magnitude < HealthAttentionDrift)
             {
                 return L("LOCGT_MinorDrift", "Minor drift");
             }
@@ -1852,6 +2331,9 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("RightStickDriftPercent");
             OnPropertyChanged("IsDpadActive");
             OnPropertyChanged("ActiveButtonCount");
+            OnPropertyChanged("ExtraActiveButtonCount");
+            OnPropertyChanged("HasExtraButtons");
+            OnPropertyChanged("ExtraButtonSummaryLabel");
             OnPropertyChanged("LeftStickVector");
             OnPropertyChanged("RightStickVector");
             OnPropertyChanged("LeftStickDriftStatus");
@@ -1933,8 +2415,12 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("HealthRangeFactorLabel");
             OnPropertyChanged("HealthCoverageFactorLabel");
             OnPropertyChanged("ControllerSummary");
+            OnPropertyChanged("HasController");
+            OnPropertyChanged("IsNoControllerVisible");
             OnPropertyChanged("DeviceIdLabel");
             OnPropertyChanged("DeviceModelLabel");
+            OnPropertyChanged("BackendLabel");
+            OnPropertyChanged("MappingStatusLabel");
             OnPropertyChanged("RumbleStatusLabel");
             OnPropertyChanged("SouthLabel");
             OnPropertyChanged("EastLabel");
@@ -1944,6 +2430,15 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("RightShoulderLabel");
             OnPropertyChanged("LeftTriggerLabel");
             OnPropertyChanged("RightTriggerLabel");
+            OnPropertyChanged("LeftStickButtonLabel");
+            OnPropertyChanged("RightStickButtonLabel");
+            OnPropertyChanged("BackButtonLabel");
+            OnPropertyChanged("StartButtonLabel");
+            OnPropertyChanged("GuideButtonLabel");
+            OnPropertyChanged("DpadUpLabel");
+            OnPropertyChanged("DpadDownLabel");
+            OnPropertyChanged("DpadLeftLabel");
+            OnPropertyChanged("DpadRightLabel");
             OnPropertyChanged("IsEightBitDoLayout");
             OnPropertyChanged("IsEightBitDo64Artwork");
             OnPropertyChanged("IsEightBitDoPro3Artwork");
@@ -1953,12 +2448,16 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("IsXboxLayout");
             OnPropertyChanged("IsPlayStationLayout");
             OnPropertyChanged("IsDualSenseLayout");
+            OnPropertyChanged("IsXboxVisualScheme");
+            OnPropertyChanged("IsPlayStationVisualScheme");
+            OnPropertyChanged("IsSwitchProVisualScheme");
             OnPropertyChanged("IsUniversalControllerArtwork");
             OnPropertyChanged("IsGenericLayout");
         }
 
         public void Dispose()
         {
+            ClearInputHistory();
             pollingService.StateUpdated -= OnStateUpdated;
             pollingService.Dispose();
         }

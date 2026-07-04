@@ -57,11 +57,13 @@
       <DependentUpon>GamepadTesterSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\GamepadButtonState.cs" />
+    <Compile Include="Models\ControllerVisualSchemeOption.cs" />
     <Compile Include="Models\GamepadControllerInfo.cs" />
     <Compile Include="Models\GamepadDeviceNames.cs" />
     <Compile Include="Models\GamepadLayout.cs" />
     <Compile Include="Models\GamepadState.cs" />
     <Compile Include="Models\EightBitDoModel.cs" />
+    <Compile Include="Models\ExtraButtonState.cs" />
     <Compile Include="Models\InputHistoryItem.cs" />
     <Compile Include="Models\StickState.cs" />
     <Compile Include="Models\StickDiagnosticsTracker.cs" />

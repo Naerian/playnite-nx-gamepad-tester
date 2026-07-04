@@ -8,6 +8,7 @@ namespace GamepadTester.Services
 {
     public sealed class SdlGamepadProvider : IGamepadInputProvider
     {
+        private const int StandardRawButtonCount = 15;
         private readonly uint initFlags = Sdl2Native.SdlInitGameController | Sdl2Native.SdlInitHaptic | Sdl2Native.SdlInitEvents;
         private readonly object syncRoot = new object();
         private IntPtr controller;
@@ -46,14 +47,17 @@ namespace GamepadTester.Services
                 ushort productId;
                 GetDeviceIds(out vendorId, out productId);
 
+                var layout = DetectLayout(name, vendorId, productId);
+                var eightBitDoModel = DetectEightBitDoModel(name, vendorId, productId);
+
                 return new GamepadState
                 {
                     IsConnected = true,
                     ControllerName = name,
                     VendorId = vendorId,
                     ProductId = productId,
-                    Layout = DetectLayout(name, vendorId, productId),
-                    EightBitDoModel = DetectEightBitDoModel(name, vendorId, productId),
+                    Layout = layout,
+                    EightBitDoModel = eightBitDoModel,
                     LeftStick = new StickState
                     {
                         X = NormalizeAxis(Sdl2Native.SDL_GameControllerGetAxis(controller, SdlControllerAxis.LeftX)),
@@ -84,7 +88,8 @@ namespace GamepadTester.Services
                         DpadDown = IsPressed(SdlControllerButton.DpadDown),
                         DpadLeft = IsPressed(SdlControllerButton.DpadLeft),
                         DpadRight = IsPressed(SdlControllerButton.DpadRight)
-                    }
+                    },
+                    ExtraButtons = ReadExtraButtons()
                 };
             }
         }
@@ -224,6 +229,47 @@ namespace GamepadTester.Services
         private bool IsPressed(SdlControllerButton button)
         {
             return Sdl2Native.SDL_GameControllerGetButton(controller, button) == 1;
+        }
+
+        private List<ExtraButtonState> ReadExtraButtons()
+        {
+            var extraButtons = new List<ExtraButtonState>();
+            try
+            {
+                var joystick = Sdl2Native.SDL_GameControllerGetJoystick(controller);
+                if (joystick == IntPtr.Zero)
+                {
+                    return extraButtons;
+                }
+
+                var buttonCount = Sdl2Native.SDL_JoystickNumButtons(joystick);
+                if (buttonCount <= StandardRawButtonCount)
+                {
+                    return extraButtons;
+                }
+
+                for (var rawIndex = StandardRawButtonCount; rawIndex < buttonCount; rawIndex++)
+                {
+                    extraButtons.Add(new ExtraButtonState
+                    {
+                        RawIndex = rawIndex,
+                        Label = GetExtraButtonLabel(rawIndex),
+                        IsPressed = Sdl2Native.SDL_JoystickGetButton(joystick, rawIndex) == 1
+                    });
+                }
+            }
+            catch (Exception)
+            {
+                // Raw joystick buttons are best-effort. Some SDL builds or virtual drivers may not expose them reliably.
+                extraButtons.Clear();
+            }
+
+            return extraButtons;
+        }
+
+        private static string GetExtraButtonLabel(int rawIndex)
+        {
+            return string.Format("Raw {0}", rawIndex);
         }
 
         private void GetDeviceIds(out ushort vendorId, out ushort productId)

@@ -72,6 +72,92 @@
             <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
             <Setter Property="Margin" Value="4,10,0,4" />
         </Style>
+
+        <Style x:Key="SideNavigationTabItem" TargetType="TabItem">
+            <Setter Property="MinHeight" Value="40" />
+            <Setter Property="Padding" Value="12,9" />
+            <Setter Property="Margin" Value="0,0,0,6" />
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="Root"
+                                Background="Transparent"
+                                BorderBrush="Transparent"
+                                BorderThickness="1"
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              RecognizesAccessKey="True" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="{StaticResource IdleBrush}" />
+                                <Setter TargetName="Root" Property="BorderBrush" Value="{StaticResource LineBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="{StaticResource IdleBrush}" />
+                                <Setter TargetName="Root" Property="BorderBrush" Value="{StaticResource ActiveBrush}" />
+                                <Setter Property="FontWeight" Value="SemiBold" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.45" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SideNavigationTabControl" TargetType="TabControl">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="ItemContainerStyle" Value="{StaticResource SideNavigationTabItem}" />
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical" />
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabControl">
+                        <Grid KeyboardNavigation.TabNavigation="Local">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="166" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0"
+                                    Background="Transparent"
+                                    BorderBrush="{StaticResource LineBrush}"
+                                    BorderThickness="0,0,1,0"
+                                    Padding="0,6,12,6"
+                                    Margin="0,0,14,0">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                              HorizontalScrollBarVisibility="Disabled">
+                                    <ItemsPresenter />
+                                </ScrollViewer>
+                            </Border>
+
+                            <Border Grid.Column="1"
+                                    Background="Transparent"
+                                    Padding="0">
+                                <ContentPresenter x:Name="PART_SelectedContentHost"
+                                                  ContentSource="SelectedContent"
+                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
 
     <Grid Margin="12" TextElement.Foreground="{DynamicResource TextBrush}">
@@ -81,15 +167,43 @@
                 CornerRadius="0"
                 Padding="8">
             <Grid>
-                <TabControl Background="Transparent"
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0"
+                        MaxWidth="620"
+                        Padding="28"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Visibility="{Binding IsNoControllerVisible, Converter={StaticResource BoolToVisibility}}">
+                    <StackPanel>
+                        <TextBlock Text="{DynamicResource LOCGT_NoControllerDetected}"
+                                   FontSize="28"
+                                   FontWeight="SemiBold"
+                                   TextAlignment="Center" />
+                        <TextBlock Text="{DynamicResource LOCGT_NoControllerDetectedHelp}"
+                                   TextWrapping="Wrap"
+                                   TextAlignment="Center"
+                                   Margin="0,12,0,0"
+                                   Foreground="{StaticResource TextMutedBrush}" />
+                    </StackPanel>
+                </Border>
+
+                <TabControl Grid.Row="0"
+                            Background="Transparent"
                             BorderThickness="0"
-                            Padding="0">
+                            Padding="0"
+                            Visibility="{Binding HasController, Converter={StaticResource BoolToVisibility}}">
                 <TabItem Header="{DynamicResource LOCGT_TabTest}">
-                    <Grid Margin="0,14,0,0">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled">
+                    <Grid Margin="0,14,12,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
                         <Grid Margin="0,0,0,12">
@@ -128,7 +242,9 @@
                                 <StackPanel>
                                     <TextBlock Text="{DynamicResource LOCGT_Device}" Style="{StaticResource MetricLabel}" />
                                     <TextBlock Text="{Binding DeviceModelLabel}" Style="{StaticResource MetricValue}" />
-                                    <TextBlock Text="{Binding DeviceIdLabel}" Foreground="{StaticResource TextMutedBrush}" />
+                                    <TextBlock Text="{Binding DeviceIdLabel}"
+                                               Foreground="{StaticResource TextMutedBrush}"
+                                               Margin="0,4,0,0" />
                                 </StackPanel>
                             </Border>
                         </Grid>
@@ -136,19 +252,22 @@
                         <Border Grid.Row="1" Style="{StaticResource SubtleHorizontalSeparator}" />
 
                         <Grid Grid.Row="2"
-                              MaxWidth="1160"
+                              MaxWidth="1060"
                               HorizontalAlignment="Center"
-                              VerticalAlignment="Center"
+                              VerticalAlignment="Top"
                               Margin="0">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="155" />
+                                <ColumnDefinition Width="125" />
                                 <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="155" />
+                                <ColumnDefinition Width="125" />
                             </Grid.ColumnDefinitions>
 
                             <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                                <TextBlock Text="{DynamicResource LOCGT_LeftStick}" FontWeight="SemiBold" Margin="0,0,0,8" />
+                                <TextBlock Text="{DynamicResource LOCGT_LeftStick}" FontWeight="SemiBold" Margin="0,0,0,6" />
                                 <Grid Width="128" Height="128">
+                                    <Grid.LayoutTransform>
+                                        <ScaleTransform ScaleX="0.84" ScaleY="0.84" />
+                                    </Grid.LayoutTransform>
                                     <Ellipse Stroke="{StaticResource LineBrush}" StrokeThickness="2" Fill="#11151B" />
                                     <Ellipse Width="16" Height="16" Stroke="#384252" StrokeThickness="1" />
                                     <Line X1="64" X2="64" Y1="12" Y2="116" Stroke="#4D5564" />
@@ -159,23 +278,71 @@
                                         </Ellipse.RenderTransform>
                                     </Ellipse>
                                 </Grid>
-                                <TextBlock Text="{Binding LeftStickVector}" Margin="0,10,0,0" Foreground="{StaticResource TextMutedBrush}" />
-                                <TextBlock Text="{Binding LeftStickDriftPercent, StringFormat=Drift: {0}%}" />
-                                <TextBlock Text="{Binding LeftStickDriftStatus}" Foreground="{StaticResource TextMutedBrush}" />
+                                <TextBlock Text="{Binding LeftStickVector}" Margin="0,4,0,0" FontSize="11" TextWrapping="Wrap" Foreground="{StaticResource TextMutedBrush}" />
+                                <TextBlock Text="{Binding LeftStickDriftPercent, StringFormat=Drift: {0}%}" FontSize="11" />
+                                <TextBlock Text="{Binding LeftStickDriftStatus}" FontSize="11" TextWrapping="Wrap" Foreground="{StaticResource TextMutedBrush}" />
                             </StackPanel>
 
-                            <Grid Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <layouts:DualSenseControllerTesterView Width="760"
-                                                                       Height="500"
-                                                                       Visibility="{Binding IsDualSenseLayout, Converter={StaticResource BoolToVisibility}}" />
-                                <layouts:UniversalControllerTesterView Width="760"
-                                                                       Height="500"
-                                                                       Visibility="{Binding IsUniversalControllerArtwork, Converter={StaticResource BoolToVisibility}}" />
-                            </Grid>
+                            <StackPanel Grid.Column="1"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                <Grid HorizontalAlignment="Center">
+                                    <layouts:DualSenseControllerTesterView Width="700"
+                                                                           Height="460"
+                                                                           Visibility="{Binding IsDualSenseLayout, Converter={StaticResource BoolToVisibility}}" />
+                                    <layouts:XboxControllerTesterView Width="700"
+                                                                      Height="460"
+                                                                      Visibility="{Binding IsXboxVisualScheme, Converter={StaticResource BoolToVisibility}}" />
+                                    <layouts:PlayStationControllerTesterView Width="700"
+                                                                             Height="460"
+                                                                             Visibility="{Binding IsPlayStationVisualScheme, Converter={StaticResource BoolToVisibility}}" />
+                                    <layouts:SwitchProControllerTesterView Width="700"
+                                                                           Height="460"
+                                                                           Visibility="{Binding IsSwitchProVisualScheme, Converter={StaticResource BoolToVisibility}}" />
+                                    <layouts:UniversalControllerTesterView Width="700"
+                                                                           Height="460"
+                                                                           Visibility="{Binding IsUniversalControllerArtwork, Converter={StaticResource BoolToVisibility}}" />
+                                </Grid>
+                                <StackPanel Width="260"
+                                            Margin="0,6,0,0"
+                                            HorizontalAlignment="Center">
+                                    <TextBlock Text="{DynamicResource LOCGT_VisualScheme}"
+                                               Style="{StaticResource MetricLabel}"
+                                               TextAlignment="Center"
+                                               Margin="0,0,0,4" />
+                                    <ComboBox ItemsSource="{Binding VisualSchemeOptions}"
+                                              SelectedValue="{Binding SelectedVisualSchemeKey, Mode=TwoWay}"
+                                              SelectedValuePath="Key"
+                                              Foreground="{DynamicResource TextBrush}"
+                                              Background="{StaticResource IdleBrush}"
+                                              Height="28"
+                                              MaxDropDownHeight="240">
+                                        <ComboBox.ItemContainerStyle>
+                                            <Style TargetType="ComboBoxItem">
+                                                <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+                                                <Setter Property="Background" Value="{StaticResource PanelBrush}" />
+                                                <Setter Property="TextElement.Foreground" Value="{DynamicResource TextBrush}" />
+                                                <Setter Property="Padding" Value="8,4" />
+                                            </Style>
+                                        </ComboBox.ItemContainerStyle>
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding DisplayName}"
+                                                           Foreground="{DynamicResource TextBrush}"
+                                                           Margin="4,1"
+                                                           TextTrimming="CharacterEllipsis" />
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </StackPanel>
+                            </StackPanel>
 
                             <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                                <TextBlock Text="{DynamicResource LOCGT_RightStick}" FontWeight="SemiBold" Margin="0,0,0,8" />
+                                <TextBlock Text="{DynamicResource LOCGT_RightStick}" FontWeight="SemiBold" Margin="0,0,0,6" />
                                 <Grid Width="128" Height="128">
+                                    <Grid.LayoutTransform>
+                                        <ScaleTransform ScaleX="0.84" ScaleY="0.84" />
+                                    </Grid.LayoutTransform>
                                     <Ellipse Stroke="{StaticResource LineBrush}" StrokeThickness="2" Fill="#11151B" />
                                     <Ellipse Width="16" Height="16" Stroke="#384252" StrokeThickness="1" />
                                     <Line X1="64" X2="64" Y1="12" Y2="116" Stroke="#4D5564" />
@@ -186,449 +353,414 @@
                                         </Ellipse.RenderTransform>
                                     </Ellipse>
                                 </Grid>
-                                <TextBlock Text="{Binding RightStickVector}" Margin="0,10,0,0" Foreground="{StaticResource TextMutedBrush}" />
-                                <TextBlock Text="{Binding RightStickDriftPercent, StringFormat=Drift: {0}%}" />
-                                <TextBlock Text="{Binding RightStickDriftStatus}" Foreground="{StaticResource TextMutedBrush}" />
+                                <TextBlock Text="{Binding RightStickVector}" Margin="0,4,0,0" FontSize="11" TextWrapping="Wrap" Foreground="{StaticResource TextMutedBrush}" />
+                                <TextBlock Text="{Binding RightStickDriftPercent, StringFormat=Drift: {0}%}" FontSize="11" />
+                                <TextBlock Text="{Binding RightStickDriftStatus}" FontSize="11" TextWrapping="Wrap" Foreground="{StaticResource TextMutedBrush}" />
                             </StackPanel>
                         </Grid>
-                    </Grid>
-                </TabItem>
 
-                <TabItem Header="{DynamicResource LOCGT_TabChecks}">
-                    <Grid Margin="0,14,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.8*" />
-                            <ColumnDefinition Width="1.6*" />
-                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Row="3" Margin="0,44,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.2*" />
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
 
-                        <Border Style="{StaticResource PanelBorder}" Margin="0,0,12,0">
-                            <StackPanel>
-                                <TextBlock Text="{DynamicResource LOCGT_SessionCoverage}" FontSize="18" FontWeight="SemiBold" />
-                                <TextBlock Text="{Binding QuickTestProgress, StringFormat={}{0}%}" FontSize="44" FontWeight="SemiBold" Margin="0,14,0,0" />
-                                <ProgressBar Minimum="0" Maximum="100" Value="{Binding QuickTestProgress, Mode=OneWay}" Height="18" />
-                                <TextBlock Text="{Binding QuickTestLabel}" Margin="0,10,0,0" Foreground="{StaticResource TextMutedBrush}" />
-                                <TextBlock Text="{Binding ButtonCoverageLabel}" Margin="0,18,0,0" />
-                                <TextBlock Text="{Binding AnalogCoverageLabel}" Margin="0,6,0,0" />
-                                <Button Content="{DynamicResource LOCGT_ResetSession}"
-                                        Command="{Binding ResetDiagnosticsCommand}"
-                                        Height="38"
-                                        Margin="0,22,0,0"
-                                        HorizontalAlignment="Left"
-                                        MinWidth="140" />
-                            </StackPanel>
-                        </Border>
-
-                        <Border Grid.Column="1" Style="{StaticResource PanelBorder}">
-                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <Border Style="{StaticResource PanelBorder}" Margin="0,0,12,0">
                                 <StackPanel>
-                                    <TextBlock Text="{DynamicResource LOCGT_Checklist}" FontSize="18" FontWeight="SemiBold" />
-                                    <TextBlock Text="{DynamicResource LOCGT_ChecklistHelp}"
-                                               TextWrapping="Wrap"
-                                               Margin="0,8,0,6"
-                                               Foreground="{StaticResource TextMutedBrush}" />
-
-                                    <TextBlock Text="{DynamicResource LOCGT_FaceButtons}" Style="{StaticResource SectionHeading}" />
-                                    <UniformGrid Columns="4">
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredSouth, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredSouth, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding SouthLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredEast, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredEast, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding EastLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredWest, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredWest, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding WestLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredNorth, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredNorth, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding NorthLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <TextBlock Text="{DynamicResource LOCGT_InputOverview}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12" />
+                                    <UniformGrid Columns="5">
+                                        <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.South, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.South, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding SouthLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.East, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.East, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding EastLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.West, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.West, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding WestLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.North, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.North, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding NorthLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.Guide, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.Guide, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding GuideButtonLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.LeftShoulder, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.LeftShoulder, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding LeftShoulderLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.RightShoulder, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.RightShoulder, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding RightShoulderLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource InputPill}" Background="{Binding IsLeftTriggerActive, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding IsLeftTriggerActive, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding LeftTriggerLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource InputPill}" Background="{Binding IsRightTriggerActive, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding IsRightTriggerActive, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding RightTriggerLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.LeftStick, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.LeftStick, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding LeftStickButtonLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.RightStick, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.RightStick, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding RightStickButtonLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.Back, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.Back, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding BackButtonLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.Start, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.Start, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding StartButtonLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.DpadUp, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.DpadUp, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding DpadUpLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.DpadDown, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.DpadDown, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding DpadDownLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.DpadLeft, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.DpadLeft, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding DpadLeftLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.DpadRight, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.DpadRight, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding DpadRightLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
                                     </UniformGrid>
-
-                                    <TextBlock Text="{DynamicResource LOCGT_ShouldersAndTriggers}" Style="{StaticResource SectionHeading}" />
-                                    <UniformGrid Columns="4">
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredLeftShoulder, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredLeftShoulder, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding LeftShoulderLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredRightShoulder, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredRightShoulder, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding RightShoulderLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredLeftTrigger, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredLeftTrigger, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding LeftTriggerLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredRightTrigger, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredRightTrigger, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding RightTriggerLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    </UniformGrid>
-
-                                    <TextBlock Text="{DynamicResource LOCGT_Sticks}" Style="{StaticResource SectionHeading}" />
-                                    <UniformGrid Columns="4">
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredLeftStickButton, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredLeftStickButton, Converter={StaticResource PillTextBrush}}"><TextBlock Text="L3 click" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredRightStickButton, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredRightStickButton, Converter={StaticResource PillTextBrush}}"><TextBlock Text="R3 click" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredLeftStickRange, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredLeftStickRange, Converter={StaticResource PillTextBrush}}"><TextBlock Text="LS edge" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredRightStickRange, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredRightStickRange, Converter={StaticResource PillTextBrush}}"><TextBlock Text="RS edge" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    </UniformGrid>
-
-                                    <TextBlock Text="{DynamicResource LOCGT_DpadAndSystem}" Style="{StaticResource SectionHeading}" />
-                                    <UniformGrid Columns="4">
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredDpadUp, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredDpadUp, Converter={StaticResource PillTextBrush}}"><TextBlock Text="D-Up" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredDpadDown, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredDpadDown, Converter={StaticResource PillTextBrush}}"><TextBlock Text="D-Down" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredDpadLeft, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredDpadLeft, Converter={StaticResource PillTextBrush}}"><TextBlock Text="D-Left" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredDpadRight, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredDpadRight, Converter={StaticResource PillTextBrush}}"><TextBlock Text="D-Right" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredBack, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredBack, Converter={StaticResource PillTextBrush}}"><TextBlock Text="Back" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredGuide, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredGuide, Converter={StaticResource PillTextBrush}}"><TextBlock Text="Guide" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredStart, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredStart, Converter={StaticResource PillTextBrush}}"><TextBlock Text="Start" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    </UniformGrid>
+                                    <StackPanel Margin="0,14,0,0"
+                                                Visibility="{Binding HasExtraButtons, Converter={StaticResource BoolToVisibility}}">
+                                        <TextBlock Text="{Binding ExtraButtonSummaryLabel}"
+                                                   Foreground="{StaticResource TextMutedBrush}"
+                                                   Margin="4,0,0,4" />
+                                        <ItemsControl ItemsSource="{Binding State.ExtraButtons}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Style="{StaticResource InputPill}"
+                                                            MinWidth="78"
+                                                            Padding="10,0"
+                                                            Background="{Binding IsPressed, Converter={StaticResource InputFillBrush}}"
+                                                            TextElement.Foreground="{Binding IsPressed, Converter={StaticResource PillTextBrush}}">
+                                                        <TextBlock Text="{Binding Label}"
+                                                                   HorizontalAlignment="Center"
+                                                                   VerticalAlignment="Center" />
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
                                 </StackPanel>
-                            </ScrollViewer>
-                        </Border>
+                            </Border>
+
+                            <Border Grid.Column="1" Style="{StaticResource PanelBorder}" Margin="0,0,12,0">
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource LOCGT_TestDetails}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12" />
+                                    <TextBlock Text="{Binding HealthSummaryLabel}" TextWrapping="Wrap" />
+                                    <TextBlock Text="{Binding HealthDriftFactorLabel}" TextWrapping="Wrap" Margin="0,8,0,0" Foreground="{StaticResource TextMutedBrush}" />
+                                    <TextBlock Text="{Binding HealthRangeFactorLabel}" TextWrapping="Wrap" Margin="0,6,0,0" Foreground="{StaticResource TextMutedBrush}" />
+                                    <TextBlock Text="{Binding LeftStickCircularCoverageLabel}" TextWrapping="Wrap" Margin="0,14,0,0" />
+                                    <ProgressBar Minimum="0" Maximum="100" Value="{Binding LeftStickCircularCoveragePercent, Mode=OneWay}" Height="8" Margin="0,6,0,8" />
+                                    <TextBlock Text="{Binding RightStickCircularCoverageLabel}" TextWrapping="Wrap" />
+                                    <ProgressBar Minimum="0" Maximum="100" Value="{Binding RightStickCircularCoveragePercent, Mode=OneWay}" Height="8" Margin="0,6,0,0" />
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="2" Style="{StaticResource PanelBorder}">
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource LOCGT_ControllerHealth}" FontSize="18" FontWeight="SemiBold" />
+                                    <Grid Margin="0,12,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding HealthScore, StringFormat={}{0}%}" FontSize="34" FontWeight="SemiBold" />
+                                        <StackPanel Grid.Column="1" Margin="14,5,0,0">
+                                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding HealthScore, Mode=OneWay}" Height="12" />
+                                            <TextBlock Text="{Binding HealthLabel}" Margin="0,8,0,0" FontWeight="SemiBold" />
+                                        </StackPanel>
+                                    </Grid>
+                                    <TextBlock Text="{Binding HealthSummaryLabel}" TextWrapping="Wrap" Margin="0,12,0,0" Foreground="{StaticResource TextMutedBrush}" />
+                                    <TextBlock Text="{DynamicResource LOCGT_HealthFactors}" Style="{StaticResource SectionHeading}" Margin="0,16,0,6" />
+                                    <TextBlock Text="{Binding HealthDriftFactorLabel}" TextWrapping="Wrap" />
+                                    <TextBlock Text="{Binding HealthRangeFactorLabel}" TextWrapping="Wrap" Margin="0,6,0,0" />
+                                    <TextBlock Text="{Binding HealthCoverageFactorLabel}" TextWrapping="Wrap" Margin="0,6,0,0" />
+                                    <UniformGrid Columns="2" Margin="0,18,0,0">
+                                        <Button Content="{DynamicResource LOCGT_ResetDiagnostics}"
+                                                Command="{Binding ResetDiagnosticsCommand}"
+                                                Height="36"
+                                                Margin="0,0,8,0"
+                                                MinWidth="130" />
+                                        <Button Content="{DynamicResource LOCGT_ExportReport}"
+                                                Command="{Binding ExportReportCommand}"
+                                                Height="36"
+                                                MinWidth="130" />
+                                    </UniformGrid>
+                                    <TextBlock Text="{Binding ExportReportStatusLabel}" TextWrapping="Wrap" Margin="0,10,0,0" Foreground="{StaticResource TextMutedBrush}" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
                     </Grid>
+                    </ScrollViewer>
                 </TabItem>
 
-                <TabItem Header="{DynamicResource LOCGT_TabInputLog}">
+                <TabItem Header="{DynamicResource LOCGT_TabVibration}">
                     <Grid Margin="0,14,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1.15*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-
-                        <Border Style="{StaticResource PanelBorder}" Margin="0,0,12,0">
+                        <Border Style="{StaticResource PanelBorder}"
+                                MaxWidth="760"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Top">
                             <StackPanel>
-                                <TextBlock Text="{DynamicResource LOCGT_ButtonMatrix}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12" />
-                                <UniformGrid Columns="4">
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.South, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.South, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding SouthLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.East, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.East, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding EastLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.West, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.West, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding WestLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.North, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.North, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding NorthLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.LeftShoulder, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.LeftShoulder, Converter={StaticResource PillTextBrush}}"><TextBlock Text="LB / L1" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.RightShoulder, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.RightShoulder, Converter={StaticResource PillTextBrush}}"><TextBlock Text="RB / R1" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.LeftStick, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.LeftStick, Converter={StaticResource PillTextBrush}}"><TextBlock Text="L3" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.RightStick, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.RightStick, Converter={StaticResource PillTextBrush}}"><TextBlock Text="R3" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.DpadUp, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.DpadUp, Converter={StaticResource PillTextBrush}}"><TextBlock Text="D-Up" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.DpadDown, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.DpadDown, Converter={StaticResource PillTextBrush}}"><TextBlock Text="D-Down" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.DpadLeft, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.DpadLeft, Converter={StaticResource PillTextBrush}}"><TextBlock Text="D-Left" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.DpadRight, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.DpadRight, Converter={StaticResource PillTextBrush}}"><TextBlock Text="D-Right" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.Back, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.Back, Converter={StaticResource PillTextBrush}}"><TextBlock Text="Back" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.Guide, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.Guide, Converter={StaticResource PillTextBrush}}"><TextBlock Text="Guide" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.Start, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.Start, Converter={StaticResource PillTextBrush}}"><TextBlock Text="Start" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                <TextBlock Text="{DynamicResource LOCGT_RumbleTests}" FontSize="18" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding RumbleStatusLabel}" Margin="0,8,0,18" Foreground="{StaticResource TextMutedBrush}" />
+                                <UniformGrid Columns="2">
+                                    <Button Content="{DynamicResource LOCGT_Standard}" Height="42" Margin="0,0,8,8" Command="{Binding RumbleCommand}" />
+                                    <Button Content="{DynamicResource LOCGT_Light}" Height="42" Margin="0,0,0,8" Command="{Binding LightRumbleCommand}" />
+                                    <Button Content="{DynamicResource LOCGT_Medium}" Height="42" Margin="0,0,8,8" Command="{Binding MediumRumbleCommand}" />
+                                    <Button Content="{DynamicResource LOCGT_Heavy}" Height="42" Margin="0,0,0,8" Command="{Binding HeavyRumbleCommand}" />
+                                    <Button Content="{DynamicResource LOCGT_LowMotor}" Height="42" Margin="0,0,8,8" Command="{Binding LowMotorRumbleCommand}" />
+                                    <Button Content="{DynamicResource LOCGT_HighMotor}" Height="42" Margin="0,0,0,8" Command="{Binding HighMotorRumbleCommand}" />
+                                    <Button Content="{DynamicResource LOCGT_Pulse}" Height="42" Margin="0,0,8,8" Command="{Binding PulseRumbleCommand}" />
+                                    <Button Content="{DynamicResource LOCGT_Alternating}" Height="42" Margin="0,0,0,8" Command="{Binding AlternatingRumbleCommand}" />
+                                    <Button Content="{DynamicResource LOCGT_Ramp}" Height="42" Margin="0,0,8,0" Command="{Binding RampRumbleCommand}" />
                                 </UniformGrid>
-                            </StackPanel>
-                        </Border>
 
-                        <Border Grid.Column="1" Style="{StaticResource PanelBorder}">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-                                <TextBlock Text="{DynamicResource LOCGT_InputHistory}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12" />
-                                <ListBox Grid.Row="1"
-                                         ItemsSource="{Binding InputHistory}"
-                                         Background="{DynamicResource ListBoxBackgroundBrush}"
-                                         BorderBrush="{StaticResource LineBrush}">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding DisplayText}"
-                                                       Foreground="{DynamicResource TextBrush}"
-                                                       Margin="4,2" />
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
-                            </Grid>
-                        </Border>
-                    </Grid>
-                </TabItem>
-
-                <TabItem Header="{DynamicResource LOCGT_TabHealth}">
-                    <Grid Margin="0,14,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-
-                        <Border Style="{StaticResource PanelBorder}" Margin="0,0,12,0">
-                            <StackPanel>
-                                <TextBlock Text="{DynamicResource LOCGT_ControllerHealth}" FontSize="18" FontWeight="SemiBold" />
-                                <TextBlock Text="{Binding HealthScore, StringFormat={}{0}%}" FontSize="44" FontWeight="SemiBold" Margin="0,14,0,0" />
-                                <ProgressBar Minimum="0" Maximum="100" Value="{Binding HealthScore, Mode=OneWay}" Height="18" />
-                                <TextBlock Text="{Binding HealthLabel}" Margin="0,10,0,0" FontWeight="SemiBold" />
-                                <TextBlock Text="{Binding HealthSummaryLabel}" TextWrapping="Wrap" Margin="0,8,0,0" Foreground="{StaticResource TextMutedBrush}" />
-                                <TextBlock Text="{DynamicResource LOCGT_HealthHelp}" TextWrapping="Wrap" Margin="0,12,0,0" Foreground="{StaticResource TextMutedBrush}" />
-
-                                <TextBlock Text="{DynamicResource LOCGT_HealthFactors}" Style="{StaticResource SectionHeading}" Margin="0,18,0,6" />
-                                <TextBlock Text="{Binding HealthDriftFactorLabel}" TextWrapping="Wrap" />
-                                <TextBlock Text="{Binding HealthRangeFactorLabel}" TextWrapping="Wrap" Margin="0,6,0,0" />
-                                <TextBlock Text="{Binding HealthCoverageFactorLabel}" TextWrapping="Wrap" Margin="0,6,0,0" />
-
-                                <UniformGrid Columns="2" Margin="0,20,0,0">
-                                    <Button Content="{DynamicResource LOCGT_ResetDiagnostics}"
-                                            Command="{Binding ResetDiagnosticsCommand}"
-                                            Height="38"
-                                            Margin="0,0,8,0"
-                                            MinWidth="150" />
-                                    <Button Content="{DynamicResource LOCGT_ExportReport}"
-                                            Command="{Binding ExportReportCommand}"
-                                            Height="38"
-                                            MinWidth="150" />
-                                </UniformGrid>
-                                <TextBlock Text="{Binding ExportReportStatusLabel}" TextWrapping="Wrap" Margin="0,10,0,0" Foreground="{StaticResource TextMutedBrush}" />
-                            </StackPanel>
-                        </Border>
-
-                        <Border Grid.Column="1" Style="{StaticResource PanelBorder}">
-                            <StackPanel>
-                                <TextBlock Text="{DynamicResource LOCGT_AnalogDiagnostics}" FontSize="18" FontWeight="SemiBold" />
-                                <TextBlock Text="{DynamicResource LOCGT_DriftBandsHelp}" TextWrapping="Wrap" Margin="0,10,0,16" Foreground="{StaticResource TextMutedBrush}" />
-                                <TextBlock Text="{Binding LeftStickVector, StringFormat=Left stick  {0}}" />
-                                <TextBlock Text="{Binding LeftStickDriftStatus}" Foreground="{StaticResource TextMutedBrush}" Margin="0,2,0,12" />
-                                <TextBlock Text="{Binding RightStickVector, StringFormat=Right stick  {0}}" />
-                                <TextBlock Text="{Binding RightStickDriftStatus}" Foreground="{StaticResource TextMutedBrush}" Margin="0,2,0,12" />
-                                <TextBlock Text="{Binding LeftTriggerPercent, StringFormat=LT range  {0}%}" />
-                                <TextBlock Text="{Binding RightTriggerPercent, StringFormat=RT range  {0}%}" />
-                                <TextBlock Text="{Binding MaxDriftLabel, StringFormat=Center drift now  {0}}" Margin="0,12,0,0" />
-                                <TextBlock Text="{Binding SessionRestDriftLabel, StringFormat=Session rest peak  {0}}" Foreground="{StaticResource TextMutedBrush}" Margin="0,2,0,0" />
+                                <Grid Margin="0,22,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Margin="0,0,0,0">
+                                        <TextBlock Text="{DynamicResource LOCGT_LowFrequency}" FontWeight="SemiBold" />
+                                        <TextBlock Text="{DynamicResource LOCGT_LowFrequencyHelp}" TextWrapping="Wrap" Margin="0,8,0,0" Foreground="{StaticResource TextMutedBrush}" />
+                                    </StackPanel>
+                                    <Border Grid.Column="1" Style="{StaticResource SubtleVerticalSeparator}" />
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="{DynamicResource LOCGT_HighFrequency}" FontWeight="SemiBold" />
+                                        <TextBlock Text="{DynamicResource LOCGT_HighFrequencyHelp}" TextWrapping="Wrap" Margin="0,8,0,0" Foreground="{StaticResource TextMutedBrush}" />
+                                    </StackPanel>
+                                </Grid>
                             </StackPanel>
                         </Border>
                     </Grid>
                 </TabItem>
 
                 <TabItem Header="{DynamicResource LOCGT_TabSticks}">
-                    <Grid Margin="0,14,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-
-                        <Border Style="{StaticResource PanelBorder}" Margin="0,0,0,12">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <StackPanel>
-                                    <TextBlock Text="{DynamicResource LOCGT_StickPathCircularTest}" FontSize="18" FontWeight="SemiBold" />
-                                    <TextBlock Text="{DynamicResource LOCGT_StickPathHelp}"
-                                               TextWrapping="Wrap"
-                                               Margin="0,8,0,0"
-                                               Foreground="{StaticResource TextMutedBrush}" />
-                                </StackPanel>
-                                <Button Grid.Column="1"
-                                        Content="{DynamicResource LOCGT_ResetSticks}"
-                                        Command="{Binding ResetDiagnosticsCommand}"
-                                        Height="38"
-                                        MinWidth="130"
-                                        Margin="18,0,0,0"
-                                        VerticalAlignment="Center" />
-                            </Grid>
-                        </Border>
-
-                        <Grid Grid.Row="1">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-
-                            <Border Style="{StaticResource PanelBorder}" Margin="0,0,8,0">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,14,0,0">
+                        <StackPanel>
+                            <Border Style="{StaticResource PanelBorder}" Margin="0,0,0,12">
                                 <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="*" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-
-                                    <TextBlock Text="{DynamicResource LOCGT_LeftStick}" FontSize="18" FontWeight="SemiBold" />
-
-                                    <Grid Grid.Row="1" Width="280" Height="280" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10">
-                                        <Ellipse Stroke="#2F3746" StrokeThickness="1" Fill="#11151B" />
-                                        <Ellipse Width="256" Height="256" Stroke="{StaticResource LineBrush}" StrokeThickness="1.5" />
-                                        <Ellipse Width="216" Height="216" Stroke="#313947" StrokeThickness="1" StrokeDashArray="3 4" />
-                                        <Ellipse Width="28" Height="28" Stroke="#313947" StrokeThickness="1" />
-                                        <Line X1="140" X2="140" Y1="18" Y2="262" Stroke="#384252" />
-                                        <Line X1="18" X2="262" Y1="140" Y2="140" Stroke="#384252" />
-                                        <Path Data="{Binding LeftStickCircularCoverageGeometry}"
-                                              Fill="{StaticResource ActiveBrush}"
-                                              Opacity="0.72" />
-                                        <Path Data="{Binding LeftStickPathGeometry}"
-                                              Stroke="#4CC9F0"
-                                              StrokeThickness="2.4"
-                                              StrokeStartLineCap="Round"
-                                              StrokeEndLineCap="Round"
-                                              StrokeLineJoin="Round"
-                                              Opacity="0.95" />
-                                        <Ellipse Width="18" Height="18" Fill="#4CC9F0" Stroke="#DDF7FF" StrokeThickness="1.5" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <Ellipse.RenderTransform>
-                                                <TranslateTransform X="{Binding LeftStickDiagnosticsDotX}" Y="{Binding LeftStickDiagnosticsDotY}" />
-                                            </Ellipse.RenderTransform>
-                                        </Ellipse>
-                                    </Grid>
-
-                                    <Grid Grid.Row="2">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
-
-                                        <StackPanel Margin="0,0,10,0">
-                                            <TextBlock Text="{Binding LeftStickCircularCoverageLabel}" />
-                                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding LeftStickCircularCoveragePercent, Mode=OneWay}" Height="8" Margin="0,6,0,10" />
-                                            <TextBlock Text="{Binding LeftStickMaxReachLabel}" />
-                                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding LeftStickMaxReachPercent, Mode=OneWay}" Height="8" Margin="0,6,0,10" />
-                                            <TextBlock Text="{Binding LeftStickCurrentMagnitudeLabel}" />
-                                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding LeftStickCurrentMagnitudePercent, Mode=OneWay}" Height="8" Margin="0,6,0,0" />
-                                        </StackPanel>
-
-                                        <StackPanel Grid.Column="1">
-                                            <TextBlock Text="{Binding LeftStickVector}" />
-                                            <TextBlock Text="{Binding LeftStickAngleLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
-                                            <TextBlock Text="{Binding LeftStickDriftStatus}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
-                                            <TextBlock Text="{Binding LeftStickAxisRangeLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,10,0,0" TextWrapping="Wrap" />
-                                            <TextBlock Text="{Binding LeftStickAverageMagnitudeLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
-                                            <TextBlock Text="{Binding LeftStickPathSampleLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
-                                        </StackPanel>
-                                    </Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="{DynamicResource LOCGT_StickPathCircularTest}" FontSize="18" FontWeight="SemiBold" />
+                                        <TextBlock Text="{DynamicResource LOCGT_StickPathHelp}"
+                                                   TextWrapping="Wrap"
+                                                   Margin="0,8,0,0"
+                                                   Foreground="{StaticResource TextMutedBrush}" />
+                                    </StackPanel>
+                                    <Button Grid.Column="1"
+                                            Content="{DynamicResource LOCGT_ResetSticks}"
+                                            Command="{Binding ResetDiagnosticsCommand}"
+                                            Height="38"
+                                            MinWidth="130"
+                                            Margin="18,0,0,0"
+                                            VerticalAlignment="Center" />
                                 </Grid>
                             </Border>
 
-                            <Border Grid.Column="1" Style="{StaticResource PanelBorder}" Margin="8,0,0,0">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="*" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-
-                                    <TextBlock Text="{DynamicResource LOCGT_RightStick}" FontSize="18" FontWeight="SemiBold" />
-
-                                    <Grid Grid.Row="1" Width="280" Height="280" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10">
-                                        <Ellipse Stroke="#2F3746" StrokeThickness="1" Fill="#11151B" />
-                                        <Ellipse Width="256" Height="256" Stroke="{StaticResource LineBrush}" StrokeThickness="1.5" />
-                                        <Ellipse Width="216" Height="216" Stroke="#313947" StrokeThickness="1" StrokeDashArray="3 4" />
-                                        <Ellipse Width="28" Height="28" Stroke="#313947" StrokeThickness="1" />
-                                        <Line X1="140" X2="140" Y1="18" Y2="262" Stroke="#384252" />
-                                        <Line X1="18" X2="262" Y1="140" Y2="140" Stroke="#384252" />
-                                        <Path Data="{Binding RightStickCircularCoverageGeometry}"
-                                              Fill="{StaticResource WarningBrush}"
-                                              Opacity="0.76" />
-                                        <Path Data="{Binding RightStickPathGeometry}"
-                                              Stroke="#F7B955"
-                                              StrokeThickness="2.4"
-                                              StrokeStartLineCap="Round"
-                                              StrokeEndLineCap="Round"
-                                              StrokeLineJoin="Round"
-                                              Opacity="0.95" />
-                                        <Ellipse Width="18" Height="18" Fill="#F7B955" Stroke="#FFF4DC" StrokeThickness="1.5" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <Ellipse.RenderTransform>
-                                                <TranslateTransform X="{Binding RightStickDiagnosticsDotX}" Y="{Binding RightStickDiagnosticsDotY}" />
-                                            </Ellipse.RenderTransform>
-                                        </Ellipse>
-                                    </Grid>
-
-                                    <Grid Grid.Row="2">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
-
-                                        <StackPanel Margin="0,0,10,0">
-                                            <TextBlock Text="{Binding RightStickCircularCoverageLabel}" />
-                                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding RightStickCircularCoveragePercent, Mode=OneWay}" Height="8" Margin="0,6,0,10" />
-                                            <TextBlock Text="{Binding RightStickMaxReachLabel}" />
-                                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding RightStickMaxReachPercent, Mode=OneWay}" Height="8" Margin="0,6,0,10" />
-                                            <TextBlock Text="{Binding RightStickCurrentMagnitudeLabel}" />
-                                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding RightStickCurrentMagnitudePercent, Mode=OneWay}" Height="8" Margin="0,6,0,0" />
-                                        </StackPanel>
-
-                                        <StackPanel Grid.Column="1">
-                                            <TextBlock Text="{Binding RightStickVector}" />
-                                            <TextBlock Text="{Binding RightStickAngleLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
-                                            <TextBlock Text="{Binding RightStickDriftStatus}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
-                                            <TextBlock Text="{Binding RightStickAxisRangeLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,10,0,0" TextWrapping="Wrap" />
-                                            <TextBlock Text="{Binding RightStickAverageMagnitudeLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
-                                            <TextBlock Text="{Binding RightStickPathSampleLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
-                                        </StackPanel>
-                                    </Grid>
-                                </Grid>
-                            </Border>
-                        </Grid>
-                    </Grid>
-                </TabItem>
-
-                <TabItem Header="{DynamicResource LOCGT_TabCalibration}">
-                    <Grid Margin="0,14,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-
-                        <Border Style="{StaticResource PanelBorder}" Margin="0,0,0,12">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <StackPanel>
-                                    <TextBlock Text="{DynamicResource LOCGT_CalibrationTitle}" FontSize="18" FontWeight="SemiBold" />
-                                    <TextBlock Text="{DynamicResource LOCGT_CalibrationHelp}"
-                                               TextWrapping="Wrap"
-                                               Margin="0,8,0,0"
-                                               Foreground="{StaticResource TextMutedBrush}" />
-                                </StackPanel>
-                                <Button Grid.Column="1"
-                                        Content="{DynamicResource LOCGT_CaptureCenter}"
-                                        Command="{Binding StartCenterCalibrationCommand}"
-                                        Height="38"
-                                        MinWidth="140"
-                                        Margin="18,0,0,0"
-                                        VerticalAlignment="Center" />
-                                <Button Grid.Column="2"
-                                        Content="{DynamicResource LOCGT_ResetCalibration}"
-                                        Command="{Binding ResetCalibrationCommand}"
-                                        Height="38"
-                                        MinWidth="140"
-                                        Margin="8,0,0,0"
-                                        VerticalAlignment="Center" />
-                            </Grid>
-                        </Border>
 
-                        <Grid Grid.Row="1">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource PanelBorder}" Margin="0,0,8,0">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
 
-                            <Border Style="{StaticResource PanelBorder}" Margin="0,0,8,0">
-                                <StackPanel>
-                                    <TextBlock Text="{DynamicResource LOCGT_CenterCalibration}" FontSize="18" FontWeight="SemiBold" />
-                                    <TextBlock Text="{Binding CalibrationStatusLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,8,0,8" TextWrapping="Wrap" />
-                                    <ProgressBar Minimum="0" Maximum="100" Value="{Binding CalibrationProgress, Mode=OneWay}" Height="10" />
+                                        <TextBlock Text="{DynamicResource LOCGT_LeftStick}" FontSize="18" FontWeight="SemiBold" />
 
-                                    <Grid Margin="0,18,0,0">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
+                                        <Grid Grid.Row="1" Width="280" Height="280" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,4">
+                                            <Grid.LayoutTransform>
+                                                <ScaleTransform ScaleX="0.68" ScaleY="0.68" />
+                                            </Grid.LayoutTransform>
+                                            <Ellipse Stroke="#2F3746" StrokeThickness="1" Fill="#11151B" />
+                                            <Ellipse Width="256" Height="256" Stroke="{StaticResource LineBrush}" StrokeThickness="1.5" />
+                                            <Ellipse Width="216" Height="216" Stroke="#313947" StrokeThickness="1" StrokeDashArray="3 4" />
+                                            <Ellipse Width="28" Height="28" Stroke="#313947" StrokeThickness="1" />
+                                            <Line X1="140" X2="140" Y1="18" Y2="262" Stroke="#384252" />
+                                            <Line X1="18" X2="262" Y1="140" Y2="140" Stroke="#384252" />
+                                            <Path Data="{Binding LeftStickCircularCoverageGeometry}"
+                                                  Fill="{StaticResource ActiveBrush}"
+                                                  Opacity="0.72" />
+                                            <Path Data="{Binding LeftStickPathGeometry}"
+                                                  Stroke="#4CC9F0"
+                                                  StrokeThickness="2.4"
+                                                  StrokeStartLineCap="Round"
+                                                  StrokeEndLineCap="Round"
+                                                  StrokeLineJoin="Round"
+                                                  Opacity="0.95" />
+                                            <Ellipse Width="18" Height="18" Fill="#4CC9F0" Stroke="#DDF7FF" StrokeThickness="1.5" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <Ellipse.RenderTransform>
+                                                    <TranslateTransform X="{Binding LeftStickDiagnosticsDotX}" Y="{Binding LeftStickDiagnosticsDotY}" />
+                                                </Ellipse.RenderTransform>
+                                            </Ellipse>
+                                        </Grid>
 
-                                        <StackPanel Margin="0,0,10,0">
-                                            <TextBlock Text="{DynamicResource LOCGT_LeftStick}" FontWeight="SemiBold" />
-                                            <TextBlock Text="{Binding LeftCalibrationCenterLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,8,0,0" />
-                                            <TextBlock Text="{Binding LeftRecommendedDeadzoneLabel}" Margin="0,10,0,0" />
-                                            <ProgressBar Minimum="0" Maximum="25" Value="{Binding LeftRecommendedDeadzonePercent, Mode=OneWay}" Height="8" Margin="0,6,0,0" />
-                                        </StackPanel>
+                                        <Grid Grid.Row="2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
 
-                                        <StackPanel Grid.Column="1">
-                                            <TextBlock Text="{DynamicResource LOCGT_RightStick}" FontWeight="SemiBold" />
-                                            <TextBlock Text="{Binding RightCalibrationCenterLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,8,0,0" />
-                                            <TextBlock Text="{Binding RightRecommendedDeadzoneLabel}" Margin="0,10,0,0" />
-                                            <ProgressBar Minimum="0" Maximum="25" Value="{Binding RightRecommendedDeadzonePercent, Mode=OneWay}" Height="8" Margin="0,6,0,0" />
-                                        </StackPanel>
+                                            <StackPanel Margin="0,0,10,0">
+                                                <TextBlock Text="{Binding LeftStickCircularCoverageLabel}" />
+                                                <ProgressBar Minimum="0" Maximum="100" Value="{Binding LeftStickCircularCoveragePercent, Mode=OneWay}" Height="8" Margin="0,6,0,10" />
+                                                <TextBlock Text="{Binding LeftStickMaxReachLabel}" />
+                                                <ProgressBar Minimum="0" Maximum="100" Value="{Binding LeftStickMaxReachPercent, Mode=OneWay}" Height="8" Margin="0,6,0,10" />
+                                                <TextBlock Text="{Binding LeftStickCurrentMagnitudeLabel}" />
+                                                <ProgressBar Minimum="0" Maximum="100" Value="{Binding LeftStickCurrentMagnitudePercent, Mode=OneWay}" Height="8" Margin="0,6,0,0" />
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1">
+                                                <TextBlock Text="{Binding LeftStickVector}" />
+                                                <TextBlock Text="{Binding LeftStickAngleLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
+                                                <TextBlock Text="{Binding LeftStickDriftStatus}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
+                                                <TextBlock Text="{Binding LeftStickAxisRangeLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,10,0,0" TextWrapping="Wrap" />
+                                                <TextBlock Text="{Binding LeftStickAverageMagnitudeLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
+                                                <TextBlock Text="{Binding LeftStickPathSampleLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
+                                            </StackPanel>
+                                        </Grid>
                                     </Grid>
-                                </StackPanel>
+                                </Border>
+
+                                <Border Grid.Column="1" Style="{StaticResource PanelBorder}" Margin="8,0,0,0">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <TextBlock Text="{DynamicResource LOCGT_RightStick}" FontSize="18" FontWeight="SemiBold" />
+
+                                        <Grid Grid.Row="1" Width="280" Height="280" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,4">
+                                            <Grid.LayoutTransform>
+                                                <ScaleTransform ScaleX="0.68" ScaleY="0.68" />
+                                            </Grid.LayoutTransform>
+                                            <Ellipse Stroke="#2F3746" StrokeThickness="1" Fill="#11151B" />
+                                            <Ellipse Width="256" Height="256" Stroke="{StaticResource LineBrush}" StrokeThickness="1.5" />
+                                            <Ellipse Width="216" Height="216" Stroke="#313947" StrokeThickness="1" StrokeDashArray="3 4" />
+                                            <Ellipse Width="28" Height="28" Stroke="#313947" StrokeThickness="1" />
+                                            <Line X1="140" X2="140" Y1="18" Y2="262" Stroke="#384252" />
+                                            <Line X1="18" X2="262" Y1="140" Y2="140" Stroke="#384252" />
+                                            <Path Data="{Binding RightStickCircularCoverageGeometry}"
+                                                  Fill="{StaticResource WarningBrush}"
+                                                  Opacity="0.76" />
+                                            <Path Data="{Binding RightStickPathGeometry}"
+                                                  Stroke="#F7B955"
+                                                  StrokeThickness="2.4"
+                                                  StrokeStartLineCap="Round"
+                                                  StrokeEndLineCap="Round"
+                                                  StrokeLineJoin="Round"
+                                                  Opacity="0.95" />
+                                            <Ellipse Width="18" Height="18" Fill="#F7B955" Stroke="#FFF4DC" StrokeThickness="1.5" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <Ellipse.RenderTransform>
+                                                    <TranslateTransform X="{Binding RightStickDiagnosticsDotX}" Y="{Binding RightStickDiagnosticsDotY}" />
+                                                </Ellipse.RenderTransform>
+                                            </Ellipse>
+                                        </Grid>
+
+                                        <Grid Grid.Row="2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel Margin="0,0,10,0">
+                                                <TextBlock Text="{Binding RightStickCircularCoverageLabel}" />
+                                                <ProgressBar Minimum="0" Maximum="100" Value="{Binding RightStickCircularCoveragePercent, Mode=OneWay}" Height="8" Margin="0,6,0,10" />
+                                                <TextBlock Text="{Binding RightStickMaxReachLabel}" />
+                                                <ProgressBar Minimum="0" Maximum="100" Value="{Binding RightStickMaxReachPercent, Mode=OneWay}" Height="8" Margin="0,6,0,10" />
+                                                <TextBlock Text="{Binding RightStickCurrentMagnitudeLabel}" />
+                                                <ProgressBar Minimum="0" Maximum="100" Value="{Binding RightStickCurrentMagnitudePercent, Mode=OneWay}" Height="8" Margin="0,6,0,0" />
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1">
+                                                <TextBlock Text="{Binding RightStickVector}" />
+                                                <TextBlock Text="{Binding RightStickAngleLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
+                                                <TextBlock Text="{Binding RightStickDriftStatus}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
+                                                <TextBlock Text="{Binding RightStickAxisRangeLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,10,0,0" TextWrapping="Wrap" />
+                                                <TextBlock Text="{Binding RightStickAverageMagnitudeLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
+                                                <TextBlock Text="{Binding RightStickPathSampleLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,0" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+
+                            <Border Height="1" Background="{StaticResource LineBrush}" Opacity="0.18" Margin="0,22,0,20" />
+
+                            <Border Style="{StaticResource PanelBorder}" Margin="0,0,0,12">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="{DynamicResource LOCGT_CalibrationTitle}" FontSize="18" FontWeight="SemiBold" />
+                                        <TextBlock Text="{DynamicResource LOCGT_CalibrationHelp}"
+                                                   TextWrapping="Wrap"
+                                                   Margin="0,8,0,0"
+                                                   Foreground="{StaticResource TextMutedBrush}" />
+                                    </StackPanel>
+                                    <Button Grid.Column="1"
+                                            Content="{DynamicResource LOCGT_CaptureCenter}"
+                                            Command="{Binding StartCenterCalibrationCommand}"
+                                            Height="38"
+                                            MinWidth="140"
+                                            Margin="18,0,0,0"
+                                            VerticalAlignment="Center" />
+                                    <Button Grid.Column="2"
+                                            Content="{DynamicResource LOCGT_ResetCalibration}"
+                                            Command="{Binding ResetCalibrationCommand}"
+                                            Height="38"
+                                            MinWidth="140"
+                                            Margin="8,0,0,0"
+                                            VerticalAlignment="Center" />
+                                </Grid>
                             </Border>
 
-                            <Border Grid.Column="1" Style="{StaticResource PanelBorder}" Margin="8,0,0,0">
-                                <StackPanel>
-                                    <TextBlock Text="{DynamicResource LOCGT_RangeCalibration}" FontSize="18" FontWeight="SemiBold" />
-                                    <TextBlock Text="{DynamicResource LOCGT_RangeCalibrationHelp}"
-                                               TextWrapping="Wrap"
-                                               Margin="0,8,0,16"
-                                               Foreground="{StaticResource TextMutedBrush}" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-                                    <TextBlock Text="{DynamicResource LOCGT_LeftStick}" FontWeight="SemiBold" />
-                                    <TextBlock Text="{Binding LeftRangeQualityLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,8,0,0" />
-                                    <ProgressBar Minimum="0" Maximum="100" Value="{Binding LeftRangeQualityPercent, Mode=OneWay}" Height="10" Margin="0,6,0,14" />
-                                    <TextBlock Text="{Binding LeftStickAxisRangeLabel}" Foreground="{StaticResource TextMutedBrush}" TextWrapping="Wrap" />
+                                <Border Style="{StaticResource PanelBorder}" Margin="0,0,8,0">
+                                    <StackPanel>
+                                        <TextBlock Text="{DynamicResource LOCGT_CenterCalibration}" FontSize="18" FontWeight="SemiBold" />
+                                        <TextBlock Text="{Binding CalibrationStatusLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,8,0,8" TextWrapping="Wrap" />
+                                        <ProgressBar Minimum="0" Maximum="100" Value="{Binding CalibrationProgress, Mode=OneWay}" Height="10" />
 
-                                    <TextBlock Text="{DynamicResource LOCGT_RightStick}" FontWeight="SemiBold" Margin="0,18,0,0" />
-                                    <TextBlock Text="{Binding RightRangeQualityLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,8,0,0" />
-                                    <ProgressBar Minimum="0" Maximum="100" Value="{Binding RightRangeQualityPercent, Mode=OneWay}" Height="10" Margin="0,6,0,14" />
-                                    <TextBlock Text="{Binding RightStickAxisRangeLabel}" Foreground="{StaticResource TextMutedBrush}" TextWrapping="Wrap" />
-                                </StackPanel>
-                            </Border>
-                        </Grid>
-                    </Grid>
+                                        <Grid Margin="0,18,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel Margin="0,0,10,0">
+                                                <TextBlock Text="{DynamicResource LOCGT_LeftStick}" FontWeight="SemiBold" />
+                                                <TextBlock Text="{Binding LeftCalibrationCenterLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,8,0,0" />
+                                                <TextBlock Text="{Binding LeftRecommendedDeadzoneLabel}" Margin="0,10,0,0" />
+                                                <ProgressBar Minimum="0" Maximum="25" Value="{Binding LeftRecommendedDeadzonePercent, Mode=OneWay}" Height="8" Margin="0,6,0,0" />
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1">
+                                                <TextBlock Text="{DynamicResource LOCGT_RightStick}" FontWeight="SemiBold" />
+                                                <TextBlock Text="{Binding RightCalibrationCenterLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,8,0,0" />
+                                                <TextBlock Text="{Binding RightRecommendedDeadzoneLabel}" Margin="0,10,0,0" />
+                                                <ProgressBar Minimum="0" Maximum="25" Value="{Binding RightRecommendedDeadzonePercent, Mode=OneWay}" Height="8" Margin="0,6,0,0" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Grid.Column="1" Style="{StaticResource PanelBorder}" Margin="8,0,0,0">
+                                    <StackPanel>
+                                        <TextBlock Text="{DynamicResource LOCGT_RangeCalibration}" FontSize="18" FontWeight="SemiBold" />
+                                        <TextBlock Text="{DynamicResource LOCGT_RangeCalibrationHelp}"
+                                                   TextWrapping="Wrap"
+                                                   Margin="0,8,0,16"
+                                                   Foreground="{StaticResource TextMutedBrush}" />
+
+                                        <TextBlock Text="{DynamicResource LOCGT_LeftStick}" FontWeight="SemiBold" />
+                                        <TextBlock Text="{Binding LeftRangeQualityLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,8,0,0" />
+                                        <ProgressBar Minimum="0" Maximum="100" Value="{Binding LeftRangeQualityPercent, Mode=OneWay}" Height="10" Margin="0,6,0,14" />
+                                        <TextBlock Text="{Binding LeftStickAxisRangeLabel}" Foreground="{StaticResource TextMutedBrush}" TextWrapping="Wrap" />
+
+                                        <TextBlock Text="{DynamicResource LOCGT_RightStick}" FontWeight="SemiBold" Margin="0,18,0,0" />
+                                        <TextBlock Text="{Binding RightRangeQualityLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,8,0,0" />
+                                        <ProgressBar Minimum="0" Maximum="100" Value="{Binding RightRangeQualityPercent, Mode=OneWay}" Height="10" Margin="0,6,0,14" />
+                                        <TextBlock Text="{Binding RightStickAxisRangeLabel}" Foreground="{StaticResource TextMutedBrush}" TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </StackPanel>
+                    </ScrollViewer>
                 </TabItem>
 
                 <TabItem Header="{DynamicResource LOCGT_TabLatency}">
@@ -694,44 +826,61 @@
                     </Grid>
                 </TabItem>
 
-                <TabItem Header="{DynamicResource LOCGT_TabVibration}">
+                <TabItem Header="{DynamicResource LOCGT_TabInputLog}">
                     <Grid Margin="0,14,0,0">
-                        <Border Style="{StaticResource PanelBorder}"
-                                MaxWidth="760"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Top">
-                            <StackPanel>
-                                <TextBlock Text="{DynamicResource LOCGT_RumbleTests}" FontSize="18" FontWeight="SemiBold" />
-                                <TextBlock Text="{Binding RumbleStatusLabel}" Margin="0,8,0,18" Foreground="{StaticResource TextMutedBrush}" />
-                                <UniformGrid Columns="2">
-                                    <Button Content="{DynamicResource LOCGT_Standard}" Height="42" Margin="0,0,8,8" Command="{Binding RumbleCommand}" />
-                                    <Button Content="{DynamicResource LOCGT_Light}" Height="42" Margin="0,0,0,8" Command="{Binding LightRumbleCommand}" />
-                                    <Button Content="{DynamicResource LOCGT_Medium}" Height="42" Margin="0,0,8,8" Command="{Binding MediumRumbleCommand}" />
-                                    <Button Content="{DynamicResource LOCGT_Heavy}" Height="42" Margin="0,0,0,8" Command="{Binding HeavyRumbleCommand}" />
-                                    <Button Content="{DynamicResource LOCGT_LowMotor}" Height="42" Margin="0,0,8,8" Command="{Binding LowMotorRumbleCommand}" />
-                                    <Button Content="{DynamicResource LOCGT_HighMotor}" Height="42" Margin="0,0,0,8" Command="{Binding HighMotorRumbleCommand}" />
-                                    <Button Content="{DynamicResource LOCGT_Pulse}" Height="42" Margin="0,0,8,8" Command="{Binding PulseRumbleCommand}" />
-                                    <Button Content="{DynamicResource LOCGT_Alternating}" Height="42" Margin="0,0,0,8" Command="{Binding AlternatingRumbleCommand}" />
-                                    <Button Content="{DynamicResource LOCGT_Ramp}" Height="42" Margin="0,0,8,0" Command="{Binding RampRumbleCommand}" />
-                                </UniformGrid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.75*" />
+                            <ColumnDefinition Width="1.4*" />
+                        </Grid.ColumnDefinitions>
 
-                                <Grid Margin="0,22,0,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <StackPanel Margin="0,0,0,0">
-                                        <TextBlock Text="{DynamicResource LOCGT_LowFrequency}" FontWeight="SemiBold" />
-                                        <TextBlock Text="{DynamicResource LOCGT_LowFrequencyHelp}" TextWrapping="Wrap" Margin="0,8,0,0" Foreground="{StaticResource TextMutedBrush}" />
-                                    </StackPanel>
-                                    <Border Grid.Column="1" Style="{StaticResource SubtleVerticalSeparator}" />
-                                    <StackPanel Grid.Column="2">
-                                        <TextBlock Text="{DynamicResource LOCGT_HighFrequency}" FontWeight="SemiBold" />
-                                        <TextBlock Text="{DynamicResource LOCGT_HighFrequencyHelp}" TextWrapping="Wrap" Margin="0,8,0,0" Foreground="{StaticResource TextMutedBrush}" />
-                                    </StackPanel>
-                                </Grid>
+                        <Border Style="{StaticResource PanelBorder}" Margin="0,0,12,0">
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource LOCGT_InputHistory}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12" />
+                                <CheckBox Content="{DynamicResource LOCGT_EnableInputLog}"
+                                          IsChecked="{Binding IsInputLogEnabled, Mode=TwoWay}"
+                                          FontWeight="SemiBold"
+                                          Margin="0,0,0,10" />
+                                <TextBlock Text="{Binding InputLogStatusLabel}"
+                                           TextWrapping="Wrap"
+                                           Foreground="{StaticResource TextMutedBrush}" />
                             </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="1" Style="{StaticResource PanelBorder}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="{DynamicResource LOCGT_InputHistory}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12" />
+                                <Border Grid.Row="1"
+                                        Visibility="{Binding IsInputLogDisabled, Converter={StaticResource BoolToVisibility}}">
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="{DynamicResource LOCGT_InputLogDisabled}"
+                                                   FontSize="20"
+                                                   FontWeight="SemiBold"
+                                                   TextAlignment="Center" />
+                                        <TextBlock Text="{DynamicResource LOCGT_InputLogDisabledHelp}"
+                                                   TextWrapping="Wrap"
+                                                   TextAlignment="Center"
+                                                   Margin="0,10,0,0"
+                                                   Foreground="{StaticResource TextMutedBrush}" />
+                                    </StackPanel>
+                                </Border>
+                                <ListBox Grid.Row="1"
+                                         ItemsSource="{Binding InputHistory}"
+                                         Background="{DynamicResource ListBoxBackgroundBrush}"
+                                         BorderBrush="{StaticResource LineBrush}"
+                                         Visibility="{Binding IsInputLogEnabled, Converter={StaticResource BoolToVisibility}}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding DisplayText}"
+                                                       Foreground="{DynamicResource TextBrush}"
+                                                       Margin="4,2" />
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Grid>
                         </Border>
                     </Grid>
                 </TabItem>
@@ -768,31 +917,34 @@
                                 <TextBlock Grid.Row="4" Text="{DynamicResource LOCGT_Layout}" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
                                 <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding State.Layout}" Margin="0,0,0,10" />
                                 <TextBlock Grid.Row="5" Text="{DynamicResource LOCGT_Backend}" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
-                                <TextBlock Grid.Row="5" Grid.Column="1" Text="SDL GameController" Margin="0,0,0,10" />
-                                <TextBlock Grid.Row="6" Text="{DynamicResource LOCGT_Notes}" Foreground="{StaticResource TextMutedBrush}" />
-                                <TextBlock Grid.Row="6" Grid.Column="1" Text="{DynamicResource LOCGT_DeviceNotes}" TextWrapping="Wrap" />
+                                <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding BackendLabel}" Margin="0,0,0,10" />
+                                <TextBlock Grid.Row="6" Text="{DynamicResource LOCGT_MappingStatus}" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
+                                <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding MappingStatusLabel}" Margin="0,0,0,10" />
+                                <TextBlock Grid.Row="7" Text="{DynamicResource LOCGT_Notes}" Foreground="{StaticResource TextMutedBrush}" />
+                                <TextBlock Grid.Row="7" Grid.Column="1" Text="{DynamicResource LOCGT_DeviceNotes}" TextWrapping="Wrap" />
                             </Grid>
                         </Border>
                     </Grid>
                 </TabItem>
                 </TabControl>
 
-                <Grid HorizontalAlignment="Right"
+                <Grid Grid.Row="0"
+                      Panel.ZIndex="20"
+                      HorizontalAlignment="Right"
                       VerticalAlignment="Top"
-                      Margin="0,42,6,0"
+                      Margin="0,7,132,0"
                       Visibility="{Binding IsControllerSelectorVisible, Converter={StaticResource BoolToVisibility}}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-
                     <TextBlock Text="{DynamicResource LOCGT_Device}"
                                VerticalAlignment="Center"
                                Margin="0,0,10,0"
                                Foreground="{StaticResource TextMutedBrush}" />
-
                     <ComboBox Grid.Column="1"
-                              Width="340"
+                              Width="320"
+                              Height="30"
                               MaxDropDownHeight="320"
                               ItemsSource="{Binding Controllers}"
                               SelectedItem="{Binding SelectedController, Mode=TwoWay}"
@@ -809,7 +961,7 @@
                                 <TextBlock Text="{Binding DisplayName}"
                                            Foreground="{DynamicResource TextBrush}"
                                            FontWeight="SemiBold"
-                                           Margin="4,2"
+                                           Margin="4,1"
                                            TextTrimming="CharacterEllipsis" />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>

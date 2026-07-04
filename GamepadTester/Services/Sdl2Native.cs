@@ -61,6 +61,12 @@ namespace GamepadTester.Services
         public static extern ushort SDL_JoystickGetProduct(IntPtr joystick);
 
         [DllImport("SDL2.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int SDL_JoystickNumButtons(IntPtr joystick);
+
+        [DllImport("SDL2.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern byte SDL_JoystickGetButton(IntPtr joystick, int button);
+
+        [DllImport("SDL2.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SDL_GameControllerUpdate();
 
         [DllImport("SDL2.dll", CallingConvention = CallingConvention.Cdecl)]

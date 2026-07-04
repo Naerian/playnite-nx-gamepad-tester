@@ -1,5 +1,7 @@
 namespace GamepadTester.Models
 {
+    using System.Collections.Generic;
+
     public sealed class GamepadState
     {
         public bool IsConnected { get; set; }
@@ -13,6 +15,7 @@ namespace GamepadTester.Models
         public float LeftTrigger { get; set; }
         public float RightTrigger { get; set; }
         public GamepadButtonState Buttons { get; set; }
+        public List<ExtraButtonState> ExtraButtons { get; set; }
 
         public GamepadState()
         {
@@ -21,6 +24,7 @@ namespace GamepadTester.Models
             LeftStick = new StickState();
             RightStick = new StickState();
             Buttons = new GamepadButtonState();
+            ExtraButtons = new List<ExtraButtonState>();
         }
     }
 }
