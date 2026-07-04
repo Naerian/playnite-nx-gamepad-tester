@@ -326,6 +326,16 @@ namespace GamepadTester.ViewModels
             get { return State.RightTrigger * 122d; }
         }
 
+        public double LeftTriggerDualSenseMapWidth
+        {
+            get { return State.LeftTrigger * 73d; }
+        }
+
+        public double RightTriggerDualSenseMapWidth
+        {
+            get { return State.RightTrigger * 73d; }
+        }
+
         public int LeftStickDriftPercent
         {
             get { return (int)Math.Round(State.LeftStick.Magnitude * 100); }
@@ -1002,6 +1012,16 @@ namespace GamepadTester.ViewModels
             get { return State.Layout == GamepadLayout.PlayStation; }
         }
 
+        public bool IsDualSenseLayout
+        {
+            get { return State.Layout == GamepadLayout.PlayStation && GamepadDeviceNames.IsDualSense(State.VendorId, State.ProductId); }
+        }
+
+        public bool IsUniversalControllerArtwork
+        {
+            get { return !IsDualSenseLayout; }
+        }
+
         public bool IsGenericLayout
         {
             get { return State.Layout == GamepadLayout.Generic || State.Layout == GamepadLayout.Unknown; }
@@ -1667,6 +1687,8 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("RightTriggerMapWidth");
             OnPropertyChanged("LeftTriggerThinMapWidth");
             OnPropertyChanged("RightTriggerThinMapWidth");
+            OnPropertyChanged("LeftTriggerDualSenseMapWidth");
+            OnPropertyChanged("RightTriggerDualSenseMapWidth");
             OnPropertyChanged("LeftStickDriftPercent");
             OnPropertyChanged("RightStickDriftPercent");
             OnPropertyChanged("IsDpadActive");
@@ -1767,6 +1789,8 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("IsSwitchProLayout");
             OnPropertyChanged("IsXboxLayout");
             OnPropertyChanged("IsPlayStationLayout");
+            OnPropertyChanged("IsDualSenseLayout");
+            OnPropertyChanged("IsUniversalControllerArtwork");
             OnPropertyChanged("IsGenericLayout");
         }
 

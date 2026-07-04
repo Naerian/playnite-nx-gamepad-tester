@@ -95,6 +95,9 @@
     <Compile Include="Views\ControllerLayouts\PlayStationControllerTesterView.xaml.cs">
       <DependentUpon>PlayStationControllerTesterView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ControllerLayouts\DualSenseControllerTesterView.xaml.cs">
+      <DependentUpon>DualSenseControllerTesterView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ControllerLayouts\SwitchProControllerTesterView.xaml.cs">
       <DependentUpon>SwitchProControllerTesterView.xaml</DependentUpon>
     </Compile>
@@ -162,6 +165,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ControllerLayouts\PlayStationControllerTesterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ControllerLayouts\DualSenseControllerTesterView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
