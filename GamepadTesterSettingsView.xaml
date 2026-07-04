@@ -33,30 +33,30 @@
         <StackPanel Margin="16" TextElement.Foreground="{DynamicResource TextBrush}">
             <Border Style="{StaticResource SettingsSection}">
                 <StackPanel>
-                    <TextBlock Text="Playnite integration" Style="{StaticResource SectionTitle}" />
-                    <CheckBox Content="Show Gamepad Tester in Playnite sidebar"
+                    <TextBlock Text="{DynamicResource LOCGT_SettingsPlayniteIntegration}" Style="{StaticResource SectionTitle}" />
+                    <CheckBox Content="{DynamicResource LOCGT_SettingsShowSidebar}"
                               IsChecked="{Binding Settings.ShowSidebarItem}" />
-                    <TextBlock Text="Adds a Gamepad Tester entry to the Desktop mode sidebar. Restart Playnite after changing this option so the sidebar can be rebuilt."
+                    <TextBlock Text="{DynamicResource LOCGT_SettingsShowSidebarHelp}"
                                Style="{StaticResource MutedText}" />
                 </StackPanel>
             </Border>
 
             <Border Style="{StaticResource SettingsSection}">
                 <StackPanel>
-                    <TextBlock Text="Testing behavior" Style="{StaticResource SectionTitle}" />
-                    <CheckBox Content="Reset diagnostics when switching controller"
+                    <TextBlock Text="{DynamicResource LOCGT_SettingsTestingBehavior}" Style="{StaticResource SectionTitle}" />
+                    <CheckBox Content="{DynamicResource LOCGT_SettingsResetOnSwitch}"
                               IsChecked="{Binding Settings.AutoResetDiagnosticsOnControllerChange}" />
-                    <TextBlock Text="Clears quick checks, stick paths, circular coverage, and drift session data when you select a different connected device."
+                    <TextBlock Text="{DynamicResource LOCGT_SettingsResetOnSwitchHelp}"
                                Style="{StaticResource MutedText}" />
 
-                    <CheckBox Content="Show device selector even with one controller"
+                    <CheckBox Content="{DynamicResource LOCGT_SettingsShowSingleSelector}"
                               IsChecked="{Binding Settings.ShowDeviceSelectorWhenSingleController}" />
-                    <TextBlock Text="Useful while testing device detection or controller reconnect behavior."
+                    <TextBlock Text="{DynamicResource LOCGT_SettingsShowSingleSelectorHelp}"
                                Style="{StaticResource MutedText}" />
 
-                    <CheckBox Content="Enable rumble tests"
+                    <CheckBox Content="{DynamicResource LOCGT_SettingsEnableRumble}"
                               IsChecked="{Binding Settings.EnableRumbleTests}" />
-                    <TextBlock Text="Rumble tests depend on controller mode, driver support, and SDL support for the device."
+                    <TextBlock Text="{DynamicResource LOCGT_SettingsEnableRumbleHelp}"
                                Style="{StaticResource MutedText}" />
                 </StackPanel>
             </Border>

@@ -17,6 +17,7 @@ namespace GamepadTester.ViewModels
         private const double StickRadius = 34d;
         private readonly GamepadPollingService pollingService;
         private readonly GamepadTesterSettings settings;
+        private readonly Func<string, string> localizer;
         private readonly RelayCommand rumbleCommand;
         private readonly RelayCommand lightRumbleCommand;
         private readonly RelayCommand mediumRumbleCommand;
@@ -44,10 +45,11 @@ namespace GamepadTester.ViewModels
         private bool isRumbleRunning;
         private string rumbleStatusLabel;
 
-        public GamepadTesterViewModel(GamepadPollingService pollingService, GamepadTesterSettings settings = null)
+        public GamepadTesterViewModel(GamepadPollingService pollingService, GamepadTesterSettings settings = null, Func<string, string> localizer = null)
         {
             this.pollingService = pollingService;
             this.settings = settings ?? new GamepadTesterSettings();
+            this.localizer = localizer;
             state = new GamepadState();
             Controllers = new ObservableCollection<GamepadControllerInfo>();
             InputHistory = new ObservableCollection<InputHistoryItem>();
@@ -64,7 +66,7 @@ namespace GamepadTester.ViewModels
             leftStickDiagnostics = new StickDiagnosticsTracker();
             rightStickDiagnostics = new StickDiagnosticsTracker();
             coveredButtons = new GamepadButtonState();
-            rumbleStatusLabel = "Ready";
+            rumbleStatusLabel = L("LOCGT_Ready", "Ready");
             pollingService.StateUpdated += OnStateUpdated;
         }
 
@@ -305,7 +307,17 @@ namespace GamepadTester.ViewModels
 
         public string MaxDriftLabel
         {
+            get { return string.Format("{0:0.000}", CurrentCenterDrift); }
+        }
+
+        public string SessionRestDriftLabel
+        {
             get { return string.Format("{0:0.000}", Math.Max(maxLeftRestDrift, maxRightRestDrift)); }
+        }
+
+        private double CurrentCenterDrift
+        {
+            get { return Math.Max(State.LeftStick.Magnitude, State.RightStick.Magnitude); }
         }
 
         public PointCollection LeftStickPathPoints
@@ -475,21 +487,21 @@ namespace GamepadTester.ViewModels
             {
                 if (!State.IsConnected)
                 {
-                    return "Connect a controller to start.";
+                    return L("LOCGT_ConnectControllerToStart", "Connect a controller to start.");
                 }
 
                 if (QuickTestProgress == 100)
                 {
-                    return "All normalized controls covered.";
+                    return L("LOCGT_AllControlsCovered", "All normalized controls covered.");
                 }
 
-                return string.Format("{0}% complete", QuickTestProgress);
+                return string.Format(L("LOCGT_PercentCompleteFormat", "{0}% complete"), QuickTestProgress);
             }
         }
 
         public string ButtonCoverageLabel
         {
-            get { return string.Format("{0}/15 buttons seen", CountPressedButtons(coveredButtons)); }
+            get { return string.Format(L("LOCGT_ButtonsSeenFormat", "{0}/15 buttons seen"), CountPressedButtons(coveredButtons)); }
         }
 
         public string AnalogCoverageLabel
@@ -545,7 +557,7 @@ namespace GamepadTester.ViewModels
                     missing.Add("Right stick edge");
                 }
 
-                return missing.Count == 0 ? "Nothing missing." : string.Join(", ", missing);
+                return missing.Count == 0 ? L("LOCGT_NothingMissing", "Nothing missing.") : string.Join(", ", missing);
             }
         }
 
@@ -573,7 +585,8 @@ namespace GamepadTester.ViewModels
         {
             get
             {
-                var driftPenalty = Math.Min(35d, Math.Max(maxLeftRestDrift, maxRightRestDrift) * 180d);
+                var currentDrift = CurrentCenterDrift;
+                var driftPenalty = currentDrift <= 0.03d ? 0d : Math.Min(100d, (currentDrift - 0.03d) * 400d);
                 return Math.Max(0, Math.Min(100, (int)Math.Round(100d - driftPenalty)));
             }
         }
@@ -584,25 +597,25 @@ namespace GamepadTester.ViewModels
             {
                 if (!State.IsConnected)
                 {
-                    return "No controller";
+                    return L("LOCGT_NoController", "No controller");
                 }
 
                 if (HealthScore >= 90)
                 {
-                    return "Excellent";
+                    return L("LOCGT_HealthExcellent", "Excellent");
                 }
 
                 if (HealthScore >= 75)
                 {
-                    return "Good";
+                    return L("LOCGT_HealthGood", "Good");
                 }
 
                 if (HealthScore >= 55)
                 {
-                    return "Needs review";
+                    return L("LOCGT_HealthNeedsReview", "Needs review");
                 }
 
-                return "Attention required";
+                return L("LOCGT_HealthAttentionRequired", "Attention required");
             }
         }
 
@@ -612,7 +625,7 @@ namespace GamepadTester.ViewModels
             {
                 if (!State.IsConnected)
                 {
-                    return "Connect a controller and press any button.";
+                    return L("LOCGT_ConnectControllerAndPress", "Connect a controller and press any button.");
                 }
 
                 return string.Format("{0} inputs active | LT {1}% | RT {2}% | Rest drift peak {3}",
@@ -1068,8 +1081,8 @@ namespace GamepadTester.ViewModels
             return CountPressedButtons(state.Buttons) == 0 &&
                    state.LeftTrigger < 0.02f &&
                    state.RightTrigger < 0.02f &&
-                   state.LeftStick.Magnitude < 0.25d &&
-                   state.RightStick.Magnitude < 0.25d;
+                   state.LeftStick.Magnitude < 0.08d &&
+                   state.RightStick.Magnitude < 0.08d;
         }
 
         private static int CountPressedButtons(GamepadButtonState buttons)
@@ -1105,65 +1118,65 @@ namespace GamepadTester.ViewModels
             yield return buttons.DpadRight;
         }
 
-        private static string GetDriftStatus(double magnitude)
+        private string GetDriftStatus(double magnitude)
         {
             if (magnitude < 0.01d)
             {
-                return "No drift";
+                return L("LOCGT_NoDrift", "No drift");
             }
 
             if (magnitude < 0.05d)
             {
-                return "Safe";
+                return L("LOCGT_DriftSafe", "Safe");
             }
 
             if (magnitude < 0.15d)
             {
-                return "Minor drift";
+                return L("LOCGT_MinorDrift", "Minor drift");
             }
 
-            return "Major drift";
+            return L("LOCGT_MajorDrift", "Major drift");
         }
 
-        private static string GetCircularCoverageLabel(StickDiagnosticsTracker tracker)
+        private string GetCircularCoverageLabel(StickDiagnosticsTracker tracker)
         {
-            return string.Format("Circular coverage: {0}% ({1}/72 sectors)", tracker.CoveragePercent, tracker.CoveredSectors);
+            return string.Format(L("LOCGT_CircularCoverageFormat", "Circular coverage: {0}% ({1}/72 sectors)"), tracker.CoveragePercent, tracker.CoveredSectors);
         }
 
-        private static string GetPathSampleLabel(StickDiagnosticsTracker tracker)
+        private string GetPathSampleLabel(StickDiagnosticsTracker tracker)
         {
-            return string.Format("Path samples: {0}", tracker.PathPoints.Count);
+            return string.Format(L("LOCGT_PathSamplesFormat", "Path samples: {0}"), tracker.PathPoints.Count);
         }
 
-        private static string GetAxisRangeLabel(StickDiagnosticsTracker tracker)
+        private string GetAxisRangeLabel(StickDiagnosticsTracker tracker)
         {
             if (tracker.SampleCount == 0)
             {
-                return "Range: no samples";
+                return L("LOCGT_RangeNoSamples", "Range: no samples");
             }
 
-            return string.Format("Range X {0:0.00}..{1:0.00}  Y {2:0.00}..{3:0.00}",
+            return string.Format(L("LOCGT_RangeFormat", "Range X {0:0.00}..{1:0.00}  Y {2:0.00}..{3:0.00}"),
                 tracker.MinX,
                 tracker.MaxX,
                 tracker.MinY,
                 tracker.MaxY);
         }
 
-        private static string GetAverageMagnitudeLabel(StickDiagnosticsTracker tracker)
+        private string GetAverageMagnitudeLabel(StickDiagnosticsTracker tracker)
         {
             if (tracker.SampleCount == 0)
             {
-                return "Average: 0%";
+                return L("LOCGT_AverageZero", "Average: 0%");
             }
 
-            return string.Format("Average: {0}%", Math.Min(100, (int)Math.Round(tracker.AverageMagnitude * 100d)));
+            return string.Format(L("LOCGT_AverageFormat", "Average: {0}%"), Math.Min(100, (int)Math.Round(tracker.AverageMagnitude * 100d)));
         }
 
-        private static string GetAngleLabel(StickState stick)
+        private string GetAngleLabel(StickState stick)
         {
             if (stick.Magnitude < 0.05d)
             {
-                return "Angle: center";
+                return L("LOCGT_AngleCenter", "Angle: center");
             }
 
             var angle = Math.Atan2(stick.Y, stick.X) * 180d / Math.PI;
@@ -1172,7 +1185,18 @@ namespace GamepadTester.ViewModels
                 angle += 360d;
             }
 
-            return string.Format("Angle: {0:0} deg", angle);
+            return string.Format(L("LOCGT_AngleFormat", "Angle: {0:0} deg"), angle);
+        }
+
+        private string L(string key, string fallback)
+        {
+            if (localizer == null)
+            {
+                return fallback;
+            }
+
+            var value = localizer(key);
+            return string.IsNullOrWhiteSpace(value) || value == key ? fallback : value;
         }
 
         private void NotifyStateChanged()
@@ -1203,6 +1227,7 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("LeftStickDriftStatus");
             OnPropertyChanged("RightStickDriftStatus");
             OnPropertyChanged("MaxDriftLabel");
+            OnPropertyChanged("SessionRestDriftLabel");
             OnPropertyChanged("LeftStickPathPoints");
             OnPropertyChanged("RightStickPathPoints");
             OnPropertyChanged("LeftStickPathGeometry");
