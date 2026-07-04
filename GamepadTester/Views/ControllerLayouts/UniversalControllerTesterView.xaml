@@ -4,8 +4,15 @@
              xmlns:converters="clr-namespace:GamepadTester.Converters"
              IsHitTestVisible="False">
     <UserControl.Resources>
-        <SolidColorBrush x:Key="ControllerFill" Color="{DynamicResource ControlBackgroundColorDarker}" />
-        <SolidColorBrush x:Key="SurfaceFill" Color="{DynamicResource ControlBackgroundColor}" />
+        <LinearGradientBrush x:Key="ControllerFill" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#202B39" Offset="0" />
+            <GradientStop Color="#151A22" Offset="0.55" />
+            <GradientStop Color="#10151C" Offset="1" />
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="SurfaceFill" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#303A49" Offset="0" />
+            <GradientStop Color="#1B222D" Offset="1" />
+        </LinearGradientBrush>
         <SolidColorBrush x:Key="LineBrush" Color="{DynamicResource TextColor}" />
         <SolidColorBrush x:Key="MutedLineBrush" Color="{DynamicResource TextColorDarker}" />
         <SolidColorBrush x:Key="InputIdleFill" Color="Transparent" />

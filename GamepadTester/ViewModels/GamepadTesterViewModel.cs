@@ -28,6 +28,9 @@ namespace GamepadTester.ViewModels
         private readonly RelayCommand alternatingRumbleCommand;
         private readonly RelayCommand rampRumbleCommand;
         private readonly RelayCommand resetDiagnosticsCommand;
+        private readonly RelayCommand startCenterCalibrationCommand;
+        private readonly RelayCommand resetCalibrationCommand;
+        private readonly RelayCommand resetLatencyCommand;
         private readonly StickDiagnosticsTracker leftStickDiagnostics;
         private readonly StickDiagnosticsTracker rightStickDiagnostics;
         private GamepadState state;
@@ -44,6 +47,33 @@ namespace GamepadTester.ViewModels
         private bool isControllerSelectorOpen;
         private bool isRumbleRunning;
         private string rumbleStatusLabel;
+        private bool isCenterCalibrationRunning;
+        private DateTime centerCalibrationEndsAt;
+        private int centerCalibrationSamples;
+        private double leftCenterXSum;
+        private double leftCenterYSum;
+        private double rightCenterXSum;
+        private double rightCenterYSum;
+        private double leftCenterMaxNoise;
+        private double rightCenterMaxNoise;
+        private double calibratedLeftCenterX;
+        private double calibratedLeftCenterY;
+        private double calibratedRightCenterX;
+        private double calibratedRightCenterY;
+        private double calibratedLeftCenterNoise;
+        private double calibratedRightCenterNoise;
+        private DateTime? lastStateSampleAt;
+        private DateTime? lastInputEventAt;
+        private double currentPollingIntervalMs;
+        private double pollingIntervalSumMs;
+        private double pollingIntervalMinMs;
+        private double pollingIntervalMaxMs;
+        private int pollingIntervalSamples;
+        private double inputEventIntervalSumMs;
+        private double inputEventIntervalMinMs;
+        private double inputEventIntervalMaxMs;
+        private int inputEventIntervalSamples;
+        private string latencyStatusLabel;
 
         public GamepadTesterViewModel(GamepadPollingService pollingService, GamepadTesterSettings settings = null, Func<string, string> localizer = null)
         {
@@ -63,10 +93,16 @@ namespace GamepadTester.ViewModels
             alternatingRumbleCommand = new RelayCommand(TestAlternatingRumble, CanRunRumble);
             rampRumbleCommand = new RelayCommand(TestRampRumble, CanRunRumble);
             resetDiagnosticsCommand = new RelayCommand(ResetDiagnostics);
+            startCenterCalibrationCommand = new RelayCommand(StartCenterCalibration, () => State.IsConnected && !isCenterCalibrationRunning);
+            resetCalibrationCommand = new RelayCommand(ResetCalibration);
+            resetLatencyCommand = new RelayCommand(ResetLatency);
             leftStickDiagnostics = new StickDiagnosticsTracker();
             rightStickDiagnostics = new StickDiagnosticsTracker();
             coveredButtons = new GamepadButtonState();
             rumbleStatusLabel = L("LOCGT_Ready", "Ready");
+            latencyStatusLabel = L("LOCGT_LatencyWaiting", "Waiting for input changes.");
+            pollingIntervalMinMs = double.MaxValue;
+            inputEventIntervalMinMs = double.MaxValue;
             pollingService.StateUpdated += OnStateUpdated;
         }
 
@@ -131,6 +167,21 @@ namespace GamepadTester.ViewModels
         public ICommand ResetDiagnosticsCommand
         {
             get { return resetDiagnosticsCommand; }
+        }
+
+        public ICommand StartCenterCalibrationCommand
+        {
+            get { return startCenterCalibrationCommand; }
+        }
+
+        public ICommand ResetCalibrationCommand
+        {
+            get { return resetCalibrationCommand; }
+        }
+
+        public ICommand ResetLatencyCommand
+        {
+            get { return resetLatencyCommand; }
         }
 
         public GamepadControllerInfo SelectedController
@@ -448,6 +499,152 @@ namespace GamepadTester.ViewModels
         public string RightStickAverageMagnitudeLabel
         {
             get { return GetAverageMagnitudeLabel(rightStickDiagnostics); }
+        }
+
+        public string CalibrationStatusLabel
+        {
+            get
+            {
+                if (isCenterCalibrationRunning)
+                {
+                    var remaining = Math.Max(0d, (centerCalibrationEndsAt - DateTime.UtcNow).TotalSeconds);
+                    return string.Format(L("LOCGT_CalibrationRunningFormat", "Keep sticks released. Capturing center for {0:0.0}s."), remaining);
+                }
+
+                if (centerCalibrationSamples <= 0)
+                {
+                    return L("LOCGT_CalibrationNotRun", "Center calibration has not been captured yet.");
+                }
+
+                return string.Format(L("LOCGT_CalibrationSamplesFormat", "Center captured from {0} samples."), centerCalibrationSamples);
+            }
+        }
+
+        public int CalibrationProgress
+        {
+            get
+            {
+                if (!isCenterCalibrationRunning)
+                {
+                    return centerCalibrationSamples > 0 ? 100 : 0;
+                }
+
+                var remaining = Math.Max(0d, (centerCalibrationEndsAt - DateTime.UtcNow).TotalMilliseconds);
+                return Math.Max(0, Math.Min(100, 100 - (int)Math.Round(remaining * 100d / 2200d)));
+            }
+        }
+
+        public string LeftCalibrationCenterLabel
+        {
+            get { return string.Format(L("LOCGT_CenterFormat", "Center X {0:0.000}  Y {1:0.000}"), calibratedLeftCenterX, calibratedLeftCenterY); }
+        }
+
+        public string RightCalibrationCenterLabel
+        {
+            get { return string.Format(L("LOCGT_CenterFormat", "Center X {0:0.000}  Y {1:0.000}"), calibratedRightCenterX, calibratedRightCenterY); }
+        }
+
+        public string LeftRecommendedDeadzoneLabel
+        {
+            get { return GetRecommendedDeadzoneLabel(calibratedLeftCenterNoise); }
+        }
+
+        public string RightRecommendedDeadzoneLabel
+        {
+            get { return GetRecommendedDeadzoneLabel(calibratedRightCenterNoise); }
+        }
+
+        public int LeftRecommendedDeadzonePercent
+        {
+            get { return GetRecommendedDeadzonePercent(calibratedLeftCenterNoise); }
+        }
+
+        public int RightRecommendedDeadzonePercent
+        {
+            get { return GetRecommendedDeadzonePercent(calibratedRightCenterNoise); }
+        }
+
+        public string LeftRangeQualityLabel
+        {
+            get { return GetRangeQualityLabel(leftStickDiagnostics); }
+        }
+
+        public string RightRangeQualityLabel
+        {
+            get { return GetRangeQualityLabel(rightStickDiagnostics); }
+        }
+
+        public int LeftRangeQualityPercent
+        {
+            get { return GetRangeQualityPercent(leftStickDiagnostics); }
+        }
+
+        public int RightRangeQualityPercent
+        {
+            get { return GetRangeQualityPercent(rightStickDiagnostics); }
+        }
+
+        public string LatencyStatusLabel
+        {
+            get { return latencyStatusLabel; }
+        }
+
+        public string PollingLatencyAverageLabel
+        {
+            get
+            {
+                if (pollingIntervalSamples == 0)
+                {
+                    return L("LOCGT_NoSamples", "No samples");
+                }
+
+                return string.Format(L("LOCGT_AverageMsFormat", "Average: {0:0.0} ms"), pollingIntervalSumMs / pollingIntervalSamples);
+            }
+        }
+
+        public string PollingLatencyCurrentLabel
+        {
+            get { return string.Format(L("LOCGT_CurrentMsFormat", "Current: {0:0.0} ms"), currentPollingIntervalMs); }
+        }
+
+        public string PollingLatencyRangeLabel
+        {
+            get
+            {
+                if (pollingIntervalSamples == 0)
+                {
+                    return L("LOCGT_RangeNoSamples", "Range: no samples");
+                }
+
+                return string.Format(L("LOCGT_MinMaxMsFormat", "Min {0:0.0} ms  Max {1:0.0} ms"), pollingIntervalMinMs, pollingIntervalMaxMs);
+            }
+        }
+
+        public int PollingLatencyScore
+        {
+            get
+            {
+                if (pollingIntervalSamples == 0)
+                {
+                    return 0;
+                }
+
+                var average = pollingIntervalSumMs / pollingIntervalSamples;
+                return Math.Max(0, Math.Min(100, (int)Math.Round(100d - Math.Max(0d, average - 8d) * 2.5d)));
+            }
+        }
+
+        public string InputEventLatencyAverageLabel
+        {
+            get
+            {
+                if (inputEventIntervalSamples == 0)
+                {
+                    return L("LOCGT_PressButtonsForLatency", "Press buttons repeatedly to collect input events.");
+                }
+
+                return string.Format(L("LOCGT_EventIntervalFormat", "Observed input event interval: {0:0.0} ms avg"), inputEventIntervalSumMs / inputEventIntervalSamples);
+            }
         }
 
         public int QuickTestProgress
@@ -804,16 +1001,21 @@ namespace GamepadTester.ViewModels
                 UpdateDiagnostics(nextState);
                 State = nextState;
                 RaiseRumbleCanExecuteChanged();
+                startCenterCalibrationCommand.RaiseCanExecuteChanged();
             }));
         }
 
         private void UpdateDiagnostics(GamepadState nextState)
         {
+            UpdateLatency(nextState);
+
             if (!nextState.IsConnected)
             {
                 previousButtons = null;
                 return;
             }
+
+            UpdateCenterCalibration(nextState);
 
             if (IsResting(nextState))
             {
@@ -856,6 +1058,8 @@ namespace GamepadTester.ViewModels
             {
                 return;
             }
+
+            TrackInputEventLatency();
 
             InputHistory.Insert(0, new InputHistoryItem
             {
@@ -1019,7 +1223,156 @@ namespace GamepadTester.ViewModels
             leftStickDiagnostics.Reset();
             rightStickDiagnostics.Reset();
             InputHistory.Clear();
+            ResetCalibration();
+            ResetLatency();
             NotifyStateChanged();
+        }
+
+        private void StartCenterCalibration()
+        {
+            if (!State.IsConnected || isCenterCalibrationRunning)
+            {
+                return;
+            }
+
+            isCenterCalibrationRunning = true;
+            centerCalibrationEndsAt = DateTime.UtcNow.AddMilliseconds(2200);
+            centerCalibrationSamples = 0;
+            leftCenterXSum = 0d;
+            leftCenterYSum = 0d;
+            rightCenterXSum = 0d;
+            rightCenterYSum = 0d;
+            leftCenterMaxNoise = 0d;
+            rightCenterMaxNoise = 0d;
+            OnPropertyChanged("CalibrationStatusLabel");
+            OnPropertyChanged("CalibrationProgress");
+            startCenterCalibrationCommand.RaiseCanExecuteChanged();
+        }
+
+        private void ResetCalibration()
+        {
+            isCenterCalibrationRunning = false;
+            centerCalibrationSamples = 0;
+            leftCenterXSum = 0d;
+            leftCenterYSum = 0d;
+            rightCenterXSum = 0d;
+            rightCenterYSum = 0d;
+            leftCenterMaxNoise = 0d;
+            rightCenterMaxNoise = 0d;
+            calibratedLeftCenterX = 0d;
+            calibratedLeftCenterY = 0d;
+            calibratedRightCenterX = 0d;
+            calibratedRightCenterY = 0d;
+            calibratedLeftCenterNoise = 0d;
+            calibratedRightCenterNoise = 0d;
+            OnPropertyChanged("CalibrationStatusLabel");
+            OnPropertyChanged("CalibrationProgress");
+            OnPropertyChanged("LeftCalibrationCenterLabel");
+            OnPropertyChanged("RightCalibrationCenterLabel");
+            OnPropertyChanged("LeftRecommendedDeadzoneLabel");
+            OnPropertyChanged("RightRecommendedDeadzoneLabel");
+            OnPropertyChanged("LeftRecommendedDeadzonePercent");
+            OnPropertyChanged("RightRecommendedDeadzonePercent");
+            startCenterCalibrationCommand.RaiseCanExecuteChanged();
+        }
+
+        private void ResetLatency()
+        {
+            lastStateSampleAt = null;
+            lastInputEventAt = null;
+            currentPollingIntervalMs = 0d;
+            pollingIntervalSumMs = 0d;
+            pollingIntervalMinMs = double.MaxValue;
+            pollingIntervalMaxMs = 0d;
+            pollingIntervalSamples = 0;
+            inputEventIntervalSumMs = 0d;
+            inputEventIntervalMinMs = double.MaxValue;
+            inputEventIntervalMaxMs = 0d;
+            inputEventIntervalSamples = 0;
+            latencyStatusLabel = L("LOCGT_LatencyWaiting", "Waiting for input changes.");
+            OnPropertyChanged("LatencyStatusLabel");
+            OnPropertyChanged("PollingLatencyAverageLabel");
+            OnPropertyChanged("PollingLatencyCurrentLabel");
+            OnPropertyChanged("PollingLatencyRangeLabel");
+            OnPropertyChanged("PollingLatencyScore");
+            OnPropertyChanged("InputEventLatencyAverageLabel");
+        }
+
+        private void UpdateCenterCalibration(GamepadState nextState)
+        {
+            if (!isCenterCalibrationRunning)
+            {
+                return;
+            }
+
+            centerCalibrationSamples++;
+            leftCenterXSum += nextState.LeftStick.X;
+            leftCenterYSum += nextState.LeftStick.Y;
+            rightCenterXSum += nextState.RightStick.X;
+            rightCenterYSum += nextState.RightStick.Y;
+            leftCenterMaxNoise = Math.Max(leftCenterMaxNoise, nextState.LeftStick.Magnitude);
+            rightCenterMaxNoise = Math.Max(rightCenterMaxNoise, nextState.RightStick.Magnitude);
+
+            if (DateTime.UtcNow < centerCalibrationEndsAt)
+            {
+                return;
+            }
+
+            isCenterCalibrationRunning = false;
+            calibratedLeftCenterX = leftCenterXSum / Math.Max(1, centerCalibrationSamples);
+            calibratedLeftCenterY = leftCenterYSum / Math.Max(1, centerCalibrationSamples);
+            calibratedRightCenterX = rightCenterXSum / Math.Max(1, centerCalibrationSamples);
+            calibratedRightCenterY = rightCenterYSum / Math.Max(1, centerCalibrationSamples);
+            calibratedLeftCenterNoise = leftCenterMaxNoise;
+            calibratedRightCenterNoise = rightCenterMaxNoise;
+            startCenterCalibrationCommand.RaiseCanExecuteChanged();
+        }
+
+        private void UpdateLatency(GamepadState nextState)
+        {
+            if (!nextState.IsConnected)
+            {
+                lastStateSampleAt = null;
+                return;
+            }
+
+            var now = DateTime.UtcNow;
+            if (lastStateSampleAt.HasValue)
+            {
+                currentPollingIntervalMs = (now - lastStateSampleAt.Value).TotalMilliseconds;
+                if (currentPollingIntervalMs > 0d && currentPollingIntervalMs < 1000d)
+                {
+                    pollingIntervalSamples++;
+                    pollingIntervalSumMs += currentPollingIntervalMs;
+                    pollingIntervalMinMs = Math.Min(pollingIntervalMinMs, currentPollingIntervalMs);
+                    pollingIntervalMaxMs = Math.Max(pollingIntervalMaxMs, currentPollingIntervalMs);
+                }
+            }
+
+            lastStateSampleAt = now;
+        }
+
+        private void TrackInputEventLatency()
+        {
+            var now = DateTime.UtcNow;
+            if (lastInputEventAt.HasValue)
+            {
+                var interval = (now - lastInputEventAt.Value).TotalMilliseconds;
+                if (interval > 0d && interval < 10000d)
+                {
+                    inputEventIntervalSamples++;
+                    inputEventIntervalSumMs += interval;
+                    inputEventIntervalMinMs = Math.Min(inputEventIntervalMinMs, interval);
+                    inputEventIntervalMaxMs = Math.Max(inputEventIntervalMaxMs, interval);
+                    latencyStatusLabel = string.Format(L("LOCGT_LastInputObservedFormat", "Last input observed after {0:0.0} ms."), currentPollingIntervalMs);
+                }
+            }
+            else
+            {
+                latencyStatusLabel = L("LOCGT_FirstInputObserved", "First input observed. Press repeatedly for an average.");
+            }
+
+            lastInputEventAt = now;
         }
 
         private void UpdateCoverage(GamepadState nextState)
@@ -1188,6 +1541,32 @@ namespace GamepadTester.ViewModels
             return string.Format(L("LOCGT_AngleFormat", "Angle: {0:0} deg"), angle);
         }
 
+        private string GetRecommendedDeadzoneLabel(double noise)
+        {
+            return string.Format(L("LOCGT_RecommendedDeadzoneFormat", "Recommended deadzone: {0}%"), GetRecommendedDeadzonePercent(noise));
+        }
+
+        private static int GetRecommendedDeadzonePercent(double noise)
+        {
+            var recommended = Math.Max(0.04d, Math.Min(0.25d, noise + 0.025d));
+            return (int)Math.Round(recommended * 100d);
+        }
+
+        private string GetRangeQualityLabel(StickDiagnosticsTracker tracker)
+        {
+            if (tracker.SampleCount == 0)
+            {
+                return L("LOCGT_RangeNotMeasured", "Range not measured yet.");
+            }
+
+            return string.Format(L("LOCGT_RangeQualityFormat", "Outer range quality: {0}%"), GetRangeQualityPercent(tracker));
+        }
+
+        private static int GetRangeQualityPercent(StickDiagnosticsTracker tracker)
+        {
+            return Math.Max(0, Math.Min(100, (int)Math.Round(tracker.MaxMagnitude * 100d)));
+        }
+
         private string L(string key, string fallback)
         {
             if (localizer == null)
@@ -1254,6 +1633,24 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("RightStickAxisRangeLabel");
             OnPropertyChanged("LeftStickAverageMagnitudeLabel");
             OnPropertyChanged("RightStickAverageMagnitudeLabel");
+            OnPropertyChanged("CalibrationStatusLabel");
+            OnPropertyChanged("CalibrationProgress");
+            OnPropertyChanged("LeftCalibrationCenterLabel");
+            OnPropertyChanged("RightCalibrationCenterLabel");
+            OnPropertyChanged("LeftRecommendedDeadzoneLabel");
+            OnPropertyChanged("RightRecommendedDeadzoneLabel");
+            OnPropertyChanged("LeftRecommendedDeadzonePercent");
+            OnPropertyChanged("RightRecommendedDeadzonePercent");
+            OnPropertyChanged("LeftRangeQualityLabel");
+            OnPropertyChanged("RightRangeQualityLabel");
+            OnPropertyChanged("LeftRangeQualityPercent");
+            OnPropertyChanged("RightRangeQualityPercent");
+            OnPropertyChanged("LatencyStatusLabel");
+            OnPropertyChanged("PollingLatencyAverageLabel");
+            OnPropertyChanged("PollingLatencyCurrentLabel");
+            OnPropertyChanged("PollingLatencyRangeLabel");
+            OnPropertyChanged("PollingLatencyScore");
+            OnPropertyChanged("InputEventLatencyAverageLabel");
             OnPropertyChanged("QuickTestProgress");
             OnPropertyChanged("QuickTestLabel");
             OnPropertyChanged("ButtonCoverageLabel");
