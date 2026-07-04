@@ -31,6 +31,12 @@
         <converters:BoolToBrushConverter x:Key="ActiveOnlyStrokeBrush"
                                          FalseBrush="{StaticResource InputIdleFill}"
                                          TrueBrush="{StaticResource InputActiveStroke}" />
+        <converters:BoolToBrushConverter x:Key="TouchpadFillBrush"
+                                         FalseBrush="{StaticResource SurfaceFill}"
+                                         TrueBrush="{StaticResource InputActiveFill}" />
+        <converters:BoolToBrushConverter x:Key="TouchpadStrokeBrush"
+                                         FalseBrush="{StaticResource MutedLineBrush}"
+                                         TrueBrush="{StaticResource InputActiveStroke}" />
 
         <Style x:Key="SmallMapText" TargetType="TextBlock">
             <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
@@ -50,7 +56,7 @@
                       Stroke="{Binding IsLeftTriggerActive, Converter={StaticResource InputStrokeBrush}}"
                       StrokeThickness="1.8"
                       StrokeLineJoin="Round" />
-                <TextBlock Text="{Binding LeftTriggerPercent, StringFormat=L2  {0}%}"
+                <TextBlock Text="{Binding LeftTriggerPercent, StringFormat={}{0}%}"
                            Canvas.Left="9"
                            Canvas.Top="39"
                            Width="58"
@@ -73,7 +79,7 @@
                         </TransformGroup>
                     </Path.RenderTransform>
                 </Path>
-                <TextBlock Text="{Binding RightTriggerPercent, StringFormat=R2  {0}%}"
+                <TextBlock Text="{Binding RightTriggerPercent, StringFormat={}{0}%}"
                            Canvas.Left="9"
                            Canvas.Top="39"
                            Width="58"
@@ -92,7 +98,7 @@
                     <Path.RenderTransform>
                         <TransformGroup>
                             <RotateTransform Angle="-4" CenterX="40" CenterY="15" />
-                            <TranslateTransform X="132" Y="-8" />
+                            <TranslateTransform X="88" Y="-4" />
                         </TransformGroup>
                     </Path.RenderTransform>
                 </Path>
@@ -105,7 +111,7 @@
                         <TransformGroup>
                             <ScaleTransform ScaleX="-1" />
                             <RotateTransform Angle="-4" CenterX="40" CenterY="15" />
-                            <TranslateTransform X="468" Y="-8" />
+                            <TranslateTransform X="512" Y="-4" />
                         </TransformGroup>
                     </Path.RenderTransform>
                 </Path>
@@ -117,8 +123,8 @@
                       StrokeLineJoin="Round" />
 
                 <Path Data="M192.207 132.997H50.7918C32.4031 132.997 21.1429 117.606 17.8114 109.91C13.1476 88.4962 3.32036 42.4564 1.32156 29.6081C-0.677241 16.7597 7.15139 10.8709 11.3156 9.53257C15.4797 8.1942 59.786 0.999877 124.247 1C188.709 1.00012 185.211 3.50958 219.69 8.02691C236.862 10.2767 240.178 22.9162 238.679 29.6081C236.014 41.4861 229.285 72.0678 223.688 99.3705C218.091 126.673 200.369 133.164 192.207 132.997Z"
-                      Fill="{StaticResource SurfaceFill}"
-                      Stroke="{StaticResource MutedLineBrush}"
+                      Fill="{Binding State.Buttons.Touchpad, Converter={StaticResource TouchpadFillBrush}}"
+                      Stroke="{Binding State.Buttons.Touchpad, Converter={StaticResource TouchpadStrokeBrush}}"
                       StrokeThickness="2"
                       StrokeLineJoin="Round">
                     <Path.RenderTransform>
@@ -156,23 +162,23 @@
                     </Ellipse.RenderTransform>
                 </Ellipse>
 
-                <Path Data="M172,136 L198,136 L198,166 L228,166 L228,192 L198,192 L198,222 L172,222 L172,192 L142,192 L142,166 L172,166 Z"
-                      Fill="{StaticResource SurfaceFill}"
-                      Stroke="{StaticResource LineBrush}"
-                      StrokeThickness="2.4"
-                      StrokeLineJoin="Round" />
-                <Path Data="M176,140 L194,140 L194,170 L176,170 Z" Fill="{Binding State.Buttons.DpadUp, Converter={StaticResource InputFillBrush}}" Stroke="{Binding State.Buttons.DpadUp, Converter={StaticResource ActiveOnlyStrokeBrush}}" StrokeThickness="2" />
-                <Path Data="M146,170 L176,170 L176,188 L146,188 Z" Fill="{Binding State.Buttons.DpadLeft, Converter={StaticResource InputFillBrush}}" Stroke="{Binding State.Buttons.DpadLeft, Converter={StaticResource ActiveOnlyStrokeBrush}}" StrokeThickness="2" />
-                <Path Data="M194,170 L224,170 L224,188 L194,188 Z" Fill="{Binding State.Buttons.DpadRight, Converter={StaticResource InputFillBrush}}" Stroke="{Binding State.Buttons.DpadRight, Converter={StaticResource ActiveOnlyStrokeBrush}}" StrokeThickness="2" />
-                <Path Data="M176,188 L194,188 L194,218 L176,218 Z" Fill="{Binding State.Buttons.DpadDown, Converter={StaticResource InputFillBrush}}" Stroke="{Binding State.Buttons.DpadDown, Converter={StaticResource ActiveOnlyStrokeBrush}}" StrokeThickness="2" />
-                <Rectangle Canvas.Left="176" Canvas.Top="170" Width="18" Height="18" Fill="{StaticResource SurfaceFill}" Stroke="{StaticResource MutedLineBrush}" StrokeThickness="1" />
+                <Canvas Canvas.Left="64" Canvas.Top="48">
+                    <Path Data="M1 13.959C1.00015 13.9306 1.0003 13.8877 1.00098 13.8311C1.00233 13.7173 1.00502 13.5478 1.01074 13.332C1.02219 12.9003 1.04599 12.2809 1.09277 11.5361C1.1866 10.0427 1.37474 8.06038 1.74902 6.08008C2.4189 2.53679 5.0191 1.00015 7.65918 1C9.14848 1 12.7541 1.18177 16.3311 1.50293C18.1157 1.66317 19.8774 1.85667 21.3525 2.07715C22.8634 2.30298 23.97 2.54288 24.5127 2.7666C25.031 2.98035 25.9103 3.58175 27.0146 4.48242C28.0881 5.35793 29.2877 6.44324 30.4238 7.53613C31.5596 8.62871 32.6203 9.71769 33.416 10.5957C33.8147 11.0356 34.1387 11.4138 34.3701 11.708C34.4862 11.8556 34.5717 11.973 34.6289 12.0596C34.6564 12.1011 34.6713 12.1276 34.6787 12.1406C34.8334 12.5947 34.917 13.0601 34.959 13.4238C34.98 13.6062 34.99 13.7569 34.9951 13.8594C34.9976 13.9105 34.9994 13.9494 35 13.9736V14.0264C34.9994 14.0506 34.9976 14.0895 34.9951 14.1406C34.99 14.2431 34.98 14.3938 34.959 14.5762C34.9169 14.9402 34.8336 15.406 34.6787 15.8604C34.6712 15.8736 34.6559 15.8997 34.6289 15.9404C34.5717 16.027 34.4862 16.1444 34.3701 16.292C34.1387 16.5862 33.8147 16.9644 33.416 17.4043C32.6203 18.2823 31.5596 19.3713 30.4238 20.4639C29.2877 21.5568 28.0881 22.6421 27.0146 23.5176C25.9103 24.4182 25.031 25.0197 24.5127 25.2334C23.97 25.4571 22.8634 25.697 21.3525 25.9229C19.8774 26.1433 18.1157 26.3368 16.3311 26.4971C12.7541 26.8182 9.14848 27 7.65918 27C5.0191 26.9998 2.41891 25.4632 1.74902 21.9199C1.37474 19.9396 1.1866 17.9573 1.09277 16.4639C1.04599 15.7191 1.02219 15.0997 1.01074 14.668C1.00502 14.4522 1.00233 14.2827 1.00098 14.1689C1.0003 14.1123 1.00015 14.0694 1 14.041V13.959Z" Canvas.Left="28" Canvas.Top="0" Fill="{Binding State.Buttons.DpadUp, Converter={StaticResource InputFillBrush}}" Stroke="{Binding State.Buttons.DpadUp, Converter={StaticResource InputStrokeBrush}}" StrokeThickness="2"><Path.RenderTransform><RotateTransform Angle="90" CenterX="18" CenterY="14" /></Path.RenderTransform></Path>
+                    <Path Data="M1 13.959C1.00015 13.9306 1.0003 13.8877 1.00098 13.8311C1.00233 13.7173 1.00502 13.5478 1.01074 13.332C1.02219 12.9003 1.04599 12.2809 1.09277 11.5361C1.1866 10.0427 1.37474 8.06038 1.74902 6.08008C2.4189 2.53679 5.0191 1.00015 7.65918 1C9.14848 1 12.7541 1.18177 16.3311 1.50293C18.1157 1.66317 19.8774 1.85667 21.3525 2.07715C22.8634 2.30298 23.97 2.54288 24.5127 2.7666C25.031 2.98035 25.9103 3.58175 27.0146 4.48242C28.0881 5.35793 29.2877 6.44324 30.4238 7.53613C31.5596 8.62871 32.6203 9.71769 33.416 10.5957C33.8147 11.0356 34.1387 11.4138 34.3701 11.708C34.4862 11.8556 34.5717 11.973 34.6289 12.0596C34.6564 12.1011 34.6713 12.1276 34.6787 12.1406C34.8334 12.5947 34.917 13.0601 34.959 13.4238C34.98 13.6062 34.99 13.7569 34.9951 13.8594C34.9976 13.9105 34.9994 13.9494 35 13.9736V14.0264C34.9994 14.0506 34.9976 14.0895 34.9951 14.1406C34.99 14.2431 34.98 14.3938 34.959 14.5762C34.9169 14.9402 34.8336 15.406 34.6787 15.8604C34.6712 15.8736 34.6559 15.8997 34.6289 15.9404C34.5717 16.027 34.4862 16.1444 34.3701 16.292C34.1387 16.5862 33.8147 16.9644 33.416 17.4043C32.6203 18.2823 31.5596 19.3713 30.4238 20.4639C29.2877 21.5568 28.0881 22.6421 27.0146 23.5176C25.9103 24.4182 25.031 25.0197 24.5127 25.2334C23.97 25.4571 22.8634 25.697 21.3525 25.9229C19.8774 26.1433 18.1157 26.3368 16.3311 26.4971C12.7541 26.8182 9.14848 27 7.65918 27C5.0191 26.9998 2.41891 25.4632 1.74902 21.9199C1.37474 19.9396 1.1866 17.9573 1.09277 16.4639C1.04599 15.7191 1.02219 15.0997 1.01074 14.668C1.00502 14.4522 1.00233 14.2827 1.00098 14.1689C1.0003 14.1123 1.00015 14.0694 1 14.041V13.959Z" Canvas.Left="0" Canvas.Top="24" Fill="{Binding State.Buttons.DpadLeft, Converter={StaticResource InputFillBrush}}" Stroke="{Binding State.Buttons.DpadLeft, Converter={StaticResource InputStrokeBrush}}" StrokeThickness="2" />
+                    <Path Data="M1 13.959C1.00015 13.9306 1.0003 13.8877 1.00098 13.8311C1.00233 13.7173 1.00502 13.5478 1.01074 13.332C1.02219 12.9003 1.04599 12.2809 1.09277 11.5361C1.1866 10.0427 1.37474 8.06038 1.74902 6.08008C2.4189 2.53679 5.0191 1.00015 7.65918 1C9.14848 1 12.7541 1.18177 16.3311 1.50293C18.1157 1.66317 19.8774 1.85667 21.3525 2.07715C22.8634 2.30298 23.97 2.54288 24.5127 2.7666C25.031 2.98035 25.9103 3.58175 27.0146 4.48242C28.0881 5.35793 29.2877 6.44324 30.4238 7.53613C31.5596 8.62871 32.6203 9.71769 33.416 10.5957C33.8147 11.0356 34.1387 11.4138 34.3701 11.708C34.4862 11.8556 34.5717 11.973 34.6289 12.0596C34.6564 12.1011 34.6713 12.1276 34.6787 12.1406C34.8334 12.5947 34.917 13.0601 34.959 13.4238C34.98 13.6062 34.99 13.7569 34.9951 13.8594C34.9976 13.9105 34.9994 13.9494 35 13.9736V14.0264C34.9994 14.0506 34.9976 14.0895 34.9951 14.1406C34.99 14.2431 34.98 14.3938 34.959 14.5762C34.9169 14.9402 34.8336 15.406 34.6787 15.8604C34.6712 15.8736 34.6559 15.8997 34.6289 15.9404C34.5717 16.027 34.4862 16.1444 34.3701 16.292C34.1387 16.5862 33.8147 16.9644 33.416 17.4043C32.6203 18.2823 31.5596 19.3713 30.4238 20.4639C29.2877 21.5568 28.0881 22.6421 27.0146 23.5176C25.9103 24.4182 25.031 25.0197 24.5127 25.2334C23.97 25.4571 22.8634 25.697 21.3525 25.9229C19.8774 26.1433 18.1157 26.3368 16.3311 26.4971C12.7541 26.8182 9.14848 27 7.65918 27C5.0191 26.9998 2.41891 25.4632 1.74902 21.9199C1.37474 19.9396 1.1866 17.9573 1.09277 16.4639C1.04599 15.7191 1.02219 15.0997 1.01074 14.668C1.00502 14.4522 1.00233 14.2827 1.00098 14.1689C1.0003 14.1123 1.00015 14.0694 1 14.041V13.959Z" Canvas.Left="56" Canvas.Top="24" Fill="{Binding State.Buttons.DpadRight, Converter={StaticResource InputFillBrush}}" Stroke="{Binding State.Buttons.DpadRight, Converter={StaticResource InputStrokeBrush}}" StrokeThickness="2"><Path.RenderTransform><RotateTransform Angle="180" CenterX="18" CenterY="14" /></Path.RenderTransform></Path>
+                    <Path Data="M1 13.959C1.00015 13.9306 1.0003 13.8877 1.00098 13.8311C1.00233 13.7173 1.00502 13.5478 1.01074 13.332C1.02219 12.9003 1.04599 12.2809 1.09277 11.5361C1.1866 10.0427 1.37474 8.06038 1.74902 6.08008C2.4189 2.53679 5.0191 1.00015 7.65918 1C9.14848 1 12.7541 1.18177 16.3311 1.50293C18.1157 1.66317 19.8774 1.85667 21.3525 2.07715C22.8634 2.30298 23.97 2.54288 24.5127 2.7666C25.031 2.98035 25.9103 3.58175 27.0146 4.48242C28.0881 5.35793 29.2877 6.44324 30.4238 7.53613C31.5596 8.62871 32.6203 9.71769 33.416 10.5957C33.8147 11.0356 34.1387 11.4138 34.3701 11.708C34.4862 11.8556 34.5717 11.973 34.6289 12.0596C34.6564 12.1011 34.6713 12.1276 34.6787 12.1406C34.8334 12.5947 34.917 13.0601 34.959 13.4238C34.98 13.6062 34.99 13.7569 34.9951 13.8594C34.9976 13.9105 34.9994 13.9494 35 13.9736V14.0264C34.9994 14.0506 34.9976 14.0895 34.9951 14.1406C34.99 14.2431 34.98 14.3938 34.959 14.5762C34.9169 14.9402 34.8336 15.406 34.6787 15.8604C34.6712 15.8736 34.6559 15.8997 34.6289 15.9404C34.5717 16.027 34.4862 16.1444 34.3701 16.292C34.1387 16.5862 33.8147 16.9644 33.416 17.4043C32.6203 18.2823 31.5596 19.3713 30.4238 20.4639C29.2877 21.5568 28.0881 22.6421 27.0146 23.5176C25.9103 24.4182 25.031 25.0197 24.5127 25.2334C23.97 25.4571 22.8634 25.697 21.3525 25.9229C19.8774 26.1433 18.1157 26.3368 16.3311 26.4971C12.7541 26.8182 9.14848 27 7.65918 27C5.0191 26.9998 2.41891 25.4632 1.74902 21.9199C1.37474 19.9396 1.1866 17.9573 1.09277 16.4639C1.04599 15.7191 1.02219 15.0997 1.01074 14.668C1.00502 14.4522 1.00233 14.2827 1.00098 14.1689C1.0003 14.1123 1.00015 14.0694 1 14.041V13.959Z" Canvas.Left="28" Canvas.Top="48" Fill="{Binding State.Buttons.DpadDown, Converter={StaticResource InputFillBrush}}" Stroke="{Binding State.Buttons.DpadDown, Converter={StaticResource InputStrokeBrush}}" StrokeThickness="2"><Path.RenderTransform><RotateTransform Angle="-90" CenterX="18" CenterY="14" /></Path.RenderTransform></Path>
+                </Canvas>
 
-                <Ellipse Canvas.Left="244" Canvas.Top="28" Width="28" Height="28" Fill="{Binding State.Buttons.Back, Converter={StaticResource InputFillBrush}}" Stroke="{Binding State.Buttons.Back, Converter={StaticResource InputStrokeBrush}}" StrokeThickness="2" />
-                <Ellipse Canvas.Left="286" Canvas.Top="156" Width="48" Height="48" Fill="{Binding State.Buttons.Guide, Converter={StaticResource InputFillBrush}}" Stroke="{Binding State.Buttons.Guide, Converter={StaticResource InputStrokeBrush}}" StrokeThickness="2" />
-                <Ellipse Canvas.Left="328" Canvas.Top="28" Width="28" Height="28" Fill="{Binding State.Buttons.Start, Converter={StaticResource InputFillBrush}}" Stroke="{Binding State.Buttons.Start, Converter={StaticResource InputStrokeBrush}}" StrokeThickness="2" />
+                <Border Canvas.Left="150" Canvas.Top="28" Width="20" Height="36" CornerRadius="10" Background="{Binding State.Buttons.Back, Converter={StaticResource InputFillBrush}}" BorderBrush="{Binding State.Buttons.Back, Converter={StaticResource InputStrokeBrush}}" BorderThickness="2" RenderTransformOrigin="0.5,0.5">
+                    <Border.RenderTransform><RotateTransform Angle="-10" /></Border.RenderTransform>
+                </Border>
+                <Border Canvas.Left="430" Canvas.Top="28" Width="20" Height="36" CornerRadius="10" Background="{Binding State.Buttons.Start, Converter={StaticResource InputFillBrush}}" BorderBrush="{Binding State.Buttons.Start, Converter={StaticResource InputStrokeBrush}}" BorderThickness="2" RenderTransformOrigin="0.5,0.5">
+                    <Border.RenderTransform><RotateTransform Angle="10" /></Border.RenderTransform>
+                </Border>
+                <Ellipse Canvas.Left="276" Canvas.Top="176" Width="48" Height="48" Fill="{Binding State.Buttons.Guide, Converter={StaticResource InputFillBrush}}" Stroke="{Binding State.Buttons.Guide, Converter={StaticResource InputStrokeBrush}}" StrokeThickness="2" />
 
                 <Ellipse Canvas.Left="466" Canvas.Top="48" Width="40" Height="40" Fill="{Binding State.Buttons.North, Converter={StaticResource InputFillBrush}}" Stroke="{Binding State.Buttons.North, Converter={StaticResource InputStrokeBrush}}" StrokeThickness="3" />
-                <Path Data="M486,59 L474,80 L498,80 Z" Stroke="{StaticResource LineBrush}" StrokeThickness="2" StrokeLineJoin="Round" Fill="Transparent" />
+                <Path Data="M486,58 L474,80 L498,80 Z" Stroke="{StaticResource LineBrush}" StrokeThickness="2" StrokeLineJoin="Round" Fill="Transparent" />
 
                 <Ellipse Canvas.Left="506" Canvas.Top="88" Width="40" Height="40" Fill="{Binding State.Buttons.East, Converter={StaticResource InputFillBrush}}" Stroke="{Binding State.Buttons.East, Converter={StaticResource InputStrokeBrush}}" StrokeThickness="3" />
                 <Ellipse Canvas.Left="518" Canvas.Top="100" Width="16" Height="16" Stroke="{StaticResource LineBrush}" StrokeThickness="2" Fill="Transparent" />

@@ -99,6 +99,7 @@ namespace GamepadTester.Services
         DpadUp = 11,
         DpadDown = 12,
         DpadLeft = 13,
-        DpadRight = 14
+        DpadRight = 14,
+        Touchpad = 20
     }
 }
