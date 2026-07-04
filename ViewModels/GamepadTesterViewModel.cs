@@ -628,7 +628,7 @@ namespace GamepadTester.ViewModels
             {
                 if (isLatencyTestRunning)
                 {
-                    return L("LOCGT_PressAnyGamepadButton", "Press any gamepad button");
+                    return "-- ms";
                 }
 
                 if (latencyTestSamples == 0)

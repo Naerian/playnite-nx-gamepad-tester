@@ -49,7 +49,7 @@
     </UserControl.Resources>
 
     <Viewbox Stretch="Uniform">
-        <Canvas Width="760" Height="500">
+        <Canvas Width="760" Height="520">
             <Canvas Canvas.Left="170" Canvas.Top="0">
                 <Path Data="M76 78V32.501C76 15.9367 64.0033 1.46033 47.7764 1.01172L47 1.00098H46.9932C37.3401 0.933534 30.3801 5.04414 24.8594 11.4609C19.3001 17.9226 15.2256 26.6961 11.4238 35.8838C8.46352 43.038 5.85418 53.8299 3.97949 62.8906C3.04456 67.4093 2.29657 71.4772 1.78223 74.415C1.52511 75.8837 1.32565 77.0696 1.19141 77.8877C1.18513 77.9259 1.17885 77.9634 1.17285 78H76Z"
                       Fill="{Binding IsLeftTriggerActive, Converter={StaticResource InputFillBrush}}"
@@ -89,7 +89,7 @@
                 </Border>
             </Canvas>
 
-            <Canvas Canvas.Left="80" Canvas.Top="100" Width="600" Height="400">
+            <Canvas Canvas.Left="80" Canvas.Top="118" Width="600" Height="400">
                 <Path Data="M65.5 1C71.9383 1 75.25 2.12572 76.9668 3.62793C78.6276 5.08136 79 7.07263 79 9.5V29.999H1V18.5C1 15.6932 1.74879 13.6263 2.98633 12.0332C4.23703 10.4232 6.0479 9.21873 8.29492 8.25391C10.5446 7.288 13.1708 6.58745 15.998 5.9502C18.7766 5.32393 21.8409 4.74138 24.7344 4.04297C36.1988 1.27569 52.4776 1 65.5 1Z"
                       Fill="{Binding State.Buttons.LeftShoulder, Converter={StaticResource InputFillBrush}}"
                       Stroke="{Binding State.Buttons.LeftShoulder, Converter={StaticResource InputStrokeBrush}}"
