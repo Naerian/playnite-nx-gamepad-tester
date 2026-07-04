@@ -4,14 +4,14 @@
              xmlns:converters="clr-namespace:GamepadTester.Converters"
              IsHitTestVisible="False">
     <UserControl.Resources>
-        <SolidColorBrush x:Key="ControllerFill" Color="#11151B" />
-        <SolidColorBrush x:Key="SurfaceFill" Color="#1D232E" />
-        <SolidColorBrush x:Key="LineBrush" Color="#D8DCE4" />
-        <SolidColorBrush x:Key="MutedLineBrush" Color="#6F7889" />
+        <SolidColorBrush x:Key="ControllerFill" Color="{DynamicResource ControlBackgroundColorDark}" />
+        <SolidColorBrush x:Key="SurfaceFill" Color="{DynamicResource ControlBackgroundColor}" />
+        <SolidColorBrush x:Key="LineBrush" Color="{DynamicResource TextColor}" />
+        <SolidColorBrush x:Key="MutedLineBrush" Color="{DynamicResource TextColorDarker}" />
         <SolidColorBrush x:Key="InputIdleFill" Color="Transparent" />
         <SolidColorBrush x:Key="InputActiveFill" Color="#6631C48D" />
         <SolidColorBrush x:Key="InputActiveStroke" Color="#64F0B7" />
-        <SolidColorBrush x:Key="TriggerTrack" Color="#0E1117" />
+        <SolidColorBrush x:Key="TriggerTrack" Color="{DynamicResource ControlBackgroundColorDark}" />
         <SolidColorBrush x:Key="StickDotLeft" Color="#4CC9F0" />
         <SolidColorBrush x:Key="StickDotRight" Color="#F7B955" />
 
@@ -26,7 +26,7 @@
                                          TrueBrush="{StaticResource InputActiveStroke}" />
 
         <Style x:Key="MapLabel" TargetType="Label">
-            <Setter Property="Foreground" Value="#F4F6FA" />
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="FontSize" Value="14" />
             <Setter Property="Padding" Value="0" />
@@ -35,7 +35,7 @@
         </Style>
 
         <Style x:Key="SmallMapText" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#F4F6FA" />
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="FontSize" Value="13" />
             <Setter Property="TextAlignment" Value="Center" />

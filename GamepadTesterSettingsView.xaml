@@ -1,14 +1,65 @@
-﻿<UserControl x:Class="GamepadTester.GamepadTesterSettingsView"
+<UserControl x:Class="GamepadTester.GamepadTesterSettingsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="400" d:DesignWidth="600">
-    <StackPanel>
-        <TextBlock Text="Description for Option1:"/>
-        <TextBox Text="{Binding Settings.Option1}"/>
-        <TextBlock Text="Description for Option2:"/>
-        <CheckBox IsChecked="{Binding Settings.Option2}"/>
-    </StackPanel>
+             d:DesignHeight="420"
+             d:DesignWidth="640">
+    <UserControl.Resources>
+        <Style x:Key="SectionTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+        </Style>
+
+        <Style x:Key="MutedText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource TextBrushDarker}" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="28,0,0,12" />
+        </Style>
+
+        <Style x:Key="SettingsSection" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource GroupBoxBackgroundBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource PopupBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Padding" Value="16" />
+            <Setter Property="Margin" Value="0,0,0,14" />
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="16" TextElement.Foreground="{DynamicResource TextBrush}">
+            <Border Style="{StaticResource SettingsSection}">
+                <StackPanel>
+                    <TextBlock Text="Playnite integration" Style="{StaticResource SectionTitle}" />
+                    <CheckBox Content="Show Gamepad Tester in Playnite sidebar"
+                              IsChecked="{Binding Settings.ShowSidebarItem}" />
+                    <TextBlock Text="Adds a Gamepad Tester entry to the Desktop mode sidebar. Restart Playnite after changing this option so the sidebar can be rebuilt."
+                               Style="{StaticResource MutedText}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource SettingsSection}">
+                <StackPanel>
+                    <TextBlock Text="Testing behavior" Style="{StaticResource SectionTitle}" />
+                    <CheckBox Content="Reset diagnostics when switching controller"
+                              IsChecked="{Binding Settings.AutoResetDiagnosticsOnControllerChange}" />
+                    <TextBlock Text="Clears quick checks, stick paths, circular coverage, and drift session data when you select a different connected device."
+                               Style="{StaticResource MutedText}" />
+
+                    <CheckBox Content="Show device selector even with one controller"
+                              IsChecked="{Binding Settings.ShowDeviceSelectorWhenSingleController}" />
+                    <TextBlock Text="Useful while testing device detection or controller reconnect behavior."
+                               Style="{StaticResource MutedText}" />
+
+                    <CheckBox Content="Enable rumble tests"
+                              IsChecked="{Binding Settings.EnableRumbleTests}" />
+                    <TextBlock Text="Rumble tests depend on controller mode, driver support, and SDL support for the device."
+                               Style="{StaticResource MutedText}" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>
