@@ -204,8 +204,7 @@
                       StrokeThickness="2" />
                 <Rectangle Canvas.Left="173" Canvas.Top="188" Width="18" Height="18"
                            Fill="{StaticResource SurfaceFill}"
-                           Stroke="{StaticResource MutedLineBrush}"
-                           StrokeThickness="1" />
+                           StrokeThickness="0" />
 
                 <Ellipse Canvas.Left="244" Canvas.Top="98" Width="28" Height="28"
                          Fill="{Binding State.Buttons.Back, Converter={StaticResource InputFillBrush}}"
@@ -220,7 +219,6 @@
                          Stroke="{Binding State.Buttons.Start, Converter={StaticResource InputStrokeBrush}}"
                          StrokeThickness="2" />
 
-                <Path Data="M286,50 Q300,40 314,50" Stroke="{StaticResource LineBrush}" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Fill="Transparent" Opacity="0.8" />
                 <Path Data="M252,112 L264,112" Stroke="{StaticResource LineBrush}" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
                 <Path Data="M336,112 L348,112" Stroke="{StaticResource LineBrush}" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
 
