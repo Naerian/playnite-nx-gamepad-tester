@@ -11,6 +11,8 @@
     <sys:String x:Key="LOCGT_TabSticks">Sticks</sys:String>
     <sys:String x:Key="LOCGT_TabCalibration">Calibration</sys:String>
     <sys:String x:Key="LOCGT_TabLatency">Latency</sys:String>
+    <sys:String x:Key="LOCGT_TabVibration">Vibration</sys:String>
+    <sys:String x:Key="LOCGT_TabDeviceInfo">Device info</sys:String>
     <sys:String x:Key="LOCGT_TabHardware">Hardware</sys:String>
     <sys:String x:Key="LOCGT_Health">Health</sys:String>
     <sys:String x:Key="LOCGT_CenterDrift">Center drift</sys:String>
