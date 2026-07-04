@@ -11,6 +11,8 @@ It is designed for couch, TV, handheld-PC, and console-like setups where users w
 - Supports Xbox-compatible XInput controllers.
 - Supports PlayStation, Switch Pro, 8BitDo, and generic SDL-compatible controllers where SDL exposes a GameController mapping.
 - Multi-controller selector when more than one controller is connected.
+- Optional Playnite Desktop sidebar entry.
+- Extension settings for sidebar visibility, controller switching behavior, device selector behavior, and rumble tests.
 - Universal SVG-style controller map with live button, shoulder, trigger, stick, and D-pad feedback.
 - Analog trigger percentage display with live visual fill.
 - Stick position scopes for left and right sticks.
@@ -102,60 +104,6 @@ Supported families include:
 - Generic SDL GameController-compatible devices.
 
 If a controller appears as a generic device, it can usually still be tested as long as SDL exposes normalized axes and buttons.
-
-## Development
-
-This repository contains a Playnite generic plugin built with C#, .NET Framework 4.6.2, and WPF.
-
-Expected local Playnite install path:
-
-`C:\Playnite`
-
-The project references:
-
-`C:\Playnite\Playnite.SDK.dll`
-
-To build and deploy locally:
-
-```powershell
-.\BuildGamepadTester.ps1
-```
-
-The script:
-
-- Builds the plugin in Debug configuration.
-- Creates or reuses a local development code-signing certificate.
-- Signs `GamepadTester.dll`.
-- Deploys the extension to `C:\Playnite\Extensions\GamepadTester`.
-- Copies localization and icon assets.
-
-Close Playnite before running the deploy script, otherwise Windows may keep the plugin DLL locked.
-
-## Project Structure
-
-```text
-GamepadTester/
-  Commands/
-  Converters/
-  Localization/
-  Models/
-  Services/
-  ViewModels/
-  Views/
-  extension.yaml
-  GamepadTester.csproj
-  GamepadTester.sln
-BuildGamepadTester.ps1
-```
-
-Main components:
-
-- `Services/SdlGamepadProvider.cs`: SDL controller discovery, polling, normalization, and rumble calls.
-- `Services/GamepadPollingService.cs`: background polling loop used by the UI.
-- `ViewModels/GamepadTesterViewModel.cs`: UI state, diagnostics aggregation, labels, commands, and multi-controller selection.
-- `Models/StickDiagnosticsTracker.cs`: stick path and circular coverage aggregation.
-- `Views/GamepadTesterView.xaml`: Desktop tester window content.
-- `Views/ControllerLayouts/UniversalControllerTesterView.xaml`: universal live controller map.
 
 ## Fullscreen Status
 

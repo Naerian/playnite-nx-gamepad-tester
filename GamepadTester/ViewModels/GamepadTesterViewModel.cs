@@ -16,6 +16,7 @@ namespace GamepadTester.ViewModels
     {
         private const double StickRadius = 34d;
         private readonly GamepadPollingService pollingService;
+        private readonly GamepadTesterSettings settings;
         private readonly RelayCommand rumbleCommand;
         private readonly RelayCommand lightRumbleCommand;
         private readonly RelayCommand mediumRumbleCommand;
@@ -43,9 +44,10 @@ namespace GamepadTester.ViewModels
         private bool isRumbleRunning;
         private string rumbleStatusLabel;
 
-        public GamepadTesterViewModel(GamepadPollingService pollingService)
+        public GamepadTesterViewModel(GamepadPollingService pollingService, GamepadTesterSettings settings = null)
         {
             this.pollingService = pollingService;
+            this.settings = settings ?? new GamepadTesterSettings();
             state = new GamepadState();
             Controllers = new ObservableCollection<GamepadControllerInfo>();
             InputHistory = new ObservableCollection<InputHistoryItem>();
@@ -145,14 +147,17 @@ namespace GamepadTester.ViewModels
                 if (selectedController != null)
                 {
                     pollingService.SelectController(selectedController.InstanceId);
-                    ResetDiagnostics();
+                    if (this.settings.AutoResetDiagnosticsOnControllerChange)
+                    {
+                        ResetDiagnostics();
+                    }
                 }
             }
         }
 
         public bool IsControllerSelectorVisible
         {
-            get { return Controllers.Count > 1; }
+            get { return Controllers.Count > 1 || settings.ShowDeviceSelectorWhenSingleController; }
         }
 
         public bool IsControllerSelectorOpen
@@ -544,6 +549,26 @@ namespace GamepadTester.ViewModels
             }
         }
 
+        public bool CoveredSouth { get { return coveredButtons.South; } }
+        public bool CoveredEast { get { return coveredButtons.East; } }
+        public bool CoveredWest { get { return coveredButtons.West; } }
+        public bool CoveredNorth { get { return coveredButtons.North; } }
+        public bool CoveredLeftShoulder { get { return coveredButtons.LeftShoulder; } }
+        public bool CoveredRightShoulder { get { return coveredButtons.RightShoulder; } }
+        public bool CoveredLeftStickButton { get { return coveredButtons.LeftStick; } }
+        public bool CoveredRightStickButton { get { return coveredButtons.RightStick; } }
+        public bool CoveredBack { get { return coveredButtons.Back; } }
+        public bool CoveredStart { get { return coveredButtons.Start; } }
+        public bool CoveredGuide { get { return coveredButtons.Guide; } }
+        public bool CoveredDpadUp { get { return coveredButtons.DpadUp; } }
+        public bool CoveredDpadDown { get { return coveredButtons.DpadDown; } }
+        public bool CoveredDpadLeft { get { return coveredButtons.DpadLeft; } }
+        public bool CoveredDpadRight { get { return coveredButtons.DpadRight; } }
+        public bool CoveredLeftTrigger { get { return maxLeftTrigger >= 0.95f; } }
+        public bool CoveredRightTrigger { get { return maxRightTrigger >= 0.95f; } }
+        public bool CoveredLeftStickRange { get { return maxLeftStickMagnitude >= 0.85d; } }
+        public bool CoveredRightStickRange { get { return maxRightStickMagnitude >= 0.85d; } }
+
         public int HealthScore
         {
             get
@@ -876,7 +901,7 @@ namespace GamepadTester.ViewModels
 
         private bool CanRunRumble()
         {
-            return State.IsConnected && !isRumbleRunning;
+            return settings.EnableRumbleTests && State.IsConnected && !isRumbleRunning;
         }
 
         private void RunSimpleRumble(string label, ushort lowFrequency, ushort highFrequency, uint durationMs)
@@ -1209,6 +1234,25 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("ButtonCoverageLabel");
             OnPropertyChanged("AnalogCoverageLabel");
             OnPropertyChanged("QuickTestMissingLabel");
+            OnPropertyChanged("CoveredSouth");
+            OnPropertyChanged("CoveredEast");
+            OnPropertyChanged("CoveredWest");
+            OnPropertyChanged("CoveredNorth");
+            OnPropertyChanged("CoveredLeftShoulder");
+            OnPropertyChanged("CoveredRightShoulder");
+            OnPropertyChanged("CoveredLeftStickButton");
+            OnPropertyChanged("CoveredRightStickButton");
+            OnPropertyChanged("CoveredBack");
+            OnPropertyChanged("CoveredStart");
+            OnPropertyChanged("CoveredGuide");
+            OnPropertyChanged("CoveredDpadUp");
+            OnPropertyChanged("CoveredDpadDown");
+            OnPropertyChanged("CoveredDpadLeft");
+            OnPropertyChanged("CoveredDpadRight");
+            OnPropertyChanged("CoveredLeftTrigger");
+            OnPropertyChanged("CoveredRightTrigger");
+            OnPropertyChanged("CoveredLeftStickRange");
+            OnPropertyChanged("CoveredRightStickRange");
             OnPropertyChanged("HealthScore");
             OnPropertyChanged("HealthLabel");
             OnPropertyChanged("ControllerSummary");

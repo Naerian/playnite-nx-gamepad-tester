@@ -4,12 +4,12 @@
              xmlns:converters="clr-namespace:GamepadTester.Converters"
              xmlns:layouts="clr-namespace:GamepadTester.Views.ControllerLayouts">
     <UserControl.Resources>
-        <SolidColorBrush x:Key="PanelBrush" Color="#20242C" />
-        <SolidColorBrush x:Key="PanelAltBrush" Color="#171B22" />
-        <SolidColorBrush x:Key="LineBrush" Color="#596273" />
-        <SolidColorBrush x:Key="TextMutedBrush" Color="#A9B0BE" />
+        <SolidColorBrush x:Key="PanelBrush" Color="{DynamicResource ControlBackgroundColorDark}" />
+        <SolidColorBrush x:Key="PanelAltBrush" Color="{DynamicResource ControlBackgroundColorDark}" />
+        <SolidColorBrush x:Key="LineBrush" Color="{DynamicResource PopupBorderColor}" />
+        <SolidColorBrush x:Key="TextMutedBrush" Color="{DynamicResource TextColorDarker}" />
         <SolidColorBrush x:Key="ActiveBrush" Color="#31C48D" />
-        <SolidColorBrush x:Key="IdleBrush" Color="#2B313D" />
+        <SolidColorBrush x:Key="IdleBrush" Color="{DynamicResource ControlBackgroundColor}" />
         <SolidColorBrush x:Key="WarningBrush" Color="#F7B955" />
         <SolidColorBrush x:Key="SwitchAccentBrush" Color="#E60012" />
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibility" />
@@ -42,39 +42,61 @@
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="Margin" Value="4" />
         </Style>
+
+        <Style x:Key="CheckPill" TargetType="Border" BasedOn="{StaticResource InputPill}">
+            <Setter Property="Height" Value="32" />
+            <Setter Property="MinWidth" Value="92" />
+            <Setter Property="Padding" Value="10,0" />
+        </Style>
+
+        <Style x:Key="SectionHeading" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
+            <Setter Property="Margin" Value="4,10,0,4" />
+        </Style>
     </UserControl.Resources>
 
     <Grid Margin="22" TextElement.Foreground="{DynamicResource TextBrush}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-
-        <Grid Margin="0,0,0,10">
-            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                <ComboBox Width="360"
-                          Height="34"
-                          Margin="0,0,12,0"
-                          ItemsSource="{Binding Controllers}"
-                          SelectedItem="{Binding SelectedController, Mode=TwoWay}"
-                          IsDropDownOpen="{Binding IsControllerSelectorOpen, Mode=TwoWay}"
-                          Visibility="{Binding IsControllerSelectorVisible, Converter={StaticResource BoolToVisibility}}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" Margin="2" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-            </StackPanel>
-        </Grid>
-
-        <Border Grid.Row="1"
-                Background="{StaticResource PanelBrush}"
-                BorderBrush="#3C4350"
+        <Border Background="{StaticResource PanelBrush}"
+                BorderBrush="{StaticResource LineBrush}"
                 BorderThickness="1"
                 CornerRadius="8"
                 Padding="16">
-            <TabControl>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Grid Margin="0,0,0,12"
+                      Visibility="{Binding IsControllerSelectorVisible, Converter={StaticResource BoolToVisibility}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Device"
+                               VerticalAlignment="Center"
+                               Foreground="{StaticResource TextMutedBrush}" />
+
+                    <ComboBox Grid.Column="1"
+                              Width="420"
+                              MaxDropDownHeight="320"
+                              ItemsSource="{Binding Controllers}"
+                              SelectedItem="{Binding SelectedController, Mode=TwoWay}"
+                              IsDropDownOpen="{Binding IsControllerSelectorOpen, Mode=TwoWay}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DisplayName}"
+                                           FontWeight="SemiBold"
+                                           Margin="4,2"
+                                           TextTrimming="CharacterEllipsis" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </Grid>
+
+                <TabControl Grid.Row="1">
                 <TabItem Header="Test">
                     <Grid Margin="0,14,0,0">
                         <Grid.RowDefinitions>
@@ -177,16 +199,16 @@
                     </Grid>
                 </TabItem>
 
-                <TabItem Header="Quick test">
+                <TabItem Header="Checks">
                     <Grid Margin="0,14,0,0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1.05*" />
-                            <ColumnDefinition Width="1.35*" />
+                            <ColumnDefinition Width="0.8*" />
+                            <ColumnDefinition Width="1.6*" />
                         </Grid.ColumnDefinitions>
 
                         <Border Style="{StaticResource PanelBorder}" Margin="0,0,12,0">
                             <StackPanel>
-                                <TextBlock Text="Coverage" FontSize="18" FontWeight="SemiBold" />
+                                <TextBlock Text="Session coverage" FontSize="18" FontWeight="SemiBold" />
                                 <TextBlock Text="{Binding QuickTestProgress, StringFormat={}{0}%}" FontSize="44" FontWeight="SemiBold" Margin="0,14,0,0" />
                                 <ProgressBar Minimum="0" Maximum="100" Value="{Binding QuickTestProgress, Mode=OneWay}" Height="18" />
                                 <TextBlock Text="{Binding QuickTestLabel}" Margin="0,10,0,0" Foreground="{StaticResource TextMutedBrush}" />
@@ -202,25 +224,55 @@
                         </Border>
 
                         <Border Grid.Column="1" Style="{StaticResource PanelBorder}">
-                            <StackPanel>
-                                <TextBlock Text="Remaining checks" FontSize="18" FontWeight="SemiBold" />
-                                <TextBlock Text="{Binding QuickTestMissingLabel}"
-                                           TextWrapping="Wrap"
-                                           Margin="0,12,0,0"
-                                           Foreground="{StaticResource TextMutedBrush}" />
-                                <TextBlock Text="Press every face button, shoulder, stick click, menu button and D-pad direction. Move each stick to the edge and pull both triggers fully."
-                                           TextWrapping="Wrap"
-                                           Margin="0,18,0,0" />
-                                <TextBlock Text="The visual map and this checklist use the same normalized SDL state, so a completed check confirms the input was received by the plugin."
-                                           TextWrapping="Wrap"
-                                           Margin="0,10,0,0"
-                                           Foreground="{StaticResource TextMutedBrush}" />
-                            </StackPanel>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <StackPanel>
+                                    <TextBlock Text="Checklist" FontSize="18" FontWeight="SemiBold" />
+                                    <TextBlock Text="Completed controls are highlighted. Use Reset session for a clean pass."
+                                               TextWrapping="Wrap"
+                                               Margin="0,8,0,6"
+                                               Foreground="{StaticResource TextMutedBrush}" />
+
+                                    <TextBlock Text="Face buttons" Style="{StaticResource SectionHeading}" />
+                                    <UniformGrid Columns="4">
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredSouth, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding SouthLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredEast, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding EastLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredWest, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding WestLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredNorth, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding NorthLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    </UniformGrid>
+
+                                    <TextBlock Text="Shoulders and triggers" Style="{StaticResource SectionHeading}" />
+                                    <UniformGrid Columns="4">
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredLeftShoulder, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding LeftShoulderLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredRightShoulder, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding RightShoulderLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredLeftTrigger, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding LeftTriggerLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredRightTrigger, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding RightTriggerLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    </UniformGrid>
+
+                                    <TextBlock Text="Sticks" Style="{StaticResource SectionHeading}" />
+                                    <UniformGrid Columns="4">
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredLeftStickButton, Converter={StaticResource InputFillBrush}}"><TextBlock Text="L3 click" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredRightStickButton, Converter={StaticResource InputFillBrush}}"><TextBlock Text="R3 click" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredLeftStickRange, Converter={StaticResource InputFillBrush}}"><TextBlock Text="LS edge" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredRightStickRange, Converter={StaticResource InputFillBrush}}"><TextBlock Text="RS edge" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    </UniformGrid>
+
+                                    <TextBlock Text="D-pad and system" Style="{StaticResource SectionHeading}" />
+                                    <UniformGrid Columns="4">
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredDpadUp, Converter={StaticResource InputFillBrush}}"><TextBlock Text="D-Up" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredDpadDown, Converter={StaticResource InputFillBrush}}"><TextBlock Text="D-Down" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredDpadLeft, Converter={StaticResource InputFillBrush}}"><TextBlock Text="D-Left" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredDpadRight, Converter={StaticResource InputFillBrush}}"><TextBlock Text="D-Right" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredBack, Converter={StaticResource InputFillBrush}}"><TextBlock Text="Back" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredGuide, Converter={StaticResource InputFillBrush}}"><TextBlock Text="Guide" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredStart, Converter={StaticResource InputFillBrush}}"><TextBlock Text="Start" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    </UniformGrid>
+                                </StackPanel>
+                            </ScrollViewer>
                         </Border>
                     </Grid>
                 </TabItem>
 
-                <TabItem Header="Inputs">
+                <TabItem Header="Input log">
                     <Grid Margin="0,14,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1.15*" />
@@ -267,7 +319,7 @@
                     </Grid>
                 </TabItem>
 
-                <TabItem Header="Diagnostics">
+                <TabItem Header="Health">
                     <Grid Margin="0,14,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -467,96 +519,86 @@
                     </Grid>
                 </TabItem>
 
-                <TabItem Header="Rumble">
+                <TabItem Header="Hardware">
                     <Grid Margin="0,14,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="1.4*" />
+                            <ColumnDefinition Width="1.2*" />
                         </Grid.ColumnDefinitions>
 
                         <Border Style="{StaticResource PanelBorder}" Margin="0,0,12,0">
                             <StackPanel>
-                                <TextBlock Text="Vibration presets" FontSize="18" FontWeight="SemiBold" />
+                                <TextBlock Text="Rumble tests" FontSize="18" FontWeight="SemiBold" />
                                 <TextBlock Text="{Binding RumbleStatusLabel}" Margin="0,8,0,18" Foreground="{StaticResource TextMutedBrush}" />
                                 <UniformGrid Columns="2">
                                     <Button Content="Standard" Height="42" Margin="0,0,8,8" Command="{Binding RumbleCommand}" />
                                     <Button Content="Light" Height="42" Margin="0,0,0,8" Command="{Binding LightRumbleCommand}" />
                                     <Button Content="Medium" Height="42" Margin="0,0,8,8" Command="{Binding MediumRumbleCommand}" />
                                     <Button Content="Heavy" Height="42" Margin="0,0,0,8" Command="{Binding HeavyRumbleCommand}" />
-                                </UniformGrid>
-                            </StackPanel>
-                        </Border>
-
-                        <Border Grid.Column="1" Style="{StaticResource PanelBorder}">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-                                <TextBlock Text="Motor diagnostics" FontSize="18" FontWeight="SemiBold" />
-                                <UniformGrid Grid.Row="1" Columns="2" Margin="0,16,0,18">
                                     <Button Content="Low motor" Height="42" Margin="0,0,8,8" Command="{Binding LowMotorRumbleCommand}" />
                                     <Button Content="High motor" Height="42" Margin="0,0,0,8" Command="{Binding HighMotorRumbleCommand}" />
                                     <Button Content="Pulse" Height="42" Margin="0,0,8,8" Command="{Binding PulseRumbleCommand}" />
                                     <Button Content="Alternating" Height="42" Margin="0,0,0,8" Command="{Binding AlternatingRumbleCommand}" />
                                     <Button Content="Ramp" Height="42" Margin="0,0,8,0" Command="{Binding RampRumbleCommand}" />
                                 </UniformGrid>
-                                <Grid Grid.Row="2">
+
+                                <Grid Margin="0,22,0,0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <Border Background="#11151B" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,8,0">
+                                    <Border Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,8,0">
                                         <StackPanel>
                                             <TextBlock Text="Low-frequency" FontWeight="SemiBold" />
                                             <TextBlock Text="Usually the stronger motor. Useful to detect weak startup or uneven vibration." TextWrapping="Wrap" Margin="0,8,0,0" Foreground="{StaticResource TextMutedBrush}" />
                                         </StackPanel>
                                     </Border>
-                                    <Border Grid.Column="1" Background="#11151B" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" CornerRadius="8" Padding="14">
+                                    <Border Grid.Column="1" Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" CornerRadius="8" Padding="14">
                                         <StackPanel>
                                             <TextBlock Text="High-frequency" FontWeight="SemiBold" />
                                             <TextBlock Text="Usually the finer motor. Alternating and ramp tests make differences easier to feel." TextWrapping="Wrap" Margin="0,8,0,0" Foreground="{StaticResource TextMutedBrush}" />
                                         </StackPanel>
                                     </Border>
                                 </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="1" Style="{StaticResource PanelBorder}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="180" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="Device" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,16" />
+                                <TextBlock Grid.Row="1" Text="Name" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding State.ControllerName}" Margin="0,0,0,10" TextWrapping="Wrap" />
+                                <TextBlock Grid.Row="2" Text="Detected model" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding DeviceModelLabel}" Margin="0,0,0,10" />
+                                <TextBlock Grid.Row="3" Text="VID / PID" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
+                                <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding DeviceIdLabel}" Margin="0,0,0,10" />
+                                <TextBlock Grid.Row="4" Text="Layout" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
+                                <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding State.Layout}" Margin="0,0,0,10" />
+                                <TextBlock Grid.Row="5" Text="Backend" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
+                                <TextBlock Grid.Row="5" Grid.Column="1" Text="SDL GameController" Margin="0,0,0,10" />
+                                <TextBlock Grid.Row="6" Text="Notes" Foreground="{StaticResource TextMutedBrush}" />
+                                <TextBlock Grid.Row="6" Grid.Column="1" Text="Sticks are normalized to -1..1 and triggers to 0..1. Rumble support depends on controller mode, driver, and SDL support." TextWrapping="Wrap" />
                             </Grid>
                         </Border>
                     </Grid>
                 </TabItem>
-
-                <TabItem Header="Device">
-                    <Border Style="{StaticResource PanelBorder}" Margin="0,14,0,0">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="180" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
-                            <TextBlock Grid.Row="0" Text="Name" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
-                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding State.ControllerName}" Margin="0,0,0,10" />
-                            <TextBlock Grid.Row="1" Text="Detected model" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
-                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding DeviceModelLabel}" Margin="0,0,0,10" />
-                            <TextBlock Grid.Row="2" Text="VID / PID" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
-                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding DeviceIdLabel}" Margin="0,0,0,10" />
-                            <TextBlock Grid.Row="3" Text="Layout" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
-                            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding State.Layout}" Margin="0,0,0,10" />
-                            <TextBlock Grid.Row="4" Text="Backend" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
-                            <TextBlock Grid.Row="4" Grid.Column="1" Text="SDL GameController" Margin="0,0,0,10" />
-                            <TextBlock Grid.Row="5" Text="Notes" Foreground="{StaticResource TextMutedBrush}" />
-                            <TextBlock Grid.Row="5" Grid.Column="1" Text="Mappings are normalized through SDL: sticks -1..1, triggers 0..1. Rumble support depends on the controller mode and driver." TextWrapping="Wrap" />
-                        </Grid>
-                    </Border>
-                </TabItem>
-            </TabControl>
+                </TabControl>
+            </Grid>
         </Border>
     </Grid>
 </UserControl>
