@@ -109,6 +109,15 @@
     <sys:String x:Key="LOCGT_RangeQualityFormat">Calidad de rango exterior: {0}%</sys:String>
     <sys:String x:Key="LOCGT_LatencyTitle">Latencia de polling</sys:String>
     <sys:String x:Key="LOCGT_LatencyHelp">Esto estima el intervalo entre muestras observado por el plugin. No es latencia USB real de hardware, pero ayuda a detectar Bluetooth lento, jitter o polling irregular.</sys:String>
+    <sys:String x:Key="LOCGT_LatencySimpleHelp">Pulsa el boton y despues pulsa cualquier boton del mando. El resultado muestra el tiempo observado hasta que el plugin recibe ese input.</sys:String>
+    <sys:String x:Key="LOCGT_StartLatency">Iniciar latencia</sys:String>
+    <sys:String x:Key="LOCGT_WaitingForPress">Esperando...</sys:String>
+    <sys:String x:Key="LOCGT_PressAnyGamepadButton">Pulsa cualquier boton del mando</sys:String>
+    <sys:String x:Key="LOCGT_LatencyReadyHelp">Pulsa iniciar y despues pulsa un boton del mando.</sys:String>
+    <sys:String x:Key="LOCGT_LatencyStatsFormat">Mejor {0:0} ms  Media {1:0} ms  Muestras {2}</sys:String>
+    <sys:String x:Key="LOCGT_PollingHintFormat">Polling medio {0:0.0} ms</sys:String>
+    <sys:String x:Key="LOCGT_LatencyArmed">Prueba de latencia iniciada. Pulsa cualquier boton del mando.</sys:String>
+    <sys:String x:Key="LOCGT_LatencyCapturedFormat">Capturado {0:0} ms.</sys:String>
     <sys:String x:Key="LOCGT_ResetLatency">Reiniciar latencia</sys:String>
     <sys:String x:Key="LOCGT_InputEventLatency">Tiempo de eventos de input</sys:String>
     <sys:String x:Key="LOCGT_InputEventLatencyHelp">Pulsa botones repetidamente. El plugin registra cuando observa cambios para comparar modos cableado, inalambrico y Bluetooth.</sys:String>

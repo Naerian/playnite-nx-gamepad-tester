@@ -9,6 +9,8 @@
         <SolidColorBrush x:Key="LineBrush" Color="{DynamicResource PopupBorderColor}" />
         <SolidColorBrush x:Key="TextMutedBrush" Color="{DynamicResource TextColorDarker}" />
         <SolidColorBrush x:Key="ActiveBrush" Color="#31C48D" />
+        <SolidColorBrush x:Key="ActivePillTextBrush" Color="#07130F" />
+        <SolidColorBrush x:Key="PillIdleTextBrush" Color="{DynamicResource TextColor}" />
         <SolidColorBrush x:Key="IdleBrush" Color="{DynamicResource ControlBackgroundColor}" />
         <SolidColorBrush x:Key="WarningBrush" Color="#F7B955" />
         <SolidColorBrush x:Key="SwitchAccentBrush" Color="#E60012" />
@@ -16,6 +18,9 @@
         <converters:BoolToBrushConverter x:Key="InputFillBrush"
                                          FalseBrush="{StaticResource IdleBrush}"
                                          TrueBrush="{StaticResource ActiveBrush}" />
+        <converters:BoolToBrushConverter x:Key="PillTextBrush"
+                                         FalseBrush="{StaticResource PillIdleTextBrush}"
+                                         TrueBrush="{StaticResource ActivePillTextBrush}" />
 
         <Style x:Key="MetricLabel" TargetType="TextBlock">
             <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
@@ -234,37 +239,37 @@
 
                                     <TextBlock Text="{DynamicResource LOCGT_FaceButtons}" Style="{StaticResource SectionHeading}" />
                                     <UniformGrid Columns="4">
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredSouth, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding SouthLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredEast, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding EastLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredWest, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding WestLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredNorth, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding NorthLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredSouth, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredSouth, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding SouthLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredEast, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredEast, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding EastLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredWest, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredWest, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding WestLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredNorth, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredNorth, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding NorthLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
                                     </UniformGrid>
 
                                     <TextBlock Text="{DynamicResource LOCGT_ShouldersAndTriggers}" Style="{StaticResource SectionHeading}" />
                                     <UniformGrid Columns="4">
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredLeftShoulder, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding LeftShoulderLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredRightShoulder, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding RightShoulderLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredLeftTrigger, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding LeftTriggerLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredRightTrigger, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding RightTriggerLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredLeftShoulder, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredLeftShoulder, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding LeftShoulderLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredRightShoulder, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredRightShoulder, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding RightShoulderLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredLeftTrigger, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredLeftTrigger, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding LeftTriggerLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredRightTrigger, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredRightTrigger, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding RightTriggerLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
                                     </UniformGrid>
 
                                     <TextBlock Text="{DynamicResource LOCGT_Sticks}" Style="{StaticResource SectionHeading}" />
                                     <UniformGrid Columns="4">
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredLeftStickButton, Converter={StaticResource InputFillBrush}}"><TextBlock Text="L3 click" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredRightStickButton, Converter={StaticResource InputFillBrush}}"><TextBlock Text="R3 click" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredLeftStickRange, Converter={StaticResource InputFillBrush}}"><TextBlock Text="LS edge" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredRightStickRange, Converter={StaticResource InputFillBrush}}"><TextBlock Text="RS edge" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredLeftStickButton, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredLeftStickButton, Converter={StaticResource PillTextBrush}}"><TextBlock Text="L3 click" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredRightStickButton, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredRightStickButton, Converter={StaticResource PillTextBrush}}"><TextBlock Text="R3 click" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredLeftStickRange, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredLeftStickRange, Converter={StaticResource PillTextBrush}}"><TextBlock Text="LS edge" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredRightStickRange, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredRightStickRange, Converter={StaticResource PillTextBrush}}"><TextBlock Text="RS edge" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
                                     </UniformGrid>
 
                                     <TextBlock Text="{DynamicResource LOCGT_DpadAndSystem}" Style="{StaticResource SectionHeading}" />
                                     <UniformGrid Columns="4">
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredDpadUp, Converter={StaticResource InputFillBrush}}"><TextBlock Text="D-Up" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredDpadDown, Converter={StaticResource InputFillBrush}}"><TextBlock Text="D-Down" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredDpadLeft, Converter={StaticResource InputFillBrush}}"><TextBlock Text="D-Left" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredDpadRight, Converter={StaticResource InputFillBrush}}"><TextBlock Text="D-Right" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredBack, Converter={StaticResource InputFillBrush}}"><TextBlock Text="Back" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredGuide, Converter={StaticResource InputFillBrush}}"><TextBlock Text="Guide" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredStart, Converter={StaticResource InputFillBrush}}"><TextBlock Text="Start" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredDpadUp, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredDpadUp, Converter={StaticResource PillTextBrush}}"><TextBlock Text="D-Up" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredDpadDown, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredDpadDown, Converter={StaticResource PillTextBrush}}"><TextBlock Text="D-Down" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredDpadLeft, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredDpadLeft, Converter={StaticResource PillTextBrush}}"><TextBlock Text="D-Left" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredDpadRight, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredDpadRight, Converter={StaticResource PillTextBrush}}"><TextBlock Text="D-Right" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredBack, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredBack, Converter={StaticResource PillTextBrush}}"><TextBlock Text="Back" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredGuide, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredGuide, Converter={StaticResource PillTextBrush}}"><TextBlock Text="Guide" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                        <Border Style="{StaticResource CheckPill}" Background="{Binding CoveredStart, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding CoveredStart, Converter={StaticResource PillTextBrush}}"><TextBlock Text="Start" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
                                     </UniformGrid>
                                 </StackPanel>
                             </ScrollViewer>
@@ -283,21 +288,21 @@
                             <StackPanel>
                                 <TextBlock Text="{DynamicResource LOCGT_ButtonMatrix}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12" />
                                 <UniformGrid Columns="4">
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.South, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding SouthLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.East, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding EastLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.West, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding WestLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.North, Converter={StaticResource InputFillBrush}}"><TextBlock Text="{Binding NorthLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.LeftShoulder, Converter={StaticResource InputFillBrush}}"><TextBlock Text="LB / L1" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.RightShoulder, Converter={StaticResource InputFillBrush}}"><TextBlock Text="RB / R1" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.LeftStick, Converter={StaticResource InputFillBrush}}"><TextBlock Text="L3" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.RightStick, Converter={StaticResource InputFillBrush}}"><TextBlock Text="R3" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.DpadUp, Converter={StaticResource InputFillBrush}}"><TextBlock Text="D-Up" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.DpadDown, Converter={StaticResource InputFillBrush}}"><TextBlock Text="D-Down" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.DpadLeft, Converter={StaticResource InputFillBrush}}"><TextBlock Text="D-Left" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.DpadRight, Converter={StaticResource InputFillBrush}}"><TextBlock Text="D-Right" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.Back, Converter={StaticResource InputFillBrush}}"><TextBlock Text="Back" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.Guide, Converter={StaticResource InputFillBrush}}"><TextBlock Text="Guide" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
-                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.Start, Converter={StaticResource InputFillBrush}}"><TextBlock Text="Start" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.South, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.South, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding SouthLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.East, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.East, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding EastLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.West, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.West, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding WestLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.North, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.North, Converter={StaticResource PillTextBrush}}"><TextBlock Text="{Binding NorthLabel}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.LeftShoulder, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.LeftShoulder, Converter={StaticResource PillTextBrush}}"><TextBlock Text="LB / L1" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.RightShoulder, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.RightShoulder, Converter={StaticResource PillTextBrush}}"><TextBlock Text="RB / R1" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.LeftStick, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.LeftStick, Converter={StaticResource PillTextBrush}}"><TextBlock Text="L3" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.RightStick, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.RightStick, Converter={StaticResource PillTextBrush}}"><TextBlock Text="R3" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.DpadUp, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.DpadUp, Converter={StaticResource PillTextBrush}}"><TextBlock Text="D-Up" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.DpadDown, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.DpadDown, Converter={StaticResource PillTextBrush}}"><TextBlock Text="D-Down" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.DpadLeft, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.DpadLeft, Converter={StaticResource PillTextBrush}}"><TextBlock Text="D-Left" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.DpadRight, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.DpadRight, Converter={StaticResource PillTextBrush}}"><TextBlock Text="D-Right" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.Back, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.Back, Converter={StaticResource PillTextBrush}}"><TextBlock Text="Back" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.Guide, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.Guide, Converter={StaticResource PillTextBrush}}"><TextBlock Text="Guide" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+                                    <Border Style="{StaticResource InputPill}" Background="{Binding State.Buttons.Start, Converter={StaticResource InputFillBrush}}" TextElement.Foreground="{Binding State.Buttons.Start, Converter={StaticResource PillTextBrush}}"><TextBlock Text="Start" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
                                 </UniformGrid>
                             </StackPanel>
                         </Border>
@@ -625,39 +630,63 @@
 
                 <TabItem Header="{DynamicResource LOCGT_TabLatency}">
                     <Grid Margin="0,14,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+                        <Border Style="{StaticResource PanelBorder}"
+                                MaxWidth="760"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Stretch">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
 
-                        <Border Style="{StaticResource PanelBorder}" Margin="0,0,12,0">
-                            <StackPanel>
-                                <TextBlock Text="{DynamicResource LOCGT_LatencyTitle}" FontSize="18" FontWeight="SemiBold" />
-                                <TextBlock Text="{DynamicResource LOCGT_LatencyHelp}" TextWrapping="Wrap" Margin="0,8,0,18" Foreground="{StaticResource TextMutedBrush}" />
-                                <TextBlock Text="{Binding PollingLatencyScore, StringFormat={}{0}%}" FontSize="44" FontWeight="SemiBold" />
-                                <ProgressBar Minimum="0" Maximum="100" Value="{Binding PollingLatencyScore, Mode=OneWay}" Height="16" Margin="0,6,0,16" />
-                                <TextBlock Text="{Binding PollingLatencyCurrentLabel}" />
-                                <TextBlock Text="{Binding PollingLatencyAverageLabel}" Margin="0,6,0,0" />
-                                <TextBlock Text="{Binding PollingLatencyRangeLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,6,0,0" />
-                                <Button Content="{DynamicResource LOCGT_ResetLatency}"
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource LOCGT_LatencyTitle}" FontSize="18" FontWeight="SemiBold" TextAlignment="Center" />
+                                    <TextBlock Text="{DynamicResource LOCGT_LatencySimpleHelp}"
+                                               TextWrapping="Wrap"
+                                               TextAlignment="Center"
+                                               Margin="0,8,0,0"
+                                               Foreground="{StaticResource TextMutedBrush}" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="1"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding LatencyResultLabel}"
+                                               FontSize="68"
+                                               FontWeight="SemiBold"
+                                               TextAlignment="Center"
+                                               HorizontalAlignment="Center" />
+                                    <TextBlock Text="{Binding LatencyStatusLabel}"
+                                               Foreground="{StaticResource TextMutedBrush}"
+                                               TextAlignment="Center"
+                                               TextWrapping="Wrap"
+                                               MaxWidth="520"
+                                               Margin="0,8,0,24" />
+                                    <Button Content="{Binding StartLatencyButtonLabel}"
+                                            Command="{Binding StartLatencyTestCommand}"
+                                            Height="56"
+                                            MinWidth="220"
+                                            HorizontalAlignment="Center" />
+                                    <TextBlock Text="{Binding LatencyStatsLabel}"
+                                               TextAlignment="Center"
+                                               TextWrapping="Wrap"
+                                               MaxWidth="560"
+                                               Margin="0,18,0,0" />
+                                    <TextBlock Text="{Binding PollingLatencyAverageLabel}"
+                                               Foreground="{StaticResource TextMutedBrush}"
+                                               TextAlignment="Center"
+                                               Margin="0,8,0,0" />
+                                </StackPanel>
+
+                                <Button Grid.Row="2"
+                                        Content="{DynamicResource LOCGT_ResetLatency}"
                                         Command="{Binding ResetLatencyCommand}"
                                         Height="38"
-                                        Margin="0,22,0,0"
-                                        HorizontalAlignment="Left"
-                                        MinWidth="140" />
-                            </StackPanel>
-                        </Border>
-
-                        <Border Grid.Column="1" Style="{StaticResource PanelBorder}">
-                            <StackPanel>
-                                <TextBlock Text="{DynamicResource LOCGT_InputEventLatency}" FontSize="18" FontWeight="SemiBold" />
-                                <TextBlock Text="{Binding LatencyStatusLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,8,0,14" TextWrapping="Wrap" />
-                                <TextBlock Text="{Binding InputEventLatencyAverageLabel}" TextWrapping="Wrap" />
-                                <TextBlock Text="{DynamicResource LOCGT_InputEventLatencyHelp}"
-                                           TextWrapping="Wrap"
-                                           Margin="0,18,0,0"
-                                           Foreground="{StaticResource TextMutedBrush}" />
-                            </StackPanel>
+                                        MinWidth="140"
+                                        HorizontalAlignment="Center" />
+                            </Grid>
                         </Border>
                     </Grid>
                 </TabItem>
