@@ -70,6 +70,12 @@ namespace GamepadTester.Models
             return null;
         }
 
+        public static bool IsDualSense(ushort vendorId, ushort productId)
+        {
+            return vendorId == 0x054C &&
+                (productId == 0x0CE6 || productId == 0x0DF2);
+        }
+
         public static string GetEightBitDoName(EightBitDoModel model)
         {
             switch (model)

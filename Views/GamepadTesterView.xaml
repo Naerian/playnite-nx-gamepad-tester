@@ -42,8 +42,15 @@
         <Style x:Key="SubtleVerticalSeparator" TargetType="Border">
             <Setter Property="Width" Value="1" />
             <Setter Property="Background" Value="{StaticResource LineBrush}" />
-            <Setter Property="Opacity" Value="0.35" />
+            <Setter Property="Opacity" Value="0.55" />
             <Setter Property="Margin" Value="18,0" />
+        </Style>
+
+        <Style x:Key="SubtleHorizontalSeparator" TargetType="Border">
+            <Setter Property="Height" Value="1" />
+            <Setter Property="Background" Value="{StaticResource LineBrush}" />
+            <Setter Property="Opacity" Value="0.5" />
+            <Setter Property="Margin" Value="12,2,12,10" />
         </Style>
 
         <Style x:Key="InputPill" TargetType="Border">
@@ -74,46 +81,13 @@
                 CornerRadius="0"
                 Padding="8">
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-
-                <Grid Margin="0,0,0,12"
-                      Visibility="{Binding IsControllerSelectorVisible, Converter={StaticResource BoolToVisibility}}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-
-                    <TextBlock Text="{DynamicResource LOCGT_Device}"
-                               VerticalAlignment="Center"
-                               Foreground="{StaticResource TextMutedBrush}" />
-
-                    <ComboBox Grid.Column="1"
-                              Width="420"
-                              MaxDropDownHeight="320"
-                              ItemsSource="{Binding Controllers}"
-                              SelectedItem="{Binding SelectedController, Mode=TwoWay}"
-                              IsDropDownOpen="{Binding IsControllerSelectorOpen, Mode=TwoWay}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding DisplayName}"
-                                           FontWeight="SemiBold"
-                                           Margin="4,2"
-                                           TextTrimming="CharacterEllipsis" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                </Grid>
-
-                <TabControl Grid.Row="1"
-                            Background="Transparent"
+                <TabControl Background="Transparent"
                             BorderThickness="0"
                             Padding="0">
                 <TabItem Header="{DynamicResource LOCGT_TabTest}">
                     <Grid Margin="0,14,0,0">
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
@@ -159,7 +133,9 @@
                             </Border>
                         </Grid>
 
-                        <Grid Grid.Row="1"
+                        <Border Grid.Row="1" Style="{StaticResource SubtleHorizontalSeparator}" />
+
+                        <Grid Grid.Row="2"
                               MaxWidth="1160"
                               HorizontalAlignment="Center"
                               VerticalAlignment="Center"
@@ -189,7 +165,12 @@
                             </StackPanel>
 
                             <Grid Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <layouts:UniversalControllerTesterView Width="760" Height="500" />
+                                <layouts:DualSenseControllerTesterView Width="760"
+                                                                       Height="500"
+                                                                       Visibility="{Binding IsDualSenseLayout, Converter={StaticResource BoolToVisibility}}" />
+                                <layouts:UniversalControllerTesterView Width="760"
+                                                                       Height="500"
+                                                                       Visibility="{Binding IsUniversalControllerArtwork, Converter={StaticResource BoolToVisibility}}" />
                             </Grid>
 
                             <StackPanel Grid.Column="2" VerticalAlignment="Center">
@@ -782,6 +763,37 @@
                     </Grid>
                 </TabItem>
                 </TabControl>
+
+                <Grid HorizontalAlignment="Right"
+                      VerticalAlignment="Top"
+                      Margin="0,0,0,0"
+                      Visibility="{Binding IsControllerSelectorVisible, Converter={StaticResource BoolToVisibility}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="{DynamicResource LOCGT_Device}"
+                               VerticalAlignment="Center"
+                               Margin="0,0,10,0"
+                               Foreground="{StaticResource TextMutedBrush}" />
+
+                    <ComboBox Grid.Column="1"
+                              Width="360"
+                              MaxDropDownHeight="320"
+                              ItemsSource="{Binding Controllers}"
+                              SelectedItem="{Binding SelectedController, Mode=TwoWay}"
+                              IsDropDownOpen="{Binding IsControllerSelectorOpen, Mode=TwoWay}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DisplayName}"
+                                           FontWeight="SemiBold"
+                                           Margin="4,2"
+                                           TextTrimming="CharacterEllipsis" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </Grid>
             </Grid>
         </Border>
     </Grid>
