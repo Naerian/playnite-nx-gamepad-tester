@@ -355,7 +355,12 @@ namespace GamepadTester.Services
                 return EightBitDoModel.Controller64;
             }
 
-            if (productId == 0x6009 || name.Contains("pro 3"))
+            if (name.Contains("pro 2") || name.Contains("pro2"))
+            {
+                return EightBitDoModel.Pro2;
+            }
+
+            if (productId == 0x6009 || name.Contains("pro 3") || name.Contains("pro3"))
             {
                 return EightBitDoModel.Pro3;
             }

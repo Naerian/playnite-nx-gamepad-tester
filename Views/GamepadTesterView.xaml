@@ -2,7 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:converters="clr-namespace:GamepadTester.Converters"
-             xmlns:layouts="clr-namespace:GamepadTester.Views.ControllerLayouts">
+             xmlns:layouts="clr-namespace:GamepadTester.Views.ControllerLayouts"
+             xmlns:eightBitDo="clr-namespace:GamepadTester.Views.ControllerLayouts.EightBitDo">
     <UserControl.Resources>
         <SolidColorBrush x:Key="PanelBrush" Color="{DynamicResource ControlBackgroundColorDark}" />
         <SolidColorBrush x:Key="PanelAltBrush" Color="{DynamicResource ControlBackgroundColorDark}" />
@@ -299,6 +300,12 @@
                                     <layouts:SwitchProControllerTesterView Width="700"
                                                                            Height="460"
                                                                            Visibility="{Binding IsSwitchProVisualScheme, Converter={StaticResource BoolToVisibility}}" />
+                                    <eightBitDo:EightBitDoUltimate2CTesterView Width="700"
+                                                                               Height="460"
+                                                                               Visibility="{Binding IsEightBitDoUltimate2VisualScheme, Converter={StaticResource BoolToVisibility}}" />
+                                    <eightBitDo:EightBitDoPro3TesterView Width="700"
+                                                                         Height="460"
+                                                                         Visibility="{Binding IsEightBitDoProVisualScheme, Converter={StaticResource BoolToVisibility}}" />
                                     <layouts:UniversalControllerTesterView Width="700"
                                                                            Height="460"
                                                                            Visibility="{Binding IsUniversalControllerArtwork, Converter={StaticResource BoolToVisibility}}" />

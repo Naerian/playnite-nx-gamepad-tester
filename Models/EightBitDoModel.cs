@@ -5,6 +5,7 @@ namespace GamepadTester.Models
         Unknown,
         Ultimate2Wireless,
         Ultimate2CWireless,
+        Pro2,
         Pro3,
         Controller64
     }

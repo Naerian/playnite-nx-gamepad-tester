@@ -8,6 +8,8 @@
         <SolidColorBrush x:Key="SvgActiveFill" Color="#6631C48D" />
         <SolidColorBrush x:Key="SvgLineBrush" Color="#D8DCE4" />
         <SolidColorBrush x:Key="SvgActiveStroke" Color="#64F0B7" />
+        <SolidColorBrush x:Key="StickDotLeft" Color="#4CC9F0" />
+        <SolidColorBrush x:Key="StickDotRight" Color="#F7B955" />
         <converters:BoolToBrushConverter x:Key="SvgButtonFill"
                                          FalseBrush="{StaticResource SvgIdleFill}"
                                          TrueBrush="{StaticResource SvgActiveFill}" />
@@ -77,18 +79,18 @@
                 <Path Data="M701.706,350.982c5.1.17,11.26,1.085,15.371,4.426s11.447,16.094,16.356,24.2,11.532,18.536,11.532,18.536c2.531,3.918,4.2,2.68,4.2,2.68,23.777-7.6,25.357-23.455,26.461-37.192s-3.991-55.966-8.084-77.5-14.165-29.764-14.165-29.764a14.011,14.011,0,0,1-5.3-1.442A119.913,119.913,0,0,0,732.4,248.9c-4.246-1.1-20.975-3.511-24.984-4.257s-5.1-1.916-5.1-1.916c-3.821-.119-9.188-.288-15.625-.407-9.1-.187-15.778-.187-26.631-.2H638.22c-8.22.119-15.1.339-20.075.526a20.265,20.265,0,0,1-5.1,1.916c-4.008.746-20.737,3.154-24.983,4.257a119.9,119.9,0,0,0-15.676,6.02,14.012,14.012,0,0,1-5.3,1.442S557,264.506,552.927,286.044s-9.188,63.767-8.084,77.5,2.734,29.594,26.461,37.192c0,0,1.7,1.238,4.2-2.68,0,0,6.624-10.43,11.532-18.536s12.262-20.86,16.356-24.2,10.19-4.257,15.286-4.426,41.475-.186,41.475-.186S696.56,350.812,701.706,350.982Z" Fill="Transparent" Stroke="{DynamicResource TextBrush}" StrokeThickness="3" StrokeLineJoin="Bevel">
                   <UIElement.RenderTransform>                     <TranslateTransform X="138.348" Y="96.954" />                   </UIElement.RenderTransform>
                 </Path>
-                <Path x:Name="LeftStickOuter" Data="M593.887,272.978a14.538,14.538,0,1,1-14.538-14.538A14.538,14.538,0,0,1,593.887,272.978Z" Fill="{Binding State.Buttons.LeftStick, Converter={StaticResource SvgButtonFill}}" Stroke="{Binding State.Buttons.LeftStick, Converter={StaticResource SvgButtonStroke}}" StrokeThickness="1.5" StrokeLineJoin="Bevel">
-                  <UIElement.RenderTransform>                     <TranslateTransform X="152.4" Y="108.298" />                   </UIElement.RenderTransform>
-                </Path>
-                <Path x:Name="LeftStickInner" Data="M587.152,271.016a9.749,9.749,0,1,1-2.855-6.91A9.749,9.749,0,0,1,587.152,271.016Z" Fill="Transparent" Stroke="{Binding State.Buttons.LeftStick, Converter={StaticResource SvgButtonStroke}}" StrokeThickness="2" StrokeLineJoin="Bevel">
-                  <UIElement.RenderTransform>                     <TranslateTransform X="154.362" Y="110.257" />                   </UIElement.RenderTransform>
-                </Path>
-                <Path x:Name="RightStickOuter" Data="M651.857,294.548a14.521,14.521,0,1,1-4.247-10.279,14.521,14.521,0,0,1,4.247,10.279Z" Fill="{Binding State.Buttons.RightStick, Converter={StaticResource SvgButtonFill}}" Stroke="{Binding State.Buttons.RightStick, Converter={StaticResource SvgButtonStroke}}" StrokeThickness="1.5" StrokeLineJoin="Bevel">
-                  <UIElement.RenderTransform>                     <TranslateTransform X="192.886" Y="123.299" />                   </UIElement.RenderTransform>
-                </Path>
-                <Path x:Name="RightStickInner" Data="M645.131,292.586a9.766,9.766,0,1,1-9.766-9.766A9.766,9.766,0,0,1,645.131,292.586Z" Fill="Transparent" Stroke="{Binding State.Buttons.RightStick, Converter={StaticResource SvgButtonStroke}}" StrokeThickness="2" StrokeLineJoin="Bevel">
-                  <UIElement.RenderTransform>                     <TranslateTransform X="194.855" Y="125.262" />                   </UIElement.RenderTransform>
-                </Path>
+                <Ellipse Canvas.Left="117" Canvas.Top="75" Width="29" Height="29" Fill="Transparent" Stroke="{StaticResource SvgLineBrush}" StrokeThickness="1.5" />
+                <Ellipse x:Name="LeftStickDot" Canvas.Left="124" Canvas.Top="82" Width="15" Height="15" Fill="{StaticResource StickDotLeft}">
+                  <Ellipse.RenderTransform>
+                    <TranslateTransform X="{Binding LeftStickDotX}" Y="{Binding LeftStickDotY}" />
+                  </Ellipse.RenderTransform>
+                </Ellipse>
+                <Ellipse Canvas.Left="215" Canvas.Top="111" Width="29" Height="29" Fill="Transparent" Stroke="{StaticResource SvgLineBrush}" StrokeThickness="1.5" />
+                <Ellipse x:Name="RightStickDot" Canvas.Left="222" Canvas.Top="118" Width="15" Height="15" Fill="{StaticResource StickDotRight}">
+                  <Ellipse.RenderTransform>
+                    <TranslateTransform X="{Binding RightStickDotX}" Y="{Binding RightStickDotY}" />
+                  </Ellipse.RenderTransform>
+                </Ellipse>
                 <Path x:Name="Dpad" Data="M618.172,302.7a2.157,2.157,0,0,0,2.14-2.157V292.2a2.157,2.157,0,0,0-2.14-2.157h-8.084a2.157,2.157,0,0,1-2.14-2.14V279.82a2.157,2.157,0,0,0-2.157-2.14h-8.339a2.157,2.157,0,0,0-2.157,2.14v8.08a2.14,2.14,0,0,1-2.055,2.208h-8.152a2.157,2.157,0,0,0-2.157,2.157V300.6a2.157,2.157,0,0,0,2.157,2.157m0,0h8.152a2.123,2.123,0,0,1,2.14,2.14v8.067a2.157,2.157,0,0,0,2.157,2.157h8.339a2.157,2.157,0,0,0,2.157-2.157V304.9a2.14,2.14,0,0,1,2.14-2.14h8.085" Fill="{Binding IsDpadActive, Converter={StaticResource SvgButtonFill}}" Stroke="{Binding IsDpadActive, Converter={StaticResource SvgButtonStroke}}" StrokeThickness="2" StrokeMiterLimit="22.93">
                   <UIElement.RenderTransform>                     <TranslateTransform X="165.055" Y="121.671" />                   </UIElement.RenderTransform>
                 </Path>
