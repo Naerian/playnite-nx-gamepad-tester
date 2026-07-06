@@ -18,7 +18,7 @@
         <SolidColorBrush x:Key="InputIdleFill" Color="Transparent" />
         <SolidColorBrush x:Key="InputActiveFill" Color="#6631C48D" />
         <SolidColorBrush x:Key="InputActiveStroke" Color="#64F0B7" />
-        <SolidColorBrush x:Key="TriggerTrack" Color="{DynamicResource ControlBackgroundColorDark}" />
+        <SolidColorBrush x:Key="TriggerTrack" Color="#151922" />
         <SolidColorBrush x:Key="StickDotLeft" Color="#4CC9F0" />
         <SolidColorBrush x:Key="StickDotRight" Color="#F7B955" />
 
@@ -173,14 +173,10 @@
                          StrokeThickness="2" />
 
                 <Ellipse Canvas.Left="177" Canvas.Top="162" Width="72" Height="72"
-                         Fill="{Binding State.Buttons.LeftStick, Converter={StaticResource InputFillBrush}}"
-                         Stroke="{Binding State.Buttons.LeftStick, Converter={StaticResource InputStrokeBrush}}"
-                         StrokeThickness="3" />
-                <Ellipse Canvas.Left="191" Canvas.Top="176" Width="44" Height="44"
                          Fill="{StaticResource SurfaceFill}"
                          Stroke="{StaticResource MutedLineBrush}"
                          StrokeThickness="2" />
-                <Ellipse Canvas.Left="200" Canvas.Top="185" Width="26" Height="26"
+                <Ellipse Canvas.Left="196" Canvas.Top="181" Width="34" Height="34"
                          Fill="{StaticResource StickDotLeft}">
                     <Ellipse.RenderTransform>
                         <TranslateTransform X="{Binding LeftStickDotX}" Y="{Binding LeftStickDotY}" />
@@ -188,14 +184,10 @@
                 </Ellipse>
 
                 <Ellipse Canvas.Left="352" Canvas.Top="162" Width="72" Height="72"
-                         Fill="{Binding State.Buttons.RightStick, Converter={StaticResource InputFillBrush}}"
-                         Stroke="{Binding State.Buttons.RightStick, Converter={StaticResource InputStrokeBrush}}"
-                         StrokeThickness="3" />
-                <Ellipse Canvas.Left="366" Canvas.Top="176" Width="44" Height="44"
                          Fill="{StaticResource SurfaceFill}"
                          Stroke="{StaticResource MutedLineBrush}"
                          StrokeThickness="2" />
-                <Ellipse Canvas.Left="375" Canvas.Top="185" Width="26" Height="26"
+                <Ellipse Canvas.Left="371" Canvas.Top="181" Width="34" Height="34"
                          Fill="{StaticResource StickDotRight}">
                     <Ellipse.RenderTransform>
                         <TranslateTransform X="{Binding RightStickDotX}" Y="{Binding RightStickDotY}" />
@@ -252,14 +244,6 @@
                          StrokeThickness="3" />
                 <Line X1="464" Y1="160" X2="480" Y2="176" Stroke="{StaticResource LineBrush}" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
                 <Line X1="480" Y1="160" X2="464" Y2="176" Stroke="{StaticResource LineBrush}" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
-
-                <TextBlock Canvas.Left="150" Canvas.Top="382" Width="300"
-                           Text="{Binding DeviceModelLabel}"
-                           Foreground="{StaticResource MutedLineBrush}"
-                           FontSize="14"
-                           FontWeight="SemiBold"
-                           TextAlignment="Center"
-                           TextTrimming="CharacterEllipsis" />
             </Canvas>
         </Canvas>
     </Viewbox>

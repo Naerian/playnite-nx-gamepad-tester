@@ -466,6 +466,11 @@ namespace GamepadTester.ViewModels
             get { return State.ExtraButtons != null && State.ExtraButtons.Count > 0; }
         }
 
+        public bool IsFavoriteButtonActive
+        {
+            get { return State.ExtraButtons != null && State.ExtraButtons.Count > 0 && State.ExtraButtons[0].IsPressed; }
+        }
+
         public string ExtraButtonSummaryLabel
         {
             get
@@ -1272,7 +1277,12 @@ namespace GamepadTester.ViewModels
 
         public bool IsEightBitDoPro3Artwork
         {
-            get { return State.Layout == GamepadLayout.EightBitDo && State.EightBitDoModel == EightBitDoModel.Pro3; }
+            get
+            {
+                return State.Layout == GamepadLayout.EightBitDo &&
+                    (State.EightBitDoModel == EightBitDoModel.Pro2 ||
+                     State.EightBitDoModel == EightBitDoModel.Pro3);
+            }
         }
 
         public bool IsEightBitDoUltimate2CArtwork
@@ -1324,6 +1334,21 @@ namespace GamepadTester.ViewModels
         public bool IsSwitchProVisualScheme
         {
             get { return EffectiveVisualSchemeKey == "SwitchPro"; }
+        }
+
+        public bool IsEightBitDoUltimate2VisualScheme
+        {
+            get { return EffectiveVisualSchemeKey == "EightBitDoUltimate2"; }
+        }
+
+        public bool IsEightBitDoUltimate2CVisualScheme
+        {
+            get { return EffectiveVisualSchemeKey == "EightBitDoUltimate2C"; }
+        }
+
+        public bool IsEightBitDoProVisualScheme
+        {
+            get { return EffectiveVisualSchemeKey == "EightBitDoPro"; }
         }
 
         public bool IsUniversalControllerArtwork
@@ -1378,6 +1403,8 @@ namespace GamepadTester.ViewModels
             VisualSchemeOptions.Add(new ControllerVisualSchemeOption { Key = "PlayStation", DisplayName = L("LOCGT_VisualSchemePlayStation", "PlayStation") });
             VisualSchemeOptions.Add(new ControllerVisualSchemeOption { Key = "DualSense", DisplayName = L("LOCGT_VisualSchemeDualSense", "DualSense") });
             VisualSchemeOptions.Add(new ControllerVisualSchemeOption { Key = "SwitchPro", DisplayName = L("LOCGT_VisualSchemeSwitchPro", "Switch Pro") });
+            VisualSchemeOptions.Add(new ControllerVisualSchemeOption { Key = "EightBitDoUltimate2", DisplayName = "8BitDo Ultimate 2" });
+            VisualSchemeOptions.Add(new ControllerVisualSchemeOption { Key = "EightBitDoPro", DisplayName = "8BitDo Pro" });
         }
 
         private void SyncDetectedVisualScheme()
@@ -1419,6 +1446,17 @@ namespace GamepadTester.ViewModels
                 return "SwitchPro";
             }
 
+            if (state.Layout == GamepadLayout.EightBitDo)
+            {
+                if (state.EightBitDoModel == EightBitDoModel.Pro2 ||
+                    state.EightBitDoModel == EightBitDoModel.Pro3)
+                {
+                    return "EightBitDoPro";
+                }
+
+                return "EightBitDoUltimate2";
+            }
+
             if (state.Layout == GamepadLayout.Xbox)
             {
                 return "Xbox";
@@ -1434,6 +1472,9 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("IsXboxVisualScheme");
             OnPropertyChanged("IsPlayStationVisualScheme");
             OnPropertyChanged("IsSwitchProVisualScheme");
+            OnPropertyChanged("IsEightBitDoUltimate2VisualScheme");
+            OnPropertyChanged("IsEightBitDoUltimate2CVisualScheme");
+            OnPropertyChanged("IsEightBitDoProVisualScheme");
             OnPropertyChanged("IsUniversalControllerArtwork");
             OnPropertyChanged("SouthLabel");
             OnPropertyChanged("EastLabel");
@@ -2333,6 +2374,7 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("ActiveButtonCount");
             OnPropertyChanged("ExtraActiveButtonCount");
             OnPropertyChanged("HasExtraButtons");
+            OnPropertyChanged("IsFavoriteButtonActive");
             OnPropertyChanged("ExtraButtonSummaryLabel");
             OnPropertyChanged("LeftStickVector");
             OnPropertyChanged("RightStickVector");
@@ -2451,6 +2493,9 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("IsXboxVisualScheme");
             OnPropertyChanged("IsPlayStationVisualScheme");
             OnPropertyChanged("IsSwitchProVisualScheme");
+            OnPropertyChanged("IsEightBitDoUltimate2VisualScheme");
+            OnPropertyChanged("IsEightBitDoUltimate2CVisualScheme");
+            OnPropertyChanged("IsEightBitDoProVisualScheme");
             OnPropertyChanged("IsUniversalControllerArtwork");
             OnPropertyChanged("IsGenericLayout");
         }

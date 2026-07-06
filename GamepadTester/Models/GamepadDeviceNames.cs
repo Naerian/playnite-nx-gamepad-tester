@@ -84,6 +84,8 @@ namespace GamepadTester.Models
                     return "8BitDo Ultimate 2 Wireless";
                 case EightBitDoModel.Ultimate2CWireless:
                     return "8BitDo Ultimate 2C Wireless";
+                case EightBitDoModel.Pro2:
+                    return "8BitDo Pro 2";
                 case EightBitDoModel.Pro3:
                     return "8BitDo Pro 3";
                 case EightBitDoModel.Controller64:

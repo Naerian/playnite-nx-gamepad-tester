@@ -18,7 +18,7 @@
         <SolidColorBrush x:Key="InputIdleFill" Color="Transparent" />
         <SolidColorBrush x:Key="InputActiveFill" Color="#6631C48D" />
         <SolidColorBrush x:Key="InputActiveStroke" Color="#64F0B7" />
-        <SolidColorBrush x:Key="TriggerTrack" Color="{DynamicResource ControlBackgroundColorDark}" />
+        <SolidColorBrush x:Key="TriggerTrack" Color="#151922" />
         <SolidColorBrush x:Key="StickDotLeft" Color="#4CC9F0" />
         <SolidColorBrush x:Key="StickDotRight" Color="#F7B955" />
 
@@ -73,7 +73,7 @@
                         Width="122"
                         Height="6"
                         CornerRadius="3"
-                        Background="#151922"
+                        Background="{StaticResource TriggerTrack}"
                         BorderBrush="{StaticResource MutedLineBrush}"
                         BorderThickness="0.5"
                         ClipToBounds="True">
@@ -109,7 +109,7 @@
                         Width="122"
                         Height="6"
                         CornerRadius="3"
-                        Background="#151922"
+                        Background="{StaticResource TriggerTrack}"
                         BorderBrush="{StaticResource MutedLineBrush}"
                         BorderThickness="0.5"
                         ClipToBounds="True">
@@ -152,14 +152,10 @@
                       StrokeLineJoin="Round" />
 
                 <Ellipse Canvas.Left="110" Canvas.Top="68" Width="72" Height="72"
-                         Fill="{Binding State.Buttons.LeftStick, Converter={StaticResource InputFillBrush}}"
-                         Stroke="{Binding State.Buttons.LeftStick, Converter={StaticResource InputStrokeBrush}}"
-                         StrokeThickness="3" />
-                <Ellipse Canvas.Left="124" Canvas.Top="82" Width="44" Height="44"
                          Fill="{StaticResource SurfaceFill}"
                          Stroke="{StaticResource MutedLineBrush}"
                          StrokeThickness="2" />
-                <Ellipse Canvas.Left="133" Canvas.Top="91" Width="26" Height="26"
+                <Ellipse Canvas.Left="129" Canvas.Top="87" Width="34" Height="34"
                          Fill="{StaticResource StickDotLeft}">
                     <Ellipse.RenderTransform>
                         <TranslateTransform X="{Binding LeftStickDotX}" Y="{Binding LeftStickDotY}" />
@@ -167,14 +163,10 @@
                 </Ellipse>
 
                 <Ellipse Canvas.Left="340" Canvas.Top="164" Width="72" Height="72"
-                         Fill="{Binding State.Buttons.RightStick, Converter={StaticResource InputFillBrush}}"
-                         Stroke="{Binding State.Buttons.RightStick, Converter={StaticResource InputStrokeBrush}}"
-                         StrokeThickness="3" />
-                <Ellipse Canvas.Left="354" Canvas.Top="178" Width="44" Height="44"
                          Fill="{StaticResource SurfaceFill}"
                          Stroke="{StaticResource MutedLineBrush}"
                          StrokeThickness="2" />
-                <Ellipse Canvas.Left="363" Canvas.Top="187" Width="26" Height="26"
+                <Ellipse Canvas.Left="359" Canvas.Top="183" Width="34" Height="34"
                          Fill="{StaticResource StickDotRight}">
                     <Ellipse.RenderTransform>
                         <TranslateTransform X="{Binding RightStickDotX}" Y="{Binding RightStickDotY}" />
@@ -242,14 +234,6 @@
                 <Label Canvas.Left="473" Canvas.Top="93" Width="40" Height="40" Content="{Binding EastLabel}" Style="{StaticResource MapLabel}" />
                 <Label Canvas.Left="393" Canvas.Top="93" Width="40" Height="40" Content="{Binding WestLabel}" Style="{StaticResource MapLabel}" />
                 <Label Canvas.Left="433" Canvas.Top="133" Width="40" Height="40" Content="{Binding SouthLabel}" Style="{StaticResource MapLabel}" />
-
-                <TextBlock Canvas.Left="120" Canvas.Top="326" Width="360"
-                           Text="{Binding DeviceModelLabel}"
-                           Foreground="{StaticResource LineBrush}"
-                           FontSize="14"
-                           FontWeight="SemiBold"
-                           TextAlignment="Center"
-                           TextTrimming="CharacterEllipsis" />
             </Canvas>
         </Canvas>
     </Viewbox>

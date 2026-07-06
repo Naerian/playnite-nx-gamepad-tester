@@ -11,7 +11,9 @@
         <SolidColorBrush x:Key="InputIdleFill" Color="Transparent" />
         <SolidColorBrush x:Key="InputActiveFill" Color="#6631C48D" />
         <SolidColorBrush x:Key="InputActiveStroke" Color="#64F0B7" />
-        <SolidColorBrush x:Key="TriggerTrack" Color="#0E1117" />
+        <SolidColorBrush x:Key="TriggerTrack" Color="#151922" />
+        <SolidColorBrush x:Key="StickDotLeft" Color="#4CC9F0" />
+        <SolidColorBrush x:Key="StickDotRight" Color="#F7B955" />
         <SolidColorBrush x:Key="EightBitDoRed" Color="#E04343" />
 
         <converters:BoolToBrushConverter x:Key="InputFillBrush"
@@ -52,51 +54,83 @@
 
     <Viewbox Stretch="Uniform">
         <Canvas Width="760" Height="500">
-            <Canvas.RenderTransform>
-                <TranslateTransform X="18" />
-            </Canvas.RenderTransform>
+            <Viewbox Canvas.Left="190" Canvas.Top="0" Width="122" Height="72" Stretch="Uniform">
+                <Canvas Width="25" Height="20" ClipToBounds="False">
+                    <Path Data="M 59.217256,84.186307 H 79.23566 c 0,0 0.943414,-0.295048 0.943414,-1.634038 0,-1.338993 -2.727232,-16.550997 -10.060707,-16.451895 -7.333474,0.0991 -11.396614,9.761448 -11.396614,9.761448 0,0 -4.156679,8.741295 0.495503,8.324485 z"
+                          Fill="{Binding IsLeftTriggerActive, Converter={StaticResource InputFillBrush}}"
+                          Stroke="{Binding IsLeftTriggerActive, Converter={StaticResource InputStrokeBrush}}"
+                          StrokeThickness="0.7"
+                          StrokeLineJoin="Round">
+                        <Path.RenderTransform>
+                            <TranslateTransform X="-56" Y="-65" />
+                        </Path.RenderTransform>
+                    </Path>
+                </Canvas>
+            </Viewbox>
+            <TextBlock Canvas.Left="226"
+                       Canvas.Top="24"
+                       Width="50"
+                       Text="{Binding LeftTriggerPercent, StringFormat={}{0}%}"
+                       Foreground="#F4F6FA"
+                       FontWeight="SemiBold"
+                       TextAlignment="Center" />
             <Border x:Name="LeftTrigger"
-                    Canvas.Left="118"
-                    Canvas.Top="10"
-                    Width="170"
-                    Height="48"
-                    CornerRadius="18,18,10,10"
+                    Canvas.Left="190"
+                    Canvas.Top="76"
+                    Width="122"
+                    Height="6"
+                    CornerRadius="3"
                     Background="{StaticResource TriggerTrack}"
-                    BorderBrush="{StaticResource LineBrush}"
-                    BorderThickness="2"
-                    Padding="3">
-                <Grid ClipToBounds="True">
-                    <Rectangle HorizontalAlignment="Left"
-                               Width="{Binding LeftTriggerMapWidth}"
-                               RadiusX="12"
-                               RadiusY="12"
-                               Fill="{StaticResource InputActiveStroke}"
-                               Opacity="0.86" />
-                    <TextBlock Text="{Binding LeftTriggerPercent, StringFormat=LT / L2  {0}%}"
-                               Style="{StaticResource MapLabel}" />
-                </Grid>
+                    BorderBrush="{StaticResource MutedLineBrush}"
+                    BorderThickness="0.5"
+                    ClipToBounds="True">
+                <Rectangle HorizontalAlignment="Left"
+                           Width="{Binding LeftTriggerThinMapWidth}"
+                           RadiusX="3"
+                           RadiusY="3"
+                           Fill="{StaticResource InputActiveStroke}"
+                           Opacity="0.86" />
             </Border>
 
+            <Viewbox Canvas.Left="484" Canvas.Top="0" Width="122" Height="72" Stretch="Uniform">
+                <Canvas Width="25" Height="20" ClipToBounds="False">
+                    <Path Data="M 59.217256,84.186307 H 79.23566 c 0,0 0.943414,-0.295048 0.943414,-1.634038 0,-1.338993 -2.727232,-16.550997 -10.060707,-16.451895 -7.333474,0.0991 -11.396614,9.761448 -11.396614,9.761448 0,0 -4.156679,8.741295 0.495503,8.324485 z"
+                          Fill="{Binding IsRightTriggerActive, Converter={StaticResource InputFillBrush}}"
+                          Stroke="{Binding IsRightTriggerActive, Converter={StaticResource InputStrokeBrush}}"
+                          StrokeThickness="0.7"
+                          StrokeLineJoin="Round">
+                        <Path.RenderTransform>
+                            <TransformGroup>
+                                <TranslateTransform X="-56" Y="-65" />
+                                <ScaleTransform ScaleX="-1" CenterX="12.5" />
+                            </TransformGroup>
+                        </Path.RenderTransform>
+                    </Path>
+                </Canvas>
+            </Viewbox>
+            <TextBlock Canvas.Left="520"
+                       Canvas.Top="24"
+                       Width="50"
+                       Text="{Binding RightTriggerPercent, StringFormat={}{0}%}"
+                       Foreground="#F4F6FA"
+                       FontWeight="SemiBold"
+                       TextAlignment="Center" />
             <Border x:Name="RightTrigger"
-                    Canvas.Left="472"
-                    Canvas.Top="10"
-                    Width="170"
-                    Height="48"
-                    CornerRadius="18,18,10,10"
+                    Canvas.Left="484"
+                    Canvas.Top="76"
+                    Width="122"
+                    Height="6"
+                    CornerRadius="3"
                     Background="{StaticResource TriggerTrack}"
-                    BorderBrush="{StaticResource LineBrush}"
-                    BorderThickness="2"
-                    Padding="3">
-                <Grid ClipToBounds="True">
-                    <Rectangle HorizontalAlignment="Left"
-                               Width="{Binding RightTriggerMapWidth}"
-                               RadiusX="12"
-                               RadiusY="12"
-                               Fill="{StaticResource InputActiveStroke}"
-                               Opacity="0.86" />
-                    <TextBlock Text="{Binding RightTriggerPercent, StringFormat=RT / R2  {0}%}"
-                               Style="{StaticResource MapLabel}" />
-                </Grid>
+                    BorderBrush="{StaticResource MutedLineBrush}"
+                    BorderThickness="0.5"
+                    ClipToBounds="True">
+                <Rectangle HorizontalAlignment="Left"
+                           Width="{Binding RightTriggerThinMapWidth}"
+                           RadiusX="3"
+                           RadiusY="3"
+                           Fill="{StaticResource InputActiveStroke}"
+                           Opacity="0.86" />
             </Border>
 
             <Canvas x:Name="SvgController">
@@ -104,7 +138,7 @@
                     <TransformGroup>
                         <TranslateTransform X="-599" Y="-292" />
                         <ScaleTransform ScaleX="2.25" ScaleY="2.25" />
-                        <TranslateTransform X="-101.25" Y="3.75" />
+                        <TranslateTransform X="-49.25" Y="3.75" />
                     </TransformGroup>
                 </Canvas.RenderTransform>
 
@@ -138,48 +172,6 @@
                       StrokeLineJoin="Bevel">
                     <Path.RenderTransform>
                         <TranslateTransform X="138.348" Y="96.954" />
-                    </Path.RenderTransform>
-                </Path>
-
-                <Path x:Name="LeftStickOuter"
-                      Data="M593.887,272.978a14.538,14.538,0,1,1-14.538-14.538A14.538,14.538,0,0,1,593.887,272.978Z"
-                      Fill="{Binding State.Buttons.LeftStick, Converter={StaticResource InputFillBrush}}"
-                      Stroke="{Binding State.Buttons.LeftStick, Converter={StaticResource InputStrokeBrush}}"
-                      StrokeThickness="1.55"
-                      StrokeLineJoin="Bevel">
-                    <Path.RenderTransform>
-                        <TranslateTransform X="152.4" Y="108.298" />
-                    </Path.RenderTransform>
-                </Path>
-                <Path x:Name="LeftStickInner"
-                      Data="M587.152,271.016a9.749,9.749,0,1,1-2.855-6.91A9.749,9.749,0,0,1,587.152,271.016Z"
-                      Fill="{StaticResource SurfaceFill}"
-                      Stroke="{Binding State.Buttons.LeftStick, Converter={StaticResource InputStrokeBrush}}"
-                      StrokeThickness="1.1"
-                      StrokeLineJoin="Bevel">
-                    <Path.RenderTransform>
-                        <TranslateTransform X="154.362" Y="110.257" />
-                    </Path.RenderTransform>
-                </Path>
-
-                <Path x:Name="RightStickOuter"
-                      Data="M651.857,294.548a14.521,14.521,0,1,1-4.247-10.279,14.521,14.521,0,0,1,4.247,10.279Z"
-                      Fill="{Binding State.Buttons.RightStick, Converter={StaticResource InputFillBrush}}"
-                      Stroke="{Binding State.Buttons.RightStick, Converter={StaticResource InputStrokeBrush}}"
-                      StrokeThickness="1.55"
-                      StrokeLineJoin="Bevel">
-                    <Path.RenderTransform>
-                        <TranslateTransform X="192.886" Y="123.299" />
-                    </Path.RenderTransform>
-                </Path>
-                <Path x:Name="RightStickInner"
-                      Data="M645.131,292.586a9.766,9.766,0,1,1-9.766-9.766A9.766,9.766,0,0,1,645.131,292.586Z"
-                      Fill="{StaticResource SurfaceFill}"
-                      Stroke="{Binding State.Buttons.RightStick, Converter={StaticResource InputStrokeBrush}}"
-                      StrokeThickness="1.1"
-                      StrokeLineJoin="Bevel">
-                    <Path.RenderTransform>
-                        <TranslateTransform X="194.855" Y="125.262" />
                     </Path.RenderTransform>
                 </Path>
 
@@ -342,37 +334,50 @@
                 </Ellipse>
             </Canvas>
 
+            <Ellipse Canvas.Left="217" Canvas.Top="172" Width="65" Height="65" Fill="{StaticResource SurfaceFill}" Stroke="{StaticResource MutedLineBrush}" StrokeThickness="2" />
+            <Ellipse Canvas.Left="233" Canvas.Top="188" Width="33" Height="33" Fill="{StaticResource StickDotLeft}">
+                <Ellipse.RenderTransform>
+                    <TranslateTransform X="{Binding LeftStickDotX}" Y="{Binding LeftStickDotY}" />
+                </Ellipse.RenderTransform>
+            </Ellipse>
+            <Ellipse Canvas.Left="434" Canvas.Top="255" Width="65" Height="65" Fill="{StaticResource SurfaceFill}" Stroke="{StaticResource MutedLineBrush}" StrokeThickness="2" />
+            <Ellipse Canvas.Left="450" Canvas.Top="271" Width="33" Height="33" Fill="{StaticResource StickDotRight}">
+                <Ellipse.RenderTransform>
+                    <TranslateTransform X="{Binding RightStickDotX}" Y="{Binding RightStickDotY}" />
+                </Ellipse.RenderTransform>
+            </Ellipse>
+
             <Path x:Name="DpadBase"
-                  Data="M266,238 L290,238 C294,238 296,240 296,244 L296,270 L320,270 C324,270 326,272 326,276 L326,300 C326,304 324,306 320,306 L296,306 L296,330 C296,334 294,336 290,336 L266,336 C262,336 260,334 260,330 L260,306 L234,306 C230,306 228,304 228,300 L228,276 C228,272 230,270 234,270 L260,270 L260,244 C260,240 262,238 266,238 Z"
+                  Data="M318,238 L342,238 C346,238 348,240 348,244 L348,270 L372,270 C376,270 378,272 378,276 L378,300 C378,304 376,306 372,306 L348,306 L348,330 C348,334 346,336 342,336 L318,336 C314,336 312,334 312,330 L312,306 L286,306 C282,306 280,304 280,300 L280,276 C280,272 282,270 286,270 L312,270 L312,244 C312,240 314,238 318,238 Z"
                   Fill="{StaticResource ControllerFill}"
                   Stroke="{StaticResource LineBrush}"
                   StrokeThickness="2"
                   StrokeLineJoin="Round" />
             <Path x:Name="DpadUp"
-                  Data="M267,242 L289,242 C291,242 292,243 292,245 L292,278 L264,278 L264,245 C264,243 265,242 267,242 Z"
+                  Data="M321,246 L339,246 C341,246 342,247 342,249 L342,274 L318,274 L318,249 C318,247 319,246 321,246 Z"
                   Fill="{Binding State.Buttons.DpadUp, Converter={StaticResource InputFillBrush}}"
                   Stroke="{Binding State.Buttons.DpadUp, Converter={StaticResource ActiveOnlyStrokeBrush}}"
                   StrokeThickness="1.5"
                   StrokeLineJoin="Round" />
             <Path x:Name="DpadLeft"
-                  Data="M235,274 C233,274 232,275 232,277 L232,299 C232,301 233,302 235,302 L272,302 L272,274 Z"
+                  Data="M292,278 C290,278 289,279 289,281 L289,297 C289,299 290,300 292,300 L320,300 L320,278 Z"
                   Fill="{Binding State.Buttons.DpadLeft, Converter={StaticResource InputFillBrush}}"
                   Stroke="{Binding State.Buttons.DpadLeft, Converter={StaticResource ActiveOnlyStrokeBrush}}"
                   StrokeThickness="1.5"
                   StrokeLineJoin="Round" />
             <Path x:Name="DpadRight"
-                  Data="M284,274 L317,274 C319,274 320,275 320,277 L320,299 C320,301 319,302 317,302 L284,302 Z"
+                  Data="M340,278 L366,278 C368,278 369,279 369,281 L369,297 C369,299 368,300 366,300 L340,300 Z"
                   Fill="{Binding State.Buttons.DpadRight, Converter={StaticResource InputFillBrush}}"
                   Stroke="{Binding State.Buttons.DpadRight, Converter={StaticResource ActiveOnlyStrokeBrush}}"
                   StrokeThickness="1.5"
                   StrokeLineJoin="Round" />
             <Path x:Name="DpadDown"
-                  Data="M264,298 L292,298 L292,326 C292,328 291,329 289,329 L267,329 C265,329 264,328 264,326 Z"
+                  Data="M318,302 L342,302 L342,324 C342,326 341,327 339,327 L321,327 C319,327 318,326 318,324 Z"
                   Fill="{Binding State.Buttons.DpadDown, Converter={StaticResource InputFillBrush}}"
                   Stroke="{Binding State.Buttons.DpadDown, Converter={StaticResource ActiveOnlyStrokeBrush}}"
                   StrokeThickness="1.5"
                   StrokeLineJoin="Round" />
-            <Rectangle Canvas.Left="264"
+            <Rectangle Canvas.Left="316"
                        Canvas.Top="274"
                        Width="28"
                        Height="28"
@@ -380,21 +385,21 @@
                        Stroke="{StaticResource MutedLineBrush}"
                        StrokeThickness="1" />
 
-            <Ellipse Canvas.Left="346"
+            <Ellipse Canvas.Left="398"
                      Canvas.Top="270"
                      Width="7"
                      Height="7"
                      Fill="Transparent"
                      Stroke="{StaticResource LineBrush}"
                      StrokeThickness="1.2" />
-            <Ellipse Canvas.Left="346"
+            <Ellipse Canvas.Left="398"
                      Canvas.Top="280"
                      Width="7"
                      Height="7"
                      Fill="Transparent"
                      Stroke="{StaticResource LineBrush}"
                      StrokeThickness="1.2" />
-            <Ellipse Canvas.Left="346"
+            <Ellipse Canvas.Left="398"
                      Canvas.Top="290"
                      Width="7"
                      Height="7"
@@ -402,19 +407,11 @@
                      Stroke="{StaticResource LineBrush}"
                      StrokeThickness="1.2" />
 
-            <Label Canvas.Left="484.5" Canvas.Top="145.5" Width="30" Height="30" Content="{Binding NorthLabel}" Style="{StaticResource FaceButtonLabel}" />
-            <Label Canvas.Left="521.5" Canvas.Top="181.5" Width="30" Height="30" Content="{Binding EastLabel}" Style="{StaticResource FaceButtonLabel}" />
-            <Label Canvas.Left="447.5" Canvas.Top="181.5" Width="30" Height="30" Content="{Binding WestLabel}" Style="{StaticResource FaceButtonLabel}" />
-            <Label Canvas.Left="484.5" Canvas.Top="218.5" Width="30" Height="30" Content="{Binding SouthLabel}" Style="{StaticResource FaceButtonLabel}" />
+            <Label Canvas.Left="536.5" Canvas.Top="145.5" Width="30" Height="30" Content="{Binding NorthLabel}" Style="{StaticResource FaceButtonLabel}" />
+            <Label Canvas.Left="573.5" Canvas.Top="181.5" Width="30" Height="30" Content="{Binding EastLabel}" Style="{StaticResource FaceButtonLabel}" />
+            <Label Canvas.Left="499.5" Canvas.Top="181.5" Width="30" Height="30" Content="{Binding WestLabel}" Style="{StaticResource FaceButtonLabel}" />
+            <Label Canvas.Left="536.5" Canvas.Top="218.5" Width="30" Height="30" Content="{Binding SouthLabel}" Style="{StaticResource FaceButtonLabel}" />
 
-            <TextBlock Canvas.Left="292"
-                       Canvas.Top="380"
-                       Width="140"
-                       Text="8BitDo"
-                       Foreground="{StaticResource LineBrush}"
-                       FontSize="16"
-                       FontWeight="SemiBold"
-                       TextAlignment="Center" />
         </Canvas>
     </Viewbox>
 </UserControl>
