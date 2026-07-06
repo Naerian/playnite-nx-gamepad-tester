@@ -38,9 +38,11 @@ namespace GamepadTester.ViewModels
         private readonly RelayCommand resetDiagnosticsCommand;
         private readonly RelayCommand startCenterCalibrationCommand;
         private readonly RelayCommand resetCalibrationCommand;
+        private readonly RelayCommand resetStickRangeCommand;
         private readonly RelayCommand resetLatencyCommand;
         private readonly RelayCommand startLatencyTestCommand;
         private readonly RelayCommand exportReportCommand;
+        private readonly RelayCommand exportInputLogCommand;
         private readonly StickDiagnosticsTracker leftStickDiagnostics;
         private readonly StickDiagnosticsTracker rightStickDiagnostics;
         private GamepadState state;
@@ -98,6 +100,7 @@ namespace GamepadTester.ViewModels
         private double latencyTestSumMs;
         private int latencyTestSamples;
         private string exportReportStatusLabel;
+        private string inputLogExportStatusLabel;
         private string selectedVisualSchemeKey;
         private bool isVisualSchemeManuallySelected;
 
@@ -123,15 +126,18 @@ namespace GamepadTester.ViewModels
             resetDiagnosticsCommand = new RelayCommand(ResetDiagnostics);
             startCenterCalibrationCommand = new RelayCommand(StartCenterCalibration, () => State.IsConnected && !isCenterCalibrationRunning);
             resetCalibrationCommand = new RelayCommand(ResetCalibration);
+            resetStickRangeCommand = new RelayCommand(ResetStickRangeDiagnostics);
             resetLatencyCommand = new RelayCommand(ResetLatency);
             startLatencyTestCommand = new RelayCommand(StartLatencyTest, () => State.IsConnected && !isLatencyTestRunning);
             exportReportCommand = new RelayCommand(ExportReport);
+            exportInputLogCommand = new RelayCommand(ExportInputLog, () => InputHistory.Count > 0);
             leftStickDiagnostics = new StickDiagnosticsTracker();
             rightStickDiagnostics = new StickDiagnosticsTracker();
             coveredButtons = new GamepadButtonState();
             rumbleStatusLabel = L("LOCGT_Ready", "Ready");
             latencyStatusLabel = L("LOCGT_LatencyWaiting", "Waiting for input changes.");
             exportReportStatusLabel = L("LOCGT_ReportReady", "Report ready to export.");
+            inputLogExportStatusLabel = L("LOCGT_InputLogExportReady", "Enable input log and press buttons to collect entries.");
             pollingIntervalMinMs = double.MaxValue;
             inputEventIntervalMinMs = double.MaxValue;
             pollingService.StateUpdated += OnStateUpdated;
@@ -211,6 +217,11 @@ namespace GamepadTester.ViewModels
             get { return resetCalibrationCommand; }
         }
 
+        public ICommand ResetStickRangeCommand
+        {
+            get { return resetStickRangeCommand; }
+        }
+
         public ICommand ResetLatencyCommand
         {
             get { return resetLatencyCommand; }
@@ -224,6 +235,11 @@ namespace GamepadTester.ViewModels
         public ICommand ExportReportCommand
         {
             get { return exportReportCommand; }
+        }
+
+        public ICommand ExportInputLogCommand
+        {
+            get { return exportInputLogCommand; }
         }
 
         public GamepadControllerInfo SelectedController
@@ -318,6 +334,11 @@ namespace GamepadTester.ViewModels
             }
         }
 
+        public string InputLogExportStatusLabel
+        {
+            get { return inputLogExportStatusLabel; }
+        }
+
         public string BackendLabel
         {
             get { return L("LOCGT_PlayniteSdlBackend", "Playnite SDL2 / SDL GameController"); }
@@ -381,6 +402,26 @@ namespace GamepadTester.ViewModels
         public double RightStickDiagnosticsDotY
         {
             get { return -State.RightStick.Y * 108d; }
+        }
+
+        public double CompactLeftStickDotX
+        {
+            get { return State.LeftStick.X * 13d; }
+        }
+
+        public double CompactLeftStickDotY
+        {
+            get { return -State.LeftStick.Y * 13d; }
+        }
+
+        public double CompactRightStickDotX
+        {
+            get { return State.RightStick.X * 13d; }
+        }
+
+        public double CompactRightStickDotY
+        {
+            get { return -State.RightStick.Y * 13d; }
         }
 
         public int LeftTriggerPercent
@@ -1600,6 +1641,10 @@ namespace GamepadTester.ViewModels
             {
                 InputHistory.RemoveAt(InputHistory.Count - 1);
             }
+
+            inputLogExportStatusLabel = string.Format(L("LOCGT_InputLogEntriesFormat", "{0} entries ready to export."), InputHistory.Count);
+            OnPropertyChanged("InputLogExportStatusLabel");
+            exportInputLogCommand.RaiseCanExecuteChanged();
         }
 
         private void RefreshControllers()
@@ -1762,7 +1807,10 @@ namespace GamepadTester.ViewModels
         private void ClearInputHistory()
         {
             InputHistory.Clear();
+            inputLogExportStatusLabel = L("LOCGT_InputLogExportReady", "Enable input log and press buttons to collect entries.");
             OnPropertyChanged("InputHistory");
+            OnPropertyChanged("InputLogExportStatusLabel");
+            exportInputLogCommand.RaiseCanExecuteChanged();
         }
 
         private void StartCenterCalibration()
@@ -1811,6 +1859,35 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("LeftRecommendedDeadzonePercent");
             OnPropertyChanged("RightRecommendedDeadzonePercent");
             startCenterCalibrationCommand.RaiseCanExecuteChanged();
+        }
+
+        private void ResetStickRangeDiagnostics()
+        {
+            maxLeftStickMagnitude = 0d;
+            maxRightStickMagnitude = 0d;
+            leftStickDiagnostics.Reset();
+            rightStickDiagnostics.Reset();
+            OnPropertyChanged("LeftStickCircularCoverageGeometry");
+            OnPropertyChanged("RightStickCircularCoverageGeometry");
+            OnPropertyChanged("LeftStickCircularCoveragePercent");
+            OnPropertyChanged("RightStickCircularCoveragePercent");
+            OnPropertyChanged("LeftStickMaxReachPercent");
+            OnPropertyChanged("RightStickMaxReachPercent");
+            OnPropertyChanged("LeftStickCircularCoverageLabel");
+            OnPropertyChanged("RightStickCircularCoverageLabel");
+            OnPropertyChanged("LeftStickPathSampleLabel");
+            OnPropertyChanged("RightStickPathSampleLabel");
+            OnPropertyChanged("LeftStickMaxReachLabel");
+            OnPropertyChanged("RightStickMaxReachLabel");
+            OnPropertyChanged("LeftStickAxisRangeLabel");
+            OnPropertyChanged("RightStickAxisRangeLabel");
+            OnPropertyChanged("LeftStickAverageMagnitudeLabel");
+            OnPropertyChanged("RightStickAverageMagnitudeLabel");
+            OnPropertyChanged("LeftRangeQualityLabel");
+            OnPropertyChanged("RightRangeQualityLabel");
+            OnPropertyChanged("LeftRangeQualityPercent");
+            OnPropertyChanged("RightRangeQualityPercent");
+            OnPropertyChanged("HealthRangeFactorLabel");
         }
 
         private void ResetLatency()
@@ -1879,6 +1956,57 @@ namespace GamepadTester.ViewModels
             }
 
             OnPropertyChanged("ExportReportStatusLabel");
+        }
+
+        private void ExportInputLog()
+        {
+            try
+            {
+                if (InputHistory.Count == 0)
+                {
+                    inputLogExportStatusLabel = L("LOCGT_InputLogExportEmpty", "No input log entries to export yet.");
+                    OnPropertyChanged("InputLogExportStatusLabel");
+                    return;
+                }
+
+                var desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+                if (string.IsNullOrWhiteSpace(desktop))
+                {
+                    desktop = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                }
+
+                var fileName = string.Format("GamepadTester-input-log-{0:yyyyMMdd-HHmmss}.txt", DateTime.Now);
+                var path = Path.Combine(desktop, fileName);
+                File.WriteAllText(path, BuildInputLogText(), Encoding.UTF8);
+                inputLogExportStatusLabel = string.Format(L("LOCGT_InputLogExportedFormat", "Input log exported to {0}"), path);
+            }
+            catch (Exception ex)
+            {
+                inputLogExportStatusLabel = string.Format(L("LOCGT_InputLogExportFailedFormat", "Could not export input log: {0}"), ex.Message);
+            }
+
+            OnPropertyChanged("InputLogExportStatusLabel");
+            exportInputLogCommand.RaiseCanExecuteChanged();
+        }
+
+        private string BuildInputLogText()
+        {
+            var log = new StringBuilder();
+            log.AppendLine("Gamepad Tester input log");
+            log.AppendLine(string.Format("Generated: {0:yyyy-MM-dd HH:mm:ss}", DateTime.Now));
+            log.AppendLine(string.Format("Controller: {0}", State.ControllerName));
+            log.AppendLine(string.Format("Device: {0}", DeviceModelLabel));
+            log.AppendLine(string.Format("Backend: {0}", BackendLabel));
+            log.AppendLine();
+            log.AppendLine("Timestamp\tInput\tState");
+
+            for (var i = InputHistory.Count - 1; i >= 0; i--)
+            {
+                var item = InputHistory[i];
+                log.AppendLine(string.Format("{0:yyyy-MM-dd HH:mm:ss.fff}\t{1}\t{2}", item.Timestamp, item.InputName, item.State));
+            }
+
+            return log.ToString();
         }
 
         private string BuildReportText()
@@ -2354,6 +2482,10 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("LeftStickDotY");
             OnPropertyChanged("RightStickDotX");
             OnPropertyChanged("RightStickDotY");
+            OnPropertyChanged("CompactLeftStickDotX");
+            OnPropertyChanged("CompactLeftStickDotY");
+            OnPropertyChanged("CompactRightStickDotX");
+            OnPropertyChanged("CompactRightStickDotY");
             OnPropertyChanged("LeftStickDiagnosticsDotX");
             OnPropertyChanged("LeftStickDiagnosticsDotY");
             OnPropertyChanged("RightStickDiagnosticsDotX");

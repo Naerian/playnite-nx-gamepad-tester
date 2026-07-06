@@ -71,6 +71,15 @@
     <sys:String x:Key="LOCGT_SettingsShowSingleSelectorHelp">Util para probar la deteccion de dispositivos o el comportamiento al reconectar mandos.</sys:String>
     <sys:String x:Key="LOCGT_SettingsEnableRumble">Activar pruebas de vibracion</sys:String>
     <sys:String x:Key="LOCGT_SettingsEnableRumbleHelp">Las pruebas de vibracion dependen del modo del mando, del soporte del driver y del soporte SDL del dispositivo.</sys:String>
+    <sys:String x:Key="LOCGT_ManualLatency">Latencia manual</sys:String>
+    <sys:String x:Key="LOCGT_PollingLatency">Sondeo</sys:String>
+    <sys:String x:Key="LOCGT_TestState">Estado del test</sys:String>
+    <sys:String x:Key="LOCGT_ExportInputLog">Exportar registro</sys:String>
+    <sys:String x:Key="LOCGT_InputLogExportReady">Activa el registro y pulsa botones para recopilar entradas.</sys:String>
+    <sys:String x:Key="LOCGT_InputLogExportEmpty">Aun no hay entradas del registro para exportar.</sys:String>
+    <sys:String x:Key="LOCGT_InputLogExportedFormat">Registro exportado a {0}</sys:String>
+    <sys:String x:Key="LOCGT_InputLogExportFailedFormat">No se pudo exportar el registro: {0}</sys:String>
+    <sys:String x:Key="LOCGT_InputLogEntriesFormat">{0} entradas listas para exportar.</sys:String>
     <sys:String x:Key="LOCGT_Ready">Listo</sys:String>
     <sys:String x:Key="LOCGT_ConnectControllerToStart">Conecta un mando para empezar.</sys:String>
     <sys:String x:Key="LOCGT_AllControlsCovered">Todos los controles normalizados comprobados.</sys:String>
@@ -101,6 +110,7 @@
     <sys:String x:Key="LOCGT_ResetCalibration">Reiniciar calibracion</sys:String>
     <sys:String x:Key="LOCGT_CenterCalibration">Centro y zona muerta</sys:String>
     <sys:String x:Key="LOCGT_RangeCalibration">Calidad de rango</sys:String>
+    <sys:String x:Key="LOCGT_ResetRange">Reiniciar rango</sys:String>
     <sys:String x:Key="LOCGT_RangeCalibrationHelp">Mueve cada stick por todo su borde exterior. Un stick reparado o reemplazado que no llegue al borde mostrara una calidad de rango mas baja.</sys:String>
     <sys:String x:Key="LOCGT_CalibrationRunningFormat">Deja los sticks sueltos. Capturando centro durante {0:0.0}s.</sys:String>
     <sys:String x:Key="LOCGT_CalibrationNotRun">Aun no se ha capturado la calibracion de centro.</sys:String>

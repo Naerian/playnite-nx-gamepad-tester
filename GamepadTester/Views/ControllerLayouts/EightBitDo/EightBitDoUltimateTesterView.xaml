@@ -19,6 +19,9 @@
         <converters:BoolToBrushConverter x:Key="InputFillBrush"
                                          FalseBrush="{StaticResource InputIdleFill}"
                                          TrueBrush="{StaticResource InputActiveFill}" />
+        <converters:BoolToBrushConverter x:Key="TriggerFillBrush"
+                                         FalseBrush="{StaticResource SurfaceFill}"
+                                         TrueBrush="{StaticResource InputActiveFill}" />
         <converters:BoolToBrushConverter x:Key="InputStrokeBrush"
                                          FalseBrush="{StaticResource LineBrush}"
                                          TrueBrush="{StaticResource InputActiveStroke}" />
@@ -54,10 +57,13 @@
 
     <Viewbox Stretch="Uniform">
         <Canvas Width="760" Height="500">
+            <Canvas.RenderTransform>
+                <TranslateTransform X="-24" Y="0" />
+            </Canvas.RenderTransform>
             <Viewbox Canvas.Left="190" Canvas.Top="0" Width="122" Height="72" Stretch="Uniform">
                 <Canvas Width="25" Height="20" ClipToBounds="False">
                     <Path Data="M 59.217256,84.186307 H 79.23566 c 0,0 0.943414,-0.295048 0.943414,-1.634038 0,-1.338993 -2.727232,-16.550997 -10.060707,-16.451895 -7.333474,0.0991 -11.396614,9.761448 -11.396614,9.761448 0,0 -4.156679,8.741295 0.495503,8.324485 z"
-                          Fill="{Binding IsLeftTriggerActive, Converter={StaticResource InputFillBrush}}"
+                          Fill="{Binding IsLeftTriggerActive, Converter={StaticResource TriggerFillBrush}}"
                           Stroke="{Binding IsLeftTriggerActive, Converter={StaticResource InputStrokeBrush}}"
                           StrokeThickness="0.7"
                           StrokeLineJoin="Round">
@@ -95,7 +101,7 @@
             <Viewbox Canvas.Left="484" Canvas.Top="0" Width="122" Height="72" Stretch="Uniform">
                 <Canvas Width="25" Height="20" ClipToBounds="False">
                     <Path Data="M 59.217256,84.186307 H 79.23566 c 0,0 0.943414,-0.295048 0.943414,-1.634038 0,-1.338993 -2.727232,-16.550997 -10.060707,-16.451895 -7.333474,0.0991 -11.396614,9.761448 -11.396614,9.761448 0,0 -4.156679,8.741295 0.495503,8.324485 z"
-                          Fill="{Binding IsRightTriggerActive, Converter={StaticResource InputFillBrush}}"
+                          Fill="{Binding IsRightTriggerActive, Converter={StaticResource TriggerFillBrush}}"
                           Stroke="{Binding IsRightTriggerActive, Converter={StaticResource InputStrokeBrush}}"
                           StrokeThickness="0.7"
                           StrokeLineJoin="Round">

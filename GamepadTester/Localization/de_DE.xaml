@@ -71,6 +71,15 @@
     <sys:String x:Key="LOCGT_SettingsShowSingleSelectorHelp">Useful while testing device detection or controller reconnect behavior.</sys:String>
     <sys:String x:Key="LOCGT_SettingsEnableRumble">Enable rumble tests</sys:String>
     <sys:String x:Key="LOCGT_SettingsEnableRumbleHelp">Rumble tests depend on controller mode, driver support, and SDL support for the device.</sys:String>
+    <sys:String x:Key="LOCGT_ManualLatency">Manual latency</sys:String>
+    <sys:String x:Key="LOCGT_PollingLatency">Polling</sys:String>
+    <sys:String x:Key="LOCGT_TestState">Test state</sys:String>
+    <sys:String x:Key="LOCGT_ExportInputLog">Export input log</sys:String>
+    <sys:String x:Key="LOCGT_InputLogExportReady">Enable input log and press buttons to collect entries.</sys:String>
+    <sys:String x:Key="LOCGT_InputLogExportEmpty">No input log entries to export yet.</sys:String>
+    <sys:String x:Key="LOCGT_InputLogExportedFormat">Input log exported to {0}</sys:String>
+    <sys:String x:Key="LOCGT_InputLogExportFailedFormat">Could not export input log: {0}</sys:String>
+    <sys:String x:Key="LOCGT_InputLogEntriesFormat">{0} entries ready to export.</sys:String>
     <sys:String x:Key="LOCGT_Ready">Ready</sys:String>
     <sys:String x:Key="LOCGT_ConnectControllerToStart">Connect a controller to start.</sys:String>
     <sys:String x:Key="LOCGT_AllControlsCovered">All normalized controls covered.</sys:String>
@@ -101,6 +110,7 @@
     <sys:String x:Key="LOCGT_ResetCalibration">Reset calibration</sys:String>
     <sys:String x:Key="LOCGT_CenterCalibration">Center and deadzone</sys:String>
     <sys:String x:Key="LOCGT_RangeCalibration">Range quality</sys:String>
+    <sys:String x:Key="LOCGT_ResetRange">Reset range</sys:String>
     <sys:String x:Key="LOCGT_RangeCalibrationHelp">Move each stick around its full outer edge. A repaired or replaced stick that cannot reach the edge will show a lower range quality.</sys:String>
     <sys:String x:Key="LOCGT_CalibrationRunningFormat">Keep sticks released. Capturing center for {0:0.0}s.</sys:String>
     <sys:String x:Key="LOCGT_CalibrationNotRun">Center calibration has not been captured yet.</sys:String>
