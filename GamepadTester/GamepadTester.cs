@@ -11,6 +11,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
+using System.Windows.Media;
 
 namespace GamepadTester
 {
@@ -103,13 +104,7 @@ namespace GamepadTester
                 Type = SiderbarItemType.View,
                 Title = Loc("LOCGT_PluginName"),
                 Visible = true,
-                Icon = new TextBlock
-                {
-                    Text = "GT",
-                    FontWeight = FontWeights.SemiBold,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Center
-                },
+                Icon = CreateSidebarIcon(),
                 Opened = () =>
                 {
                     DisposeSidebarView();
@@ -151,6 +146,46 @@ namespace GamepadTester
                 logger.Error(exception, "Failed to open Gamepad Tester.");
                 PlayniteApi.Dialogs.ShowErrorMessage(exception.Message, Loc("LOCGT_PluginName"));
             }
+        }
+
+        private static FrameworkElement CreateSidebarIcon()
+        {
+            var icon = new Viewbox
+            {
+                Width = 22,
+                Height = 22,
+                Stretch = Stretch.Uniform,
+                Child = new Canvas
+                {
+                    Width = 24,
+                    Height = 24,
+                    Children =
+                    {
+                        new System.Windows.Shapes.Path
+                        {
+                            Data = Geometry.Parse("M7.2 8.2H16.8C19.7 8.2 21.8 10.4 22.2 13.8L22.6 17.1C22.9 19.4 20.4 20.7 18.8 19L16.4 16.4H7.6L5.2 19C3.6 20.7 1.1 19.4 1.4 17.1L1.8 13.8C2.2 10.4 4.3 8.2 7.2 8.2Z"),
+                            Fill = Brushes.Transparent,
+                            Stroke = Brushes.White,
+                            StrokeThickness = 1.7,
+                            StrokeStartLineCap = PenLineCap.Round,
+                            StrokeEndLineCap = PenLineCap.Round,
+                            StrokeLineJoin = PenLineJoin.Round
+                        },
+                        new System.Windows.Shapes.Path
+                        {
+                            Data = Geometry.Parse("M7 12V15M5.5 13.5H8.5M16.2 12.2H16.25M18.4 14.5H18.45"),
+                            Fill = Brushes.Transparent,
+                            Stroke = Brushes.White,
+                            StrokeThickness = 1.7,
+                            StrokeStartLineCap = PenLineCap.Round,
+                            StrokeEndLineCap = PenLineCap.Round,
+                            StrokeLineJoin = PenLineJoin.Round
+                        }
+                    }
+                }
+            };
+
+            return icon;
         }
 
         public string Loc(string key)
@@ -222,7 +257,7 @@ namespace GamepadTester
         private GamepadTesterView CreateTesterView(out GamepadTesterViewModel viewModel)
         {
             var pollingService = new GamepadPollingService(new SdlGamepadProvider());
-            viewModel = new GamepadTesterViewModel(pollingService, settings.Settings, Loc);
+            viewModel = new GamepadTesterViewModel(pollingService, settings.Settings, Loc, OpenGuidedTestWindow);
             var view = new GamepadTesterView
             {
                 DataContext = viewModel
@@ -230,6 +265,44 @@ namespace GamepadTester
 
             viewModel.Start();
             return view;
+        }
+
+        private void OpenGuidedTestWindow(GamepadTesterViewModel viewModel)
+        {
+            try
+            {
+                if (viewModel == null || !viewModel.State.IsConnected)
+                {
+                    return;
+                }
+
+                viewModel.StartGuidedTestCommand.Execute(null);
+                var view = new GuidedTestView
+                {
+                    DataContext = viewModel
+                };
+
+                var window = PlayniteApi.Dialogs.CreateWindow(new WindowCreationOptions
+                {
+                    ShowMinimizeButton = false,
+                    ShowMaximizeButton = true
+                });
+
+                window.Title = Loc("LOCGT_GuidedTest");
+                window.Width = 1080;
+                window.Height = 820;
+                window.MinWidth = 960;
+                window.MinHeight = 720;
+                window.Content = view;
+                window.Owner = PlayniteApi.Dialogs.GetCurrentAppWindow();
+                window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                window.Show();
+            }
+            catch (Exception exception)
+            {
+                logger.Error(exception, "Failed to open Gamepad Tester guided test.");
+                PlayniteApi.Dialogs.ShowErrorMessage(exception.Message, Loc("LOCGT_GuidedTest"));
+            }
         }
 
         private void DisposeSidebarView()

@@ -2,26 +2,25 @@
 
 Playnite NX Gamepad Tester is a Playnite extension for testing controllers directly from Playnite Desktop mode.
 
-It is designed for couch, TV, handheld-PC, and console-like setups where users want to verify gamepad buttons, sticks, triggers, rumble, drift, and device metadata without leaving Playnite.
+It is designed for couch, TV, handheld-PC, and console-like setups where users want to verify gamepad buttons, sticks, triggers, rumble, drift, latency, and device metadata without leaving Playnite.
 
 ## Features
 
-- Test connected controllers from Playnite Desktop mode.
-- SDL GameController input backend for normalized controller mappings.
-- Supports Xbox-compatible XInput controllers.
-- Supports PlayStation, Switch Pro, 8BitDo, and generic SDL-compatible controllers where SDL exposes a GameController mapping.
+- SDL GameController backend using Playnite's bundled SDL runtime where available.
+- Normalized stick values (`-1..1`) and trigger values (`0..1`).
+- Xbox naming convention for normalized controls: `LS`, `RS`, `LB`, `RB`, `LT`, `RT`, `A`, `B`, `X`, `Y`.
+- Support for Xbox/XInput, PlayStation, Nintendo Switch Pro, 8BitDo, and generic SDL-compatible controllers.
 - Multi-controller selector when more than one controller is connected.
+- Manual visual scheme override for Universal, Xbox, PlayStation, DualSense, Switch Pro, 8BitDo Ultimate 2, and 8BitDo Pro layouts.
+- Live controller map with button, shoulder, trigger, stick, and D-pad feedback.
+- Guided test pass that asks for the next missing normalized input.
+- Stick diagnostics with paths, circular coverage, max reach, range quality, center capture, and recommended deadzone.
+- Health estimate based on resting drift only, with configurable thresholds.
+- Latency panel for observed polling/input timing.
+- Input log with opt-in recording and export.
+- Rumble tests integrated into the main test dashboard.
+- Device information with controller name, display name, VID/PID, layout, backend, and SDL mapping status.
 - Optional Playnite Desktop sidebar entry.
-- Extension settings for sidebar visibility, controller switching behavior, device selector behavior, and rumble tests.
-- Universal SVG-style controller map with live button, shoulder, trigger, stick, and D-pad feedback.
-- Analog trigger percentage display with live visual fill.
-- Stick position scopes for left and right sticks.
-- Quick test checklist for buttons, triggers, and stick range coverage.
-- Input history for button press/release events.
-- Stick diagnostics with movement paths, circular coverage sectors, max reach, and drift status.
-- Controller health estimate based on rest drift.
-- Device information panel with controller name, detected display name, VID/PID, layout, and backend.
-- Rumble diagnostics with standard, light, medium, heavy, low motor, high motor, pulse, alternating, and ramp tests.
 - Localizable UI through Playnite resource dictionaries.
 
 ## Requirements
@@ -31,7 +30,7 @@ It is designed for couch, TV, handheld-PC, and console-like setups where users w
 - Playnite SDK compatible runtime.
 - A controller exposed to SDL as a GameController.
 
-The plugin reads controller inputs through SDL GameController normalization. Sticks are normalized to `-1..1`, and triggers are normalized to `0..1`.
+8BitDo controllers can expose themselves through XInput or DInput depending on the hardware mode. Gamepad Tester reads through SDL GameController normalization, so both paths are supported when SDL can map the device. XInput mode is usually the most consistent first option; DInput can still work if SDL has a compatible mapping for that mode.
 
 ## Installation
 
@@ -39,77 +38,86 @@ The plugin reads controller inputs through SDL GameController normalization. Sti
 2. Open the `.pext` file, or drag it into Playnite.
 3. Restart Playnite if Playnite asks you to do so.
 
-After installation, the extension appears as **Gamepad Tester** in Playnite's extension menus.
+After installation, open **Extensions > Gamepad Tester**.
 
 ## Usage
 
-Open:
+Connect one or more controllers before opening the tester. If multiple controllers are available, the selector near the tabs lets you choose the active device by name.
 
-`Extensions > Gamepad Tester`
+If no controller is detected, the extension hides the tester UI and shows a clear warning. For 8BitDo devices, switch input mode if the current mode is not detected.
 
-Connect one or more controllers before opening the tester. If multiple controllers are available, the selector at the top of the window lets you choose the active device by name.
+## Tabs
 
-The main **Test** tab shows a controller map, live button states, stick scopes, trigger percentages, quick health metrics, and basic device information.
+### Test
 
-## Quick Test
+The main dashboard shows the selected controller map, device summary, health, guided test, current inputs, stick snapshots, trigger percentages, and rumble buttons.
 
-The **Quick test** tab tracks whether the main normalized inputs have been seen during the current session.
+Use **Start guided test** to clear the current session and press controls in the order requested by the tester. The pass completes when all normalized buttons, triggers, and stick edge checks have been seen.
 
-Use it to confirm that every face button, shoulder, stick click, menu button, D-pad direction, trigger, and stick edge can be detected by the plugin. Press **Reset session** to clear the checklist and start again.
+### Sticks & Calibration
 
-## Stick Diagnostics
+Use this tab for deeper analog diagnostics:
 
-The **Sticks** tab provides a more detailed look at joystick behavior:
+- Stick movement paths.
+- Circular coverage around the outer edge.
+- Current magnitude and angle.
+- Center capture for deadzone recommendation.
+- Range quality checks for repaired or replaced sticks.
 
-- **Path** shows the recent movement trail for each stick.
-- **Circular coverage** fills the outer ring as the stick reaches edge sectors around a full 360-degree sweep.
-- **Max reach** reports the strongest magnitude seen during the current session.
-- **Drift status** reports the current stick magnitude while resting near center.
+These diagnostics are read-only and do not modify Windows or driver calibration.
 
-For a clean circular test, press **Reset sticks**, then move the stick slowly around the full outer edge. A healthy stick should fill most or all sectors and produce a smooth path without large gaps or sudden jumps.
+### Latency
 
-## Inputs
+The latency tab estimates the delay observed by the plugin between starting a test and seeing the next controller input. It is not a direct USB hardware latency measurement, but it helps compare wired, Bluetooth, and adapter modes.
 
-The **Inputs** tab shows a button matrix and a chronological input history.
+### Input Log
 
-This is useful when a button works in-game but appears mapped differently, because it shows the SDL-normalized button that the plugin receives.
+The input log is paused by default for performance and readability. Enable it when you need a detailed event trail, then export it if a developer or tester needs the data.
 
-## Diagnostics
+### Device Info
 
-The **Diagnostics** tab separates health and analog information from the visual controller map.
+Shows the raw and friendly device identity, VID/PID, detected layout, SDL backend, and mapping status.
 
-The health score is based on rest drift only. Quick test coverage is tracked separately so actively moving the sticks during a test does not make a new controller look unhealthy.
+## Settings
 
-## Rumble
+The extension settings include:
 
-The **Rumble** tab exposes several vibration patterns:
+- Show or hide the Playnite sidebar item.
+- Reset diagnostics when switching controller.
+- Show the device selector even with one controller.
+- Enable or disable rumble tests.
+- Enable input log by default.
+- Configure healthy, minor, and attention drift thresholds.
+- Configure stick edge and trigger full-press thresholds for guided checks.
+- Configure center calibration duration.
 
-- Standard, light, medium, and heavy presets.
-- Low-frequency motor test.
-- High-frequency motor test.
-- Pulse, alternating, and ramp patterns.
+Threshold values are normalized. Sticks use `0..1` magnitude, and triggers use `0..1` pressure.
 
-Rumble support depends on the controller mode, driver, and SDL support for the connected device.
+## Building
 
-## Device Detection
+Run:
 
-Gamepad Tester uses the controller name, vendor ID, product ID, and SDL layout information to present a readable display name where possible.
+```powershell
+.\BuildGamepadTester.ps1
+```
 
-Supported families include:
+The build script compiles the extension and deploys it to:
 
-- Xbox One / Series and compatible XInput devices.
-- PlayStation DualShock 4 and DualSense controllers where SDL maps them.
-- Nintendo Switch Pro controllers.
-- 8BitDo controllers in XInput or compatible SDL GameController modes.
-- Generic SDL GameController-compatible devices.
+```text
+C:\Playnite\Extensions\GamepadTester
+```
 
-If a controller appears as a generic device, it can usually still be tested as long as SDL exposes normalized axes and buttons.
+To create a local `.pext` package after building:
 
-## Fullscreen Status
+```powershell
+.\PackageGamepadTester.ps1
+```
 
-The current implementation targets Playnite Desktop mode first.
+The package is written to `dist\GamepadTester-<version>.pext`.
 
-Fullscreen integration is planned as a later step. The intended direction is to expose a controller-friendly view or theme integration surface without overloading Playnite's native text-only extension menus.
+## Release QA
+
+Before publishing a `.pext`, run through [docs/visual-qa-checklist.md](docs/visual-qa-checklist.md). The checklist covers common window sizes, Windows scaling, controller states, theme contrast, and tab readability.
 
 ## Localization
 

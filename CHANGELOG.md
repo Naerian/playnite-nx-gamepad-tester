@@ -1,0 +1,18 @@
+# Changelog
+
+## 0.2.0
+
+- Redesigned the main Test dashboard with controller map, health, guided checks, current inputs, stick snapshots, and rumble in one place.
+- Added multiple visual schemes, including Universal, Xbox, PlayStation, DualSense, Switch Pro, 8BitDo Ultimate 2, and 8BitDo Pro.
+- Added configurable drift, range, trigger, and calibration thresholds.
+- Added guided test flow for normalized button, trigger, and stick edge coverage.
+- Added opt-in input log with export.
+- Added latency diagnostics and report export.
+- Improved SDL extra button labels with technical SDL raw indexes.
+- Added `.pext` packaging script and visual QA checklist.
+
+## 0.1.0
+
+- Initial Playnite Desktop extension prototype.
+- SDL GameController polling.
+- Live controller map, stick scopes, triggers, health, input log, rumble, and device information.

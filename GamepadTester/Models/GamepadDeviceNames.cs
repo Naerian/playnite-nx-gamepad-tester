@@ -67,6 +67,11 @@ namespace GamepadTester.Models
                 return "Nintendo Switch Pro Controller";
             }
 
+            if (vendorId == 0x28DE)
+            {
+                return "Steam Controller";
+            }
+
             return null;
         }
 
@@ -74,6 +79,33 @@ namespace GamepadTester.Models
         {
             return vendorId == 0x054C &&
                 (productId == 0x0CE6 || productId == 0x0DF2);
+        }
+
+        public static bool IsSteamController(string rawName, ushort vendorId)
+        {
+            return vendorId == 0x28DE ||
+                (!string.IsNullOrWhiteSpace(rawName) &&
+                 rawName.ToLowerInvariant().Contains("steam controller"));
+        }
+
+        public static bool IsXboxSeriesOrElite(string rawName, ushort vendorId, ushort productId)
+        {
+            if (vendorId == 0x045E)
+            {
+                switch (productId)
+                {
+                    case 0x02E3:
+                    case 0x0B05:
+                    case 0x0B12:
+                    case 0x0B13:
+                        return true;
+                }
+            }
+
+            var normalizedName = NormalizeDeviceName(rawName);
+            return normalizedName.Contains("XBOXSERIES") ||
+                   normalizedName.Contains("XBOXELITE") ||
+                   normalizedName.Contains("MICROSOFTXBOXELITE");
         }
 
         public static string GetEightBitDoName(EightBitDoModel model)
@@ -128,6 +160,13 @@ namespace GamepadTester.Models
                    normalized == "wireless controller" ||
                    normalized == "usb gamepad" ||
                    normalized == "hid-compliant game controller";
+        }
+
+        private static string NormalizeDeviceName(string rawName)
+        {
+            return string.IsNullOrWhiteSpace(rawName)
+                ? string.Empty
+                : rawName.Replace(" ", string.Empty).Replace("-", string.Empty).ToUpperInvariant();
         }
     }
 }

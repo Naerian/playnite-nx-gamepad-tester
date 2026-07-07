@@ -1,0 +1,167 @@
+<UserControl x:Class="GamepadTester.Views.GuidedTestView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:GamepadTester.Converters"
+             xmlns:layouts="clr-namespace:GamepadTester.Views.ControllerLayouts">
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="PanelBrush" Color="{DynamicResource ControlBackgroundColorDark}" />
+        <SolidColorBrush x:Key="LineBrush" Color="{DynamicResource PopupBorderColor}" />
+        <SolidColorBrush x:Key="TextMutedBrush" Color="{DynamicResource TextColorDarker}" />
+        <SolidColorBrush x:Key="ActiveBrush" Color="#31C48D" />
+        <SolidColorBrush x:Key="ActiveTextBrush" Color="#07130F" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibility" />
+
+        <Style x:Key="Panel" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource PanelBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource LineBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="18" />
+        </Style>
+
+        <Style x:Key="NextInputChip" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource PanelBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource LineBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="12,7" />
+            <Setter Property="Margin" Value="4" />
+            <Setter Property="MinWidth" Value="76" />
+            <Setter Property="TextElement.Foreground" Value="{DynamicResource TextBrush}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsCovered}" Value="True">
+                    <Setter Property="Background" Value="#1D5F49" />
+                    <Setter Property="BorderBrush" Value="{StaticResource ActiveBrush}" />
+                    <Setter Property="TextElement.Foreground" Value="#EFFFF7" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsCurrent}" Value="True">
+                    <Setter Property="Background" Value="#263A34" />
+                    <Setter Property="BorderBrush" Value="{StaticResource ActiveBrush}" />
+                    <Setter Property="TextElement.Foreground" Value="#EFFFF7" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="PrimaryCurrentChip" TargetType="Border">
+            <Setter Property="Background" Value="#11151B" />
+            <Setter Property="BorderBrush" Value="#D8DCE4" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Padding" Value="20,9" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="MinWidth" Value="160" />
+            <Setter Property="TextElement.Foreground" Value="{DynamicResource TextBrush}" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="24" TextElement.Foreground="{DynamicResource TextBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+            <TextBlock Text="{DynamicResource LOCGT_GuidedTest}"
+                       FontSize="26"
+                       FontWeight="Bold" />
+            <TextBlock Text="{DynamicResource LOCGT_GuidedTestWindowHelp}"
+                       Foreground="{StaticResource TextMutedBrush}"
+                       TextWrapping="Wrap"
+                       Margin="0,6,0,0" />
+        </StackPanel>
+
+        <Border Grid.Row="1" Style="{StaticResource Panel}" Margin="0,18,0,18">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <layouts:DualSenseControllerTesterView Width="500"
+                                                           Height="322"
+                                                           Visibility="{Binding IsDualSenseLayout, Converter={StaticResource BoolToVisibility}}" />
+                    <layouts:XboxControllerTesterView Width="570"
+                                                      Height="360"
+                                                      Visibility="{Binding IsXboxOneVisualScheme, Converter={StaticResource BoolToVisibility}}" />
+                    <layouts:XboxSeriesControllerTesterView Width="500"
+                                                            Height="322"
+                                                            Visibility="{Binding IsXboxSeriesVisualScheme, Converter={StaticResource BoolToVisibility}}" />
+                    <layouts:PlayStationControllerTesterView Width="500"
+                                                             Height="322"
+                                                             Visibility="{Binding IsPlayStationVisualScheme, Converter={StaticResource BoolToVisibility}}" />
+                    <layouts:SwitchProControllerTesterView Width="500"
+                                                           Height="322"
+                                                           Visibility="{Binding IsSwitchProVisualScheme, Converter={StaticResource BoolToVisibility}}" />
+                    <layouts:EightBitDoUltimateTesterView Width="500"
+                                                          Height="322"
+                                                          Visibility="{Binding IsEightBitDoUltimateVisualScheme, Converter={StaticResource BoolToVisibility}}" />
+                    <layouts:EightBitDoProTesterView Width="500"
+                                                     Height="322"
+                                                     Visibility="{Binding IsEightBitDoProVisualScheme, Converter={StaticResource BoolToVisibility}}" />
+                    <layouts:SteamControllerTesterView Width="360"
+                                                       Height="238"
+                                                       Visibility="{Binding IsSteamControllerVisualScheme, Converter={StaticResource BoolToVisibility}}" />
+                    <layouts:UniversalControllerTesterView Width="500"
+                                                           Height="322"
+                                                           Visibility="{Binding IsUniversalControllerArtwork, Converter={StaticResource BoolToVisibility}}" />
+                </Grid>
+
+                <StackPanel Grid.Row="1" HorizontalAlignment="Center" Margin="0,12,0,0">
+                    <TextBlock Text="{Binding GuidedTestActionLabel}"
+                               Foreground="{StaticResource TextMutedBrush}"
+                               FontWeight="SemiBold"
+                               TextAlignment="Center"
+                               Margin="0,0,0,8" />
+                    <Border Style="{StaticResource PrimaryCurrentChip}">
+                        <TextBlock Text="{Binding GuidedTestNextInputLabel}"
+                                   FontSize="24"
+                                   FontWeight="Bold"
+                                   TextAlignment="Center" />
+                    </Border>
+                    <ItemsControl ItemsSource="{Binding GuidedTestInputs}" Margin="0,14,0,0">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel HorizontalAlignment="Center" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource NextInputChip}">
+                                    <TextBlock Text="{Binding Label}"
+                                               FontWeight="SemiBold"
+                                               TextAlignment="Center"
+                                               HorizontalAlignment="Center" />
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+                <ProgressBar Minimum="0"
+                             Maximum="100"
+                             Value="{Binding GuidedTestProgress, Mode=OneWay}"
+                             Height="12" />
+                <TextBlock Text="{Binding GuidedTestStatusLabel}"
+                           Foreground="{StaticResource TextMutedBrush}"
+                           TextWrapping="Wrap"
+                           Margin="0,10,0,0" />
+            </StackPanel>
+            <Button Grid.Column="1"
+                    Content="{DynamicResource LOCGT_RestartGuidedTest}"
+                    Command="{Binding StartGuidedTestCommand}"
+                    Width="170"
+                    Height="42"
+                    Margin="18,0,0,0" />
+        </Grid>
+    </Grid>
+</UserControl>
