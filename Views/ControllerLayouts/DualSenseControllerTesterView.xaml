@@ -53,7 +53,7 @@
 
     <Viewbox Stretch="Uniform">
         <Canvas Width="760" Height="520">
-            <Canvas Canvas.Left="178" Canvas.Top="8">
+            <Canvas Canvas.Left="178" Canvas.Top="28">
                 <Canvas.RenderTransform>
                     <ScaleTransform ScaleX="0.82" ScaleY="0.82" />
                 </Canvas.RenderTransform>
@@ -67,12 +67,9 @@
                            Canvas.Top="39"
                            Width="58"
                            Style="{StaticResource SmallMapText}" />
-                <Border Canvas.Left="2" Canvas.Top="84" Width="73" Height="6" CornerRadius="3" Background="{StaticResource TriggerTrack}" BorderBrush="{StaticResource MutedLineBrush}" BorderThickness="0.5" ClipToBounds="True">
-                    <Rectangle HorizontalAlignment="Left" Width="{Binding LeftTriggerDualSenseMapWidth}" RadiusX="3" RadiusY="3" Fill="{StaticResource InputActiveStroke}" Opacity="0.86" />
-                </Border>
             </Canvas>
 
-            <Canvas Canvas.Left="522" Canvas.Top="8">
+            <Canvas Canvas.Left="522" Canvas.Top="28">
                 <Canvas.RenderTransform>
                     <ScaleTransform ScaleX="0.82" ScaleY="0.82" />
                 </Canvas.RenderTransform>
@@ -93,9 +90,6 @@
                            Canvas.Top="39"
                            Width="58"
                            Style="{StaticResource SmallMapText}" />
-                <Border Canvas.Left="2" Canvas.Top="84" Width="73" Height="6" CornerRadius="3" Background="{StaticResource TriggerTrack}" BorderBrush="{StaticResource MutedLineBrush}" BorderThickness="0.5" ClipToBounds="True">
-                    <Rectangle HorizontalAlignment="Left" Width="{Binding RightTriggerDualSenseMapWidth}" RadiusX="3" RadiusY="3" Fill="{StaticResource InputActiveStroke}" Opacity="0.86" />
-                </Border>
             </Canvas>
 
             <Canvas Canvas.Left="80" Canvas.Top="118" Width="600" Height="400">

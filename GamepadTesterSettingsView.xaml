@@ -19,6 +19,17 @@
             <Setter Property="Margin" Value="28,0,0,12" />
         </Style>
 
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,0,12,0" />
+        </Style>
+
+        <Style x:Key="CompactTextBox" TargetType="TextBox">
+            <Setter Property="Width" Value="96" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+        </Style>
+
         <Style x:Key="SettingsSection" TargetType="Border">
             <Setter Property="Background" Value="{DynamicResource GroupBoxBackgroundBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource PopupBorderBrush}" />
@@ -58,6 +69,54 @@
                               IsChecked="{Binding Settings.EnableRumbleTests}" />
                     <TextBlock Text="{DynamicResource LOCGT_SettingsEnableRumbleHelp}"
                                Style="{StaticResource MutedText}" />
+
+                    <CheckBox Content="{DynamicResource LOCGT_SettingsInputLogDefault}"
+                              IsChecked="{Binding Settings.EnableInputLogByDefault}" />
+                    <TextBlock Text="{DynamicResource LOCGT_SettingsInputLogDefaultHelp}"
+                               Style="{StaticResource MutedText}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource SettingsSection}">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource LOCGT_SettingsThresholds}" Style="{StaticResource SectionTitle}" />
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="260" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Text="{DynamicResource LOCGT_SettingsHealthyDeadzone}" Style="{StaticResource FieldLabel}" />
+                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Settings.HealthyDeadzone}" Style="{StaticResource CompactTextBox}" />
+
+                        <TextBlock Grid.Row="1" Text="{DynamicResource LOCGT_SettingsMinorDrift}" Style="{StaticResource FieldLabel}" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Settings.MinorDriftThreshold}" Style="{StaticResource CompactTextBox}" />
+
+                        <TextBlock Grid.Row="2" Text="{DynamicResource LOCGT_SettingsAttentionDrift}" Style="{StaticResource FieldLabel}" />
+                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Settings.AttentionDriftThreshold}" Style="{StaticResource CompactTextBox}" />
+
+                        <TextBlock Grid.Row="3" Text="{DynamicResource LOCGT_SettingsStickEdge}" Style="{StaticResource FieldLabel}" />
+                        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Settings.StickEdgeThreshold}" Style="{StaticResource CompactTextBox}" />
+
+                        <TextBlock Grid.Row="4" Text="{DynamicResource LOCGT_SettingsTriggerFullPress}" Style="{StaticResource FieldLabel}" />
+                        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Settings.TriggerFullPressThreshold}" Style="{StaticResource CompactTextBox}" />
+
+                        <TextBlock Grid.Row="5" Text="{DynamicResource LOCGT_SettingsCalibrationDuration}" Style="{StaticResource FieldLabel}" />
+                        <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Settings.CenterCalibrationMilliseconds}" Style="{StaticResource CompactTextBox}" />
+                    </Grid>
+
+                    <TextBlock Text="{DynamicResource LOCGT_SettingsThresholdsHelp}"
+                               Style="{StaticResource MutedText}"
+                               Margin="0,4,0,0" />
                 </StackPanel>
             </Border>
         </StackPanel>

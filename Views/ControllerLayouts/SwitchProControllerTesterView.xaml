@@ -32,25 +32,21 @@
         <Canvas Width="760" Height="530">
             <!-- Trigger caps from the supplied Switch Pro SVG. -->
             <Path Canvas.Left="144"
-                  Canvas.Top="8"
+                  Canvas.Top="28"
                   Data="M58.689 67.9165L5.20399 73.9448C0.805227 74.4406 0.705254 71.4721 1.20511 69.9259C3.20455 62.3904 8.20315 44.4057 12.202 32.7509C17.2006 18.1822 32.6963 9.13966 38.6946 6.62782C44.6929 4.116 57.6893 2.10654 72.6851 1.1018C84.6817 0.298019 89.6803 4.4509 90.6801 6.62782C96.1785 19.187 107.975 46.2143 111.174 53.8502C114.373 61.4862 107.509 64.065 103.676 64.3999L58.689 67.9165Z"
                   Fill="{Binding IsLeftTriggerActive, Converter={StaticResource TriggerFillBrush}}"
                   Stroke="{Binding IsLeftTriggerActive, Converter={StaticResource InputStrokeBrush}}"
                   StrokeThickness="2.6"
                   StrokeLineJoin="Round" />
             <TextBlock Canvas.Left="174"
-                       Canvas.Top="44"
+                       Canvas.Top="64"
                        Width="60"
                        Text="{Binding LeftTriggerPercent, StringFormat={}{0}%}"
                        Foreground="#F4F6FA"
                        FontWeight="SemiBold"
                        TextAlignment="Center" />
-            <Border Canvas.Left="144" Canvas.Top="94" Width="122" Height="6" CornerRadius="3" Background="{StaticResource TriggerTrack}" BorderBrush="{StaticResource MutedLineBrush}" BorderThickness="0.5" ClipToBounds="True">
-                <Rectangle HorizontalAlignment="Left" Width="{Binding LeftTriggerThinMapWidth}" RadiusX="3" RadiusY="3" Fill="{StaticResource InputActiveStroke}" Opacity="0.86" />
-            </Border>
-
             <Path Canvas.Left="503"
-                  Canvas.Top="8"
+                  Canvas.Top="28"
                   Data="M58.689 67.9165L5.20399 73.9448C0.805227 74.4406 0.705254 71.4721 1.20511 69.9259C3.20455 62.3904 8.20315 44.4057 12.202 32.7509C17.2006 18.1822 32.6963 9.13966 38.6946 6.62782C44.6929 4.116 57.6893 2.10654 72.6851 1.1018C84.6817 0.298019 89.6803 4.4509 90.6801 6.62782C96.1785 19.187 107.975 46.2143 111.174 53.8502C114.373 61.4862 107.509 64.065 103.676 64.3999L58.689 67.9165Z"
                   Fill="{Binding IsRightTriggerActive, Converter={StaticResource TriggerFillBrush}}"
                   Stroke="{Binding IsRightTriggerActive, Converter={StaticResource InputStrokeBrush}}"
@@ -62,16 +58,12 @@
                 </Path.RenderTransform>
             </Path>
             <TextBlock Canvas.Left="526"
-                       Canvas.Top="44"
+                       Canvas.Top="64"
                        Width="66"
                        Text="{Binding RightTriggerPercent, StringFormat={}{0}%}"
                        Foreground="#F4F6FA"
                        FontWeight="SemiBold"
                        TextAlignment="Center" />
-            <Border Canvas.Left="494" Canvas.Top="94" Width="122" Height="6" CornerRadius="3" Background="{StaticResource TriggerTrack}" BorderBrush="{StaticResource MutedLineBrush}" BorderThickness="0.5" ClipToBounds="True">
-                <Rectangle HorizontalAlignment="Left" Width="{Binding RightTriggerThinMapWidth}" RadiusX="3" RadiusY="3" Fill="{StaticResource InputActiveStroke}" Opacity="0.86" />
-            </Border>
-
             <!-- Shoulder caps sit behind the body, matching the source SVG proportions. -->
             <Path Canvas.Left="144"
                   Canvas.Top="116"

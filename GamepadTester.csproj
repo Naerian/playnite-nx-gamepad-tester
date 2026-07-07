@@ -62,6 +62,7 @@
     <Compile Include="Models\GamepadDeviceNames.cs" />
     <Compile Include="Models\GamepadLayout.cs" />
     <Compile Include="Models\GamepadState.cs" />
+    <Compile Include="Models\GuidedTestInputItem.cs" />
     <Compile Include="Models\EightBitDoModel.cs" />
     <Compile Include="Models\ExtraButtonState.cs" />
     <Compile Include="Models\InputHistoryItem.cs" />
@@ -73,25 +74,10 @@
     <Compile Include="Services\SdlGamepadProvider.cs" />
     <Compile Include="ViewModels\GamepadTesterViewModel.cs" />
     <Compile Include="ViewModels\ObservableObject.cs" />
-    <Compile Include="Views\ControllerLayouts\EightBitDo\EightBitDo64ControllerArtwork.xaml.cs">
-      <DependentUpon>EightBitDo64ControllerArtwork.xaml</DependentUpon>
+    <Compile Include="Views\ControllerLayouts\EightBitDoProTesterView.xaml.cs">
+      <DependentUpon>EightBitDoProTesterView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ControllerLayouts\EightBitDo\EightBitDoPro3Artwork.xaml.cs">
-      <DependentUpon>EightBitDoPro3Artwork.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ControllerLayouts\EightBitDo\EightBitDoPro3TesterView.xaml.cs">
-      <DependentUpon>EightBitDoPro3TesterView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ControllerLayouts\EightBitDo\EightBitDoUltimate2CWirelessArtwork.xaml.cs">
-      <DependentUpon>EightBitDoUltimate2CWirelessArtwork.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ControllerLayouts\EightBitDo\EightBitDoUltimate2CTesterView.xaml.cs">
-      <DependentUpon>EightBitDoUltimate2CTesterView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ControllerLayouts\EightBitDo\EightBitDoUltimate2WirelessArtwork.xaml.cs">
-      <DependentUpon>EightBitDoUltimate2WirelessArtwork.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ControllerLayouts\EightBitDo\EightBitDoUltimateTesterView.xaml.cs">
+    <Compile Include="Views\ControllerLayouts\EightBitDoUltimateTesterView.xaml.cs">
       <DependentUpon>EightBitDoUltimateTesterView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ControllerLayouts\PlayStationControllerTesterView.xaml.cs">
@@ -103,14 +89,23 @@
     <Compile Include="Views\ControllerLayouts\SwitchProControllerTesterView.xaml.cs">
       <DependentUpon>SwitchProControllerTesterView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ControllerLayouts\SteamControllerTesterView.xaml.cs">
+      <DependentUpon>SteamControllerTesterView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ControllerLayouts\UniversalControllerTesterView.xaml.cs">
       <DependentUpon>UniversalControllerTesterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ControllerLayouts\XboxSeriesControllerTesterView.xaml.cs">
+      <DependentUpon>XboxSeriesControllerTesterView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ControllerLayouts\XboxControllerTesterView.xaml.cs">
       <DependentUpon>XboxControllerTesterView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\GamepadTesterView.xaml.cs">
       <DependentUpon>GamepadTesterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GuidedTestView.xaml.cs">
+      <DependentUpon>GuidedTestView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -138,31 +133,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ControllerLayouts\EightBitDo\EightBitDo64ControllerArtwork.xaml">
+    <Page Include="Views\GuidedTestView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ControllerLayouts\EightBitDo\EightBitDoPro3Artwork.xaml">
+    <Page Include="Views\ControllerLayouts\EightBitDoProTesterView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ControllerLayouts\EightBitDo\EightBitDoPro3TesterView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ControllerLayouts\EightBitDo\EightBitDoUltimate2CWirelessArtwork.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ControllerLayouts\EightBitDo\EightBitDoUltimate2CTesterView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ControllerLayouts\EightBitDo\EightBitDoUltimate2WirelessArtwork.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ControllerLayouts\EightBitDo\EightBitDoUltimateTesterView.xaml">
+    <Page Include="Views\ControllerLayouts\EightBitDoUltimateTesterView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -178,7 +157,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ControllerLayouts\SteamControllerTesterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ControllerLayouts\UniversalControllerTesterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ControllerLayouts\XboxSeriesControllerTesterView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

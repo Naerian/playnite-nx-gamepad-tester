@@ -50,7 +50,7 @@
 
     <Viewbox Stretch="Uniform">
         <Canvas Width="700" Height="500">
-            <Canvas Canvas.Left="154" Canvas.Top="16">
+            <Canvas Canvas.Left="154" Canvas.Top="22">
                 <Canvas.LayoutTransform>
                     <ScaleTransform ScaleX="0.82" ScaleY="0.82" />
                 </Canvas.LayoutTransform>
@@ -64,25 +64,9 @@
                            Canvas.Top="39"
                            Width="58"
                            Style="{StaticResource SmallMapText}" />
-                <Border Canvas.Left="2"
-                        Canvas.Top="92"
-                        Width="73"
-                        Height="6"
-                        CornerRadius="3"
-                        Background="{StaticResource TriggerTrack}"
-                        BorderBrush="{StaticResource MutedLineBrush}"
-                        BorderThickness="0.5"
-                        ClipToBounds="True">
-                    <Rectangle HorizontalAlignment="Left"
-                               Width="{Binding LeftTriggerDualSenseMapWidth}"
-                               RadiusX="3"
-                               RadiusY="3"
-                               Fill="{StaticResource InputActiveStroke}"
-                               Opacity="0.86" />
-                </Border>
             </Canvas>
 
-            <Canvas Canvas.Left="492" Canvas.Top="16">
+            <Canvas Canvas.Left="492" Canvas.Top="22">
                 <Canvas.LayoutTransform>
                     <ScaleTransform ScaleX="0.82" ScaleY="0.82" />
                 </Canvas.LayoutTransform>
@@ -103,22 +87,6 @@
                            Canvas.Top="39"
                            Width="58"
                            Style="{StaticResource SmallMapText}" />
-                <Border Canvas.Left="2"
-                        Canvas.Top="92"
-                        Width="73"
-                        Height="6"
-                        CornerRadius="3"
-                        Background="{StaticResource TriggerTrack}"
-                        BorderBrush="{StaticResource MutedLineBrush}"
-                        BorderThickness="0.5"
-                        ClipToBounds="True">
-                    <Rectangle HorizontalAlignment="Left"
-                               Width="{Binding RightTriggerDualSenseMapWidth}"
-                               RadiusX="3"
-                               RadiusY="3"
-                               Fill="{StaticResource InputActiveStroke}"
-                               Opacity="0.86" />
-                </Border>
             </Canvas>
 
             <Canvas Canvas.Left="50" Canvas.Top="96" Width="600" Height="400">

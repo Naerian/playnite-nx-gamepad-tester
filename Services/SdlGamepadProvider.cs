@@ -253,7 +253,7 @@ namespace GamepadTester.Services
                     extraButtons.Add(new ExtraButtonState
                     {
                         RawIndex = rawIndex,
-                        Label = GetExtraButtonLabel(rawIndex),
+                        Label = GetExtraButtonLabel(rawIndex, rawIndex - StandardRawButtonCount + 1),
                         IsPressed = Sdl2Native.SDL_JoystickGetButton(joystick, rawIndex) == 1
                     });
                 }
@@ -267,9 +267,9 @@ namespace GamepadTester.Services
             return extraButtons;
         }
 
-        private static string GetExtraButtonLabel(int rawIndex)
+        private static string GetExtraButtonLabel(int rawIndex, int extraIndex)
         {
-            return string.Format("Raw {0}", rawIndex);
+            return string.Format("Extra {0} (SDL {1})", extraIndex, rawIndex);
         }
 
         private void GetDeviceIds(out ushort vendorId, out ushort productId)
