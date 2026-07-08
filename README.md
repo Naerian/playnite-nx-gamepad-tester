@@ -197,32 +197,6 @@ The extension settings include:
 
 Threshold values are normalized. Sticks use `0..1` magnitude, and triggers use `0..1` pressure.
 
-## Building
-
-Run:
-
-```powershell
-.\BuildGamepadTester.ps1
-```
-
-The build script compiles the extension and deploys it to:
-
-```text
-C:\Playnite\Extensions\GamepadTester
-```
-
-To create a local `.pext` package after building:
-
-```powershell
-.\PackageGamepadTester.ps1
-```
-
-The package is written to `dist\GamepadTester-<version>.pext`.
-
-## Release QA
-
-Before publishing a `.pext`, run through [docs/visual-qa-checklist.md](docs/visual-qa-checklist.md). The checklist covers common window sizes, Windows scaling, controller states, theme contrast, and tab readability.
-
 ## Localization
 
 The plugin uses Playnite localization resource dictionaries under `Localization/`.
