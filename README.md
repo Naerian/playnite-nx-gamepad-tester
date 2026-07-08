@@ -99,9 +99,48 @@ The recommended Fullscreen path is to use embeddable theme blocks instead of the
 <ContentControl x:Name="GamepadTester_LatencyMini" />
 ```
 
+The extension accepts the short name, compact prefixed name, or underscore-prefixed name for each block. For example, these names all resolve to the same status badge:
+
+```xaml
+<ContentControl x:Name="StatusBadge" />
+<ContentControl x:Name="GamepadTesterStatusBadge" />
+<ContentControl x:Name="GamepadTester_StatusBadge" />
+```
+
+Available block names:
+
+- `GamepadTesterLauncher`: simple launcher button for the simplified tester window.
+- `StatusBadge`: compact connected-device summary.
+- `ButtonMap`: live controller artwork and pressed-state highlights.
+- `StickCheck`: compact left/right stick diagnostics.
+- `RumblePad`: navigable vibration test buttons.
+- `LatencyMini`: compact start/stop latency sampler.
+
 These blocks share one lightweight polling runtime while they are visible. They do not include exports, device selectors, visual scheme selectors, or desktop-only controls. The theme remains responsible for placement, focus behavior, section switching, animation, spacing, and surrounding chrome.
 
 This keeps the visual placement, icon, hover/focus states, and navigation behavior fully owned by the theme while the plugin provides live input state, controller artwork, stick diagnostics, rumble commands, and latency samples as embeddable building blocks.
+
+### Fullscreen focus and controller input
+
+Gamepad Tester does not take over global Fullscreen navigation. Playnite and the active theme still own directional focus movement.
+
+For interactive embedded blocks, set focus on the block or on the first button inside your panel when opening it. The plugin listens for the controller `A` button and activates the focused Gamepad Tester button when focus is inside a Gamepad Tester theme block. This is mainly used by `RumblePad` and `LatencyMini`.
+
+Recommended focus pattern for a custom rumble panel:
+
+```xaml
+<Border FocusManager.IsFocusScope="True"
+        FocusManager.FocusedElement="{Binding ElementName=GamepadTester_RumblePad}"
+        KeyboardNavigation.DirectionalNavigation="Contained"
+        KeyboardNavigation.TabNavigation="Cycle">
+    <ContentControl x:Name="GamepadTester_RumblePad"
+                    Focusable="True"
+                    KeyboardNavigation.DirectionalNavigation="Contained"
+                    KeyboardNavigation.TabNavigation="Cycle" />
+</Border>
+```
+
+If you show a modal-like Fullscreen panel, disable or hide the underlying game list while the panel is open. This prevents Playnite from moving behind the tester while the user is testing the controller.
 
 Fullscreen integrations should generally show only the pieces that make sense for controller navigation:
 
