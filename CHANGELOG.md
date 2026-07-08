@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.3.0
+
+- Added fullscreen-friendly Playnite integration with a configurable top panel shortcut.
+- Added a theme custom element, `GamepadTester_GamepadTesterLauncher`, for fullscreen themes that want to place their own launcher.
+- Added embeddable fullscreen theme blocks for status, button map, sticks, rumble, and latency.
+- Added fullscreen-aware window sizing for the tester and guided test windows.
+- Improved visual scheme consistency across controller layouts.
+- Improved Test, Latency, Input log, Sticks & Calibration, and Device info panels.
+- Fixed missing localization entries for latency samples and device capability labels.
+- Updated release packaging metadata.
+
 ## 0.2.0
 
 - Redesigned the main Test dashboard with controller map, health, guided checks, current inputs, stick snapshots, and rumble in one place.

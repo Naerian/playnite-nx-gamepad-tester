@@ -1,10 +1,15 @@
-<UserControl x:Class="GamepadTester.Views.ControllerLayouts.UniversalControllerTesterView"
+﻿<UserControl x:Class="GamepadTester.Views.ControllerLayouts.UniversalControllerTesterView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:converters="clr-namespace:GamepadTester.Converters"
+             xmlns:primitives="clr-namespace:ControllerLayoutPrimitives"
              IsHitTestVisible="False">
     <UserControl.Resources>
-        <LinearGradientBrush x:Key="ControllerFill" StartPoint="0,0" EndPoint="1,1">
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ControllerLayoutResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <LinearGradientBrush x:Key="ControllerFill" StartPoint="0,0" EndPoint="1,1">
             <GradientStop Color="#202B39" Offset="0" />
             <GradientStop Color="#151A22" Offset="0.55" />
             <GradientStop Color="#10151C" Offset="1" />
@@ -21,19 +26,6 @@
         <SolidColorBrush x:Key="TriggerTrack" Color="#151922" />
         <SolidColorBrush x:Key="StickDotLeft" Color="#4CC9F0" />
         <SolidColorBrush x:Key="StickDotRight" Color="#F7B955" />
-
-        <converters:BoolToBrushConverter x:Key="InputFillBrush"
-                                         FalseBrush="{StaticResource InputIdleFill}"
-                                         TrueBrush="{StaticResource InputActiveFill}" />
-        <converters:BoolToBrushConverter x:Key="TriggerFillBrush"
-                                         FalseBrush="{StaticResource SurfaceFill}"
-                                         TrueBrush="{StaticResource InputActiveFill}" />
-        <converters:BoolToBrushConverter x:Key="InputStrokeBrush"
-                                         FalseBrush="{StaticResource LineBrush}"
-                                         TrueBrush="{StaticResource InputActiveStroke}" />
-        <converters:BoolToBrushConverter x:Key="ActiveOnlyStrokeBrush"
-                                         FalseBrush="{StaticResource InputIdleFill}"
-                                         TrueBrush="{StaticResource InputActiveStroke}" />
 
         <Style x:Key="MapLabel" TargetType="Label">
             <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
@@ -52,6 +44,7 @@
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Viewbox Stretch="Uniform">
@@ -71,6 +64,7 @@
                     </Path.RenderTransform>
                 </Path>
                 <TextBlock Text="{Binding LeftTriggerPercent, StringFormat={}{0}%}"
+                           Visibility="Collapsed"
                            Canvas.Left="36"
                            Canvas.Top="26"
                            Width="50"
@@ -91,6 +85,7 @@
                     </Path.RenderTransform>
                 </Path>
                 <TextBlock Text="{Binding RightTriggerPercent, StringFormat={}{0}%}"
+                           Visibility="Collapsed"
                            Canvas.Left="36"
                            Canvas.Top="26"
                            Width="50"
@@ -126,27 +121,23 @@
                       StrokeThickness="3"
                       StrokeLineJoin="Round" />
 
-                <Ellipse Canvas.Left="110" Canvas.Top="68" Width="72" Height="72"
-                         Fill="{StaticResource SurfaceFill}"
-                         Stroke="{StaticResource MutedLineBrush}"
-                         StrokeThickness="2" />
-                <Ellipse Canvas.Left="129" Canvas.Top="87" Width="34" Height="34"
-                         Fill="{StaticResource StickDotLeft}">
-                    <Ellipse.RenderTransform>
-                        <TranslateTransform X="{Binding LeftStickDotX}" Y="{Binding LeftStickDotY}" />
-                    </Ellipse.RenderTransform>
-                </Ellipse>
+                <primitives:StickIndicatorView Canvas.Left="110"
+                                               Canvas.Top="68"
+                                               OuterSize="72"
+                                               DotSize="34"
+                                               DotFill="{StaticResource StickDotLeft}"
+                                               DotX="{Binding LeftStickDotX}"
+                                               DotY="{Binding LeftStickDotY}"
+                                               StrokeThickness="2" />
 
-                <Ellipse Canvas.Left="340" Canvas.Top="164" Width="72" Height="72"
-                         Fill="{StaticResource SurfaceFill}"
-                         Stroke="{StaticResource MutedLineBrush}"
-                         StrokeThickness="2" />
-                <Ellipse Canvas.Left="359" Canvas.Top="183" Width="34" Height="34"
-                         Fill="{StaticResource StickDotRight}">
-                    <Ellipse.RenderTransform>
-                        <TranslateTransform X="{Binding RightStickDotX}" Y="{Binding RightStickDotY}" />
-                    </Ellipse.RenderTransform>
-                </Ellipse>
+                <primitives:StickIndicatorView Canvas.Left="340"
+                                               Canvas.Top="164"
+                                               OuterSize="72"
+                                               DotSize="34"
+                                               DotFill="{StaticResource StickDotRight}"
+                                               DotX="{Binding RightStickDotX}"
+                                               DotY="{Binding RightStickDotY}"
+                                               StrokeThickness="2" />
 
                 <Path Data="M169,154 L195,154 L195,184 L225,184 L225,210 L195,210 L195,240 L169,240 L169,210 L139,210 L139,184 L169,184 Z"
                       Fill="{StaticResource SurfaceFill}"
@@ -189,28 +180,39 @@
                 <Path Data="M252,112 L264,112" Stroke="{StaticResource LineBrush}" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
                 <Path Data="M336,112 L348,112" Stroke="{StaticResource LineBrush}" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
 
-                <Ellipse Canvas.Left="433" Canvas.Top="53" Width="40" Height="40"
-                         Fill="{Binding State.Buttons.North, Converter={StaticResource InputFillBrush}}"
-                         Stroke="{Binding State.Buttons.North, Converter={StaticResource InputStrokeBrush}}"
-                         StrokeThickness="3" />
-                <Ellipse Canvas.Left="473" Canvas.Top="93" Width="40" Height="40"
-                         Fill="{Binding State.Buttons.East, Converter={StaticResource InputFillBrush}}"
-                         Stroke="{Binding State.Buttons.East, Converter={StaticResource InputStrokeBrush}}"
-                         StrokeThickness="3" />
-                <Ellipse Canvas.Left="393" Canvas.Top="93" Width="40" Height="40"
-                         Fill="{Binding State.Buttons.West, Converter={StaticResource InputFillBrush}}"
-                         Stroke="{Binding State.Buttons.West, Converter={StaticResource InputStrokeBrush}}"
-                         StrokeThickness="3" />
-                <Ellipse Canvas.Left="433" Canvas.Top="133" Width="40" Height="40"
-                         Fill="{Binding State.Buttons.South, Converter={StaticResource InputFillBrush}}"
-                         Stroke="{Binding State.Buttons.South, Converter={StaticResource InputStrokeBrush}}"
-                         StrokeThickness="3" />
-                <Label Canvas.Left="433" Canvas.Top="53" Width="40" Height="40" Content="{Binding NorthLabel}" Style="{StaticResource MapLabel}" />
-                <Label Canvas.Left="473" Canvas.Top="93" Width="40" Height="40" Content="{Binding EastLabel}" Style="{StaticResource MapLabel}" />
-                <Label Canvas.Left="393" Canvas.Top="93" Width="40" Height="40" Content="{Binding WestLabel}" Style="{StaticResource MapLabel}" />
-                <Label Canvas.Left="433" Canvas.Top="133" Width="40" Height="40" Content="{Binding SouthLabel}" Style="{StaticResource MapLabel}" />
+                <primitives:FaceButtonView Canvas.Left="433"
+                                           Canvas.Top="53"
+                                           ButtonSize="40"
+                                           LabelFontSize="14"
+                                           StrokeThickness="3"
+                                           Label="{Binding NorthLabel}"
+                                           IsActive="{Binding State.Buttons.North}" />
+                <primitives:FaceButtonView Canvas.Left="473"
+                                           Canvas.Top="93"
+                                           ButtonSize="40"
+                                           LabelFontSize="14"
+                                           StrokeThickness="3"
+                                           Label="{Binding EastLabel}"
+                                           IsActive="{Binding State.Buttons.East}" />
+                <primitives:FaceButtonView Canvas.Left="393"
+                                           Canvas.Top="93"
+                                           ButtonSize="40"
+                                           LabelFontSize="14"
+                                           StrokeThickness="3"
+                                           Label="{Binding WestLabel}"
+                                           IsActive="{Binding State.Buttons.West}" />
+                <primitives:FaceButtonView Canvas.Left="433"
+                                           Canvas.Top="133"
+                                           ButtonSize="40"
+                                           LabelFontSize="14"
+                                           StrokeThickness="3"
+                                           Label="{Binding SouthLabel}"
+                                           IsActive="{Binding State.Buttons.South}" />
             </Canvas>
             </Canvas>
         </Canvas>
     </Viewbox>
 </UserControl>
+
+
+

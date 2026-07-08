@@ -1,4 +1,4 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
     <sys:String x:Key="LOCGT_PluginName">Gamepad Tester</sys:String>
@@ -11,7 +11,7 @@
     <sys:String x:Key="LOCGT_TabSticks">Sticks y calibracion</sys:String>
     <sys:String x:Key="LOCGT_TabCalibration">Calibracion</sys:String>
     <sys:String x:Key="LOCGT_TabLatency">Latencia</sys:String>
-    <sys:String x:Key="LOCGT_TabVibration">VibraciÃ³n</sys:String>
+    <sys:String x:Key="LOCGT_TabVibration">Vibración</sys:String>
     <sys:String x:Key="LOCGT_TabDeviceInfo">Info. dispositivo</sys:String>
     <sys:String x:Key="LOCGT_TabHardware">Hardware</sys:String>
     <sys:String x:Key="LOCGT_Health">Salud</sys:String>
@@ -65,6 +65,10 @@
     <sys:String x:Key="LOCGT_SettingsPlayniteIntegration">Integracion con Playnite</sys:String>
     <sys:String x:Key="LOCGT_SettingsShowSidebar">Mostrar Gamepad Tester en la barra lateral de Playnite</sys:String>
     <sys:String x:Key="LOCGT_SettingsShowSidebarHelp">Anade una entrada de Gamepad Tester a la barra lateral del modo escritorio. Reinicia Playnite tras cambiar esta opcion para reconstruir la barra lateral.</sys:String>
+    <sys:String x:Key="LOCGT_SettingsShowTopPanel">Mostrar Gamepad Tester en el panel superior de Playnite</sys:String>
+    <sys:String x:Key="LOCGT_SettingsShowTopPanelHelp">Anade un acceso compacto al panel superior de Playnite, util para temas pensados para fullscreen.</sys:String>
+    <sys:String x:Key="LOCGT_SettingsFullscreenWindow">Usar ventana adaptada a Fullscreen</sys:String>
+    <sys:String x:Key="LOCGT_SettingsFullscreenWindowHelp">Cuando Playnite esta en modo Fullscreen, abre Gamepad Tester maximizado y mantiene disponible el boton de cerrar.</sys:String>
     <sys:String x:Key="LOCGT_SettingsTestingBehavior">Comportamiento de las pruebas</sys:String>
     <sys:String x:Key="LOCGT_SettingsResetOnSwitch">Reiniciar diagnostico al cambiar de mando</sys:String>
     <sys:String x:Key="LOCGT_SettingsResetOnSwitchHelp">Limpia comprobaciones, recorridos de sticks, cobertura circular y datos de drift de sesion al seleccionar otro dispositivo conectado.</sys:String>
@@ -207,10 +211,31 @@
     <sys:String x:Key="LOCGT_MappingRecognized">Mapeado por SDL GameController</sys:String>
     <sys:String x:Key="LOCGT_NoExtraButtons">SDL no expone botones adicionales.</sys:String>
     <sys:String x:Key="LOCGT_ExtraButtonsFormat">{0} controles adicionales expuestos por SDL</sys:String>
+    <sys:String x:Key="LOCGT_LatencySamples">Muestras</sys:String>
+    <sys:String x:Key="LOCGT_LatencyRange">Rango</sys:String>
+    <sys:String x:Key="LOCGT_LatencyDuration">Duracion</sys:String>
+    <sys:String x:Key="LOCGT_LatencySamplesFormat">{0} muestras</sys:String>
+    <sys:String x:Key="LOCGT_LatencyNoSamples">Sin muestras</sys:String>
+    <sys:String x:Key="LOCGT_LatencyRangeFormat">{0:0.0} ms min / {1:0.0} ms max</sys:String>
+    <sys:String x:Key="LOCGT_LatencyDurationFormat">{0:0}s de sesion</sys:String>
+    <sys:String x:Key="LOCGT_InputApi">API de entrada</sys:String>
+    <sys:String x:Key="LOCGT_Capabilities">Capacidades</sys:String>
+    <sys:String x:Key="LOCGT_ExtraControls">Controles extra</sys:String>
+    <sys:String x:Key="LOCGT_Rumble">Vibracion</sys:String>
+    <sys:String x:Key="LOCGT_RumbleLight">Suave</sys:String>
+    <sys:String x:Key="LOCGT_RumbleMedium">Media</sys:String>
+    <sys:String x:Key="LOCGT_RumbleHeavy">Fuerte</sys:String>
+    <sys:String x:Key="LOCGT_RumblePulse">Pulso</sys:String>
+    <sys:String x:Key="LOCGT_DeviceCapabilitiesFormat">{0} controles normalizados, 2 sticks, 2 gatillos analogicos, {1} controles extra</sys:String>
+    <sys:String x:Key="LOCGT_DeviceApiFormat">{0} via SDL GameController</sys:String>
+    <sys:String x:Key="LOCGT_RumbleCapabilityEnabled">Prueba de vibracion activada; el soporte depende del modo del mando y del driver.</sys:String>
+    <sys:String x:Key="LOCGT_RumbleCapabilityDisabled">Prueba de vibracion desactivada en la configuracion del plugin.</sys:String>
     <sys:String x:Key="LOCGT_VisualScheme">Esquema visual</sys:String>
     <sys:String x:Key="LOCGT_VisualSchemeUniversal">Universal</sys:String>
     <sys:String x:Key="LOCGT_VisualSchemeXbox">Xbox</sys:String>
     <sys:String x:Key="LOCGT_VisualSchemePlayStation">PlayStation</sys:String>
     <sys:String x:Key="LOCGT_VisualSchemeDualSense">DualSense</sys:String>
     <sys:String x:Key="LOCGT_VisualSchemeSwitchPro">Switch Pro</sys:String>
+    <sys:String x:Key="LOCGT_FullscreenNavigationHint">LB/RB secciones  Cruceta mover  A seleccionar  Back+A latencia  B cerrar</sys:String>
+    <sys:String x:Key="LOCGT_ExportCancelled">Exportacion cancelada.</sys:String>
 </ResourceDictionary>

@@ -40,11 +40,76 @@ It is designed for couch, TV, handheld-PC, and console-like setups where users w
 
 After installation, open **Extensions > Gamepad Tester**.
 
-## Usage
+## Desktop view
+
+The desktop extension is the complete tester application. It is opened from **Extensions > Gamepad Tester**, the optional Playnite sidebar entry, or the optional top panel item.
 
 Connect one or more controllers before opening the tester. If multiple controllers are available, the selector near the tabs lets you choose the active device by name.
 
 If no controller is detected, the extension hides the tester UI and shows a clear warning. For 8BitDo devices, switch input mode if the current mode is not detected.
+
+Desktop mode includes the full workflow:
+
+- Controller selector and visual scheme override.
+- Complete controller map.
+- Guided test.
+- Stick diagnostics and calibration helpers.
+- Latency panel with samples and export.
+- Input log with opt-in recording, reset, and export.
+- Vibration tests.
+- Device information and metadata.
+
+Use the desktop view when the user is sitting at the PC, comparing devices, exporting reports, or doing deeper diagnostics.
+
+## Fullscreen theme integration
+
+Fullscreen mode should be simpler and controlled by the theme. Gamepad Tester avoids global controller navigation hooks so it does not fight Playnite Fullscreen focus navigation.
+
+The plugin still exposes commands for themes that want to open a simplified tester window:
+
+```xaml
+Command="{PluginSettings Plugin=GamepadTester, Path=OpenTesterCommand}"
+```
+
+Theme authors can also bind visibility or layout decisions to:
+
+```xaml
+{PluginSettings Plugin=GamepadTester, Path=ShowTopPanelItem}
+{PluginSettings Plugin=GamepadTester, Path=UseFullscreenFriendlyWindow}
+```
+
+For controller-first Fullscreen UX, themes can expose smaller, direct actions instead of forcing users through the full tester:
+
+```xaml
+Command="{PluginSettings Plugin=GamepadTester, Path=OpenButtonTestCommand}"
+Command="{PluginSettings Plugin=GamepadTester, Path=OpenSticksCommand}"
+Command="{PluginSettings Plugin=GamepadTester, Path=OpenRumbleCommand}"
+Command="{PluginSettings Plugin=GamepadTester, Path=OpenLatencyCommand}"
+```
+
+These commands open Gamepad Tester in a simplified Fullscreen-friendly mode: the detected controller layout is used automatically and pointer-oriented selectors are hidden.
+
+The recommended Fullscreen path is to use embeddable theme blocks instead of the full desktop UI. These blocks are meant for couch navigation and theme-owned layouts:
+
+```xaml
+<ContentControl x:Name="GamepadTester_StatusBadge" />
+<ContentControl x:Name="GamepadTester_ButtonMap" />
+<ContentControl x:Name="GamepadTester_StickCheck" />
+<ContentControl x:Name="GamepadTester_RumblePad" />
+<ContentControl x:Name="GamepadTester_LatencyMini" />
+```
+
+These blocks share one lightweight polling runtime while they are visible. They do not include exports, device selectors, visual scheme selectors, or desktop-only controls. The theme remains responsible for placement, focus behavior, section switching, animation, spacing, and surrounding chrome.
+
+This keeps the visual placement, icon, hover/focus states, and navigation behavior fully owned by the theme while the plugin provides live input state, controller artwork, stick diagnostics, rumble commands, and latency samples as embeddable building blocks.
+
+Fullscreen integrations should generally show only the pieces that make sense for controller navigation:
+
+- **Button map:** live input highlight for quick button verification.
+- **Stick check:** compact left/right stick movement and drift readout.
+- **Rumble pad:** optional vibration modes when the theme provides a navigable panel.
+- **Latency mini:** simple start/stop latency sampling without export or advanced desktop controls.
+- **Status badge:** compact connected-device summary.
 
 ## Tabs
 

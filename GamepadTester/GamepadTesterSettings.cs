@@ -7,6 +7,8 @@ namespace GamepadTester
     public class GamepadTesterSettings : ObservableObject
     {
         private bool showSidebarItem = true;
+        private bool showTopPanelItem = true;
+        private bool useFullscreenFriendlyWindow = true;
         private bool autoResetDiagnosticsOnControllerChange = true;
         private bool showDeviceSelectorWhenSingleController = false;
         private bool enableRumbleTests = true;
@@ -22,6 +24,18 @@ namespace GamepadTester
         {
             get { return showSidebarItem; }
             set { SetValue(ref showSidebarItem, value); }
+        }
+
+        public bool ShowTopPanelItem
+        {
+            get { return showTopPanelItem; }
+            set { SetValue(ref showTopPanelItem, value); }
+        }
+
+        public bool UseFullscreenFriendlyWindow
+        {
+            get { return useFullscreenFriendlyWindow; }
+            set { SetValue(ref useFullscreenFriendlyWindow, value); }
         }
 
         public bool AutoResetDiagnosticsOnControllerChange
