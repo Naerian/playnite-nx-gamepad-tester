@@ -49,6 +49,16 @@
                               IsChecked="{Binding Settings.ShowSidebarItem}" />
                     <TextBlock Text="{DynamicResource LOCGT_SettingsShowSidebarHelp}"
                                Style="{StaticResource MutedText}" />
+
+                    <CheckBox Content="{DynamicResource LOCGT_SettingsShowTopPanel}"
+                              IsChecked="{Binding Settings.ShowTopPanelItem}" />
+                    <TextBlock Text="{DynamicResource LOCGT_SettingsShowTopPanelHelp}"
+                               Style="{StaticResource MutedText}" />
+
+                    <CheckBox Content="{DynamicResource LOCGT_SettingsFullscreenWindow}"
+                              IsChecked="{Binding Settings.UseFullscreenFriendlyWindow}" />
+                    <TextBlock Text="{DynamicResource LOCGT_SettingsFullscreenWindowHelp}"
+                               Style="{StaticResource MutedText}" />
                 </StackPanel>
             </Border>
 

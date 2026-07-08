@@ -225,6 +225,7 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <Border Grid.Row="0"
@@ -250,7 +251,29 @@
                             Background="Transparent"
                             BorderThickness="0"
                             Padding="0"
+                            SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}"
                             Visibility="{Binding HasController, Converter={StaticResource BoolToVisibility}}">
+                    <TabControl.ItemContainerStyle>
+                        <Style TargetType="TabItem">
+                            <Setter Property="MinHeight" Value="32" />
+                            <Setter Property="Padding" Value="12,6" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding DataContext.IsFullscreenSimplifiedMode, RelativeSource={RelativeSource AncestorType=TabControl}}" Value="True">
+                                    <Setter Property="Height" Value="0" />
+                                    <Setter Property="MinHeight" Value="0" />
+                                    <Setter Property="Padding" Value="0" />
+                                    <Setter Property="Margin" Value="0" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="TabItem">
+                                                <Border Height="0" />
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TabControl.ItemContainerStyle>
                 <TabItem Header="{DynamicResource LOCGT_TabTest}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto"
                                   HorizontalScrollBarVisibility="Disabled">
@@ -301,42 +324,46 @@
 
                                         <Grid Grid.Row="1"
                                               MinHeight="370"
+                                              Width="{Binding ControllerVisualWidth}"
+                                              Height="{Binding ControllerVisualHeight}"
+                                              ClipToBounds="True"
                                               Cursor="Arrow"
                                               HorizontalAlignment="Center"
                                               VerticalAlignment="Center">
-                                            <layouts:DualSenseControllerTesterView Width="600"
-                                                                                   Height="390"
+                                            <layouts:DualSenseControllerTesterView Width="{Binding ControllerVisualWidth}"
+                                                                                   Height="{Binding ControllerVisualHeight}"
                                                                                    Visibility="{Binding IsDualSenseLayout, Converter={StaticResource BoolToVisibility}}" />
-                                            <layouts:XboxControllerTesterView Width="640"
-                                                                              Height="400"
+                                            <layouts:XboxControllerTesterView Width="{Binding ControllerVisualWidth}"
+                                                                              Height="{Binding ControllerVisualHeight}"
                                                                               Visibility="{Binding IsXboxOneVisualScheme, Converter={StaticResource BoolToVisibility}}" />
-                                            <layouts:XboxSeriesControllerTesterView Width="600"
-                                                                                    Height="390"
+                                            <layouts:XboxSeriesControllerTesterView Width="{Binding ControllerVisualWidth}"
+                                                                                    Height="{Binding ControllerVisualHeight}"
                                                                                     Visibility="{Binding IsXboxSeriesVisualScheme, Converter={StaticResource BoolToVisibility}}" />
-                                            <layouts:PlayStationControllerTesterView Width="600"
-                                                                                      Height="390"
+                                            <layouts:PlayStationControllerTesterView Width="{Binding ControllerVisualWidth}"
+                                                                                      Height="{Binding ControllerVisualHeight}"
                                                                                       Visibility="{Binding IsPlayStationVisualScheme, Converter={StaticResource BoolToVisibility}}" />
-                                            <layouts:SwitchProControllerTesterView Width="600"
-                                                                                   Height="390"
+                                            <layouts:SwitchProControllerTesterView Width="{Binding ControllerVisualWidth}"
+                                                                                   Height="{Binding ControllerVisualHeight}"
                                                                                    Visibility="{Binding IsSwitchProVisualScheme, Converter={StaticResource BoolToVisibility}}" />
-                                            <layouts:EightBitDoUltimateTesterView Width="600"
-                                                                                  Height="390"
+                                            <layouts:EightBitDoUltimateTesterView Width="{Binding ControllerVisualWidth}"
+                                                                                  Height="{Binding ControllerVisualHeight}"
                                                                                   Visibility="{Binding IsEightBitDoUltimateVisualScheme, Converter={StaticResource BoolToVisibility}}" />
-                                            <layouts:EightBitDoProTesterView Width="600"
-                                                                             Height="390"
+                                            <layouts:EightBitDoProTesterView Width="{Binding ControllerVisualWidth}"
+                                                                             Height="{Binding ControllerVisualHeight}"
                                                                              Visibility="{Binding IsEightBitDoProVisualScheme, Converter={StaticResource BoolToVisibility}}" />
-                                            <layouts:SteamControllerTesterView Width="430"
-                                                                               Height="285"
+                                            <layouts:SteamControllerTesterView Width="{Binding ControllerVisualWidth}"
+                                                                               Height="{Binding ControllerVisualHeight}"
                                                                                Visibility="{Binding IsSteamControllerVisualScheme, Converter={StaticResource BoolToVisibility}}" />
-                                            <layouts:UniversalControllerTesterView Width="600"
-                                                                                   Height="390"
+                                            <layouts:UniversalControllerTesterView Width="{Binding ControllerVisualWidth}"
+                                                                                   Height="{Binding ControllerVisualHeight}"
                                                                                    Visibility="{Binding IsUniversalControllerArtwork, Converter={StaticResource BoolToVisibility}}" />
                                         </Grid>
 
                                         <StackPanel Grid.Row="2"
                                                     Width="260"
                                                     Margin="0,0,0,0"
-                                                    HorizontalAlignment="Center">
+                                                    HorizontalAlignment="Center"
+                                                    Visibility="{Binding IsVisualSchemeSelectorVisible, Converter={StaticResource BoolToVisibility}}">
                                             <TextBlock Text="{DynamicResource LOCGT_VisualScheme}"
                                                        Style="{StaticResource MetricLabel}"
                                                        TextAlignment="Center"
@@ -439,7 +466,7 @@
                                                     </Grid.ColumnDefinitions>
                                                     <Grid Width="128" Height="128" HorizontalAlignment="Center">
                                                         <Grid.LayoutTransform>
-                                                            <ScaleTransform ScaleX="0.66" ScaleY="0.66" />
+                                                            <ScaleTransform ScaleX="0.78" ScaleY="0.78" />
                                                         </Grid.LayoutTransform>
                                                         <Ellipse Stroke="{StaticResource LineBrush}" StrokeThickness="2" Fill="#11151B" />
                                                         <Ellipse Width="16" Height="16" Stroke="#384252" StrokeThickness="1" />
@@ -451,7 +478,7 @@
                                                             </Ellipse.RenderTransform>
                                                         </Ellipse>
                                                     </Grid>
-                                                    <StackPanel Grid.Column="1" Margin="14,6,0,0" VerticalAlignment="Center">
+                                                    <StackPanel Grid.Column="1" Margin="22,6,0,0" VerticalAlignment="Center">
                                                         <TextBlock Text="{DynamicResource LOCGT_LeftStick}" FontWeight="SemiBold" />
                                                         <TextBlock Text="{Binding LeftStickVector}" Margin="0,3,0,0" Foreground="{StaticResource TextMutedBrush}" />
                                                         <TextBlock Text="{Binding LeftStickDriftPercent, StringFormat=Drift: {0}%}" Margin="0,2,0,0" />
@@ -465,7 +492,7 @@
                                                     </Grid.ColumnDefinitions>
                                                     <Grid Width="128" Height="128" HorizontalAlignment="Center">
                                                         <Grid.LayoutTransform>
-                                                            <ScaleTransform ScaleX="0.66" ScaleY="0.66" />
+                                                            <ScaleTransform ScaleX="0.78" ScaleY="0.78" />
                                                         </Grid.LayoutTransform>
                                                         <Ellipse Stroke="{StaticResource LineBrush}" StrokeThickness="2" Fill="#11151B" />
                                                         <Ellipse Width="16" Height="16" Stroke="#384252" StrokeThickness="1" />
@@ -477,7 +504,7 @@
                                                             </Ellipse.RenderTransform>
                                                         </Ellipse>
                                                     </Grid>
-                                                    <StackPanel Grid.Column="1" Margin="14,6,0,0" VerticalAlignment="Center">
+                                                    <StackPanel Grid.Column="1" Margin="22,6,0,0" VerticalAlignment="Center">
                                                         <TextBlock Text="{DynamicResource LOCGT_RightStick}" FontWeight="SemiBold" />
                                                         <TextBlock Text="{Binding RightStickVector}" Margin="0,3,0,0" Foreground="{StaticResource TextMutedBrush}" />
                                                         <TextBlock Text="{Binding RightStickDriftPercent, StringFormat=Drift: {0}%}" Margin="0,2,0,0" />
@@ -595,7 +622,8 @@
                                     </StackPanel>
                                 </Border>
 
-                                <Border Style="{StaticResource DashboardPanel}">
+                                <Border Style="{StaticResource DashboardPanel}"
+                                        Visibility="{Binding IsFullTesterMode, Converter={StaticResource BoolToVisibility}}">
                                     <StackPanel>
                                         <TextBlock Text="{DynamicResource LOCGT_RumbleTests}" Style="{StaticResource DashboardTitle}" />
                                         <Border Style="{StaticResource SubtleHorizontalSeparator}" Margin="0,0,0,8" />
@@ -620,6 +648,35 @@
                             </Grid>
                         </Grid>
                     </ScrollViewer>
+                </TabItem>
+
+                <TabItem Header="{DynamicResource LOCGT_TabVibration}">
+                    <Grid Margin="0,10,12,0">
+                        <Border Style="{StaticResource DashboardPanel}"
+                                MaxWidth="780"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource LOCGT_RumbleTests}" Style="{StaticResource DashboardTitle}" />
+                                <Border Style="{StaticResource SubtleHorizontalSeparator}" Margin="0,0,0,12" />
+                                <TextBlock Text="{Binding RumbleStatusLabel}"
+                                           TextWrapping="Wrap"
+                                           Margin="0,0,0,16"
+                                           Foreground="{StaticResource TextMutedBrush}" />
+                                <UniformGrid Columns="3">
+                                    <Button Content="{DynamicResource LOCGT_Standard}" Height="44" Margin="0,0,8,8" Command="{Binding RumbleCommand}" />
+                                    <Button Content="{DynamicResource LOCGT_Light}" Height="44" Margin="0,0,8,8" Command="{Binding LightRumbleCommand}" />
+                                    <Button Content="{DynamicResource LOCGT_Medium}" Height="44" Margin="0,0,0,8" Command="{Binding MediumRumbleCommand}" />
+                                    <Button Content="{DynamicResource LOCGT_Heavy}" Height="44" Margin="0,0,8,8" Command="{Binding HeavyRumbleCommand}" />
+                                    <Button Content="{DynamicResource LOCGT_LowMotor}" Height="44" Margin="0,0,8,8" Command="{Binding LowMotorRumbleCommand}" />
+                                    <Button Content="{DynamicResource LOCGT_HighMotor}" Height="44" Margin="0,0,0,8" Command="{Binding HighMotorRumbleCommand}" />
+                                    <Button Content="{DynamicResource LOCGT_Pulse}" Height="44" Margin="0,0,8,0" Command="{Binding PulseRumbleCommand}" />
+                                    <Button Content="{DynamicResource LOCGT_Alternating}" Height="44" Margin="0,0,8,0" Command="{Binding AlternatingRumbleCommand}" />
+                                    <Button Content="{DynamicResource LOCGT_Ramp}" Height="44" Command="{Binding RampRumbleCommand}" />
+                                </UniformGrid>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
                 </TabItem>
 
                 <TabItem Header="{DynamicResource LOCGT_TabSticks}">
@@ -922,84 +979,104 @@
                                                        Foreground="{StaticResource TextMutedBrush}"
                                                        TextAlignment="Center"
                                                        Margin="0,6,0,0" />
-                                            <Border Width="460"
-                                                    Height="128"
-                                                    Margin="0,18,0,0"
-                                                    BorderBrush="{StaticResource LineBrush}"
-                                                    BorderThickness="1"
-                                                    CornerRadius="8"
-                                                    Background="{DynamicResource ControlBackgroundColorDark}"
-                                                    Padding="14">
-                                                <Grid>
-                                                    <Canvas Width="420" Height="86" ClipToBounds="True">
-                                                        <Rectangle Width="420"
-                                                                   Height="86"
-                                                                   RadiusX="6"
-                                                                   RadiusY="6"
+                                            <Grid Width="620"
+                                                  Height="176"
+                                                  Margin="0,18,0,0"
+                                                  ClipToBounds="False">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="60" />
+                                                    <ColumnDefinition Width="540" />
+                                                    <ColumnDefinition Width="20" />
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="132" />
+                                                    <RowDefinition Height="28" />
+                                                </Grid.RowDefinitions>
+
+                                                <TextBlock Text="1000 Hz"
+                                                           Foreground="{StaticResource TextMutedBrush}"
+                                                           FontSize="11"
+                                                           HorizontalAlignment="Right"
+                                                           VerticalAlignment="Top"
+                                                           Margin="0,-2,10,0"
+                                                           Opacity="0.85" />
+                                                <TextBlock Text="500 Hz"
+                                                           Foreground="{StaticResource TextMutedBrush}"
+                                                           FontSize="11"
+                                                           HorizontalAlignment="Right"
+                                                           VerticalAlignment="Center"
+                                                           Margin="0,0,10,0"
+                                                           Opacity="0.7" />
+                                                <TextBlock Text="0 Hz"
+                                                           Foreground="{StaticResource TextMutedBrush}"
+                                                           FontSize="11"
+                                                           HorizontalAlignment="Right"
+                                                           VerticalAlignment="Bottom"
+                                                           Margin="0,0,10,-2"
+                                                           Opacity="0.85" />
+
+                                                <Canvas Grid.Column="1" Width="540" Height="132" ClipToBounds="True">
+                                                        <Rectangle Width="540"
+                                                                   Height="132"
+                                                                   RadiusX="7"
+                                                                   RadiusY="7"
                                                                    Fill="#10151C"
-                                                                   Opacity="0.55" />
-                                                        <Line X1="0" Y1="21.5" X2="420" Y2="21.5"
+                                                                   Opacity="0.62" />
+                                                        <Line X1="0" Y1="33" X2="540" Y2="33"
                                                               Stroke="{StaticResource TextMutedBrush}"
                                                               StrokeThickness="1"
                                                               StrokeDashArray="2 5"
                                                               Opacity="0.18" />
-                                                        <Line X1="0" Y1="43" X2="420" Y2="43"
+                                                        <Line X1="0" Y1="66" X2="540" Y2="66"
                                                               Stroke="{StaticResource TextMutedBrush}"
                                                               StrokeThickness="1"
                                                               StrokeDashArray="2 5"
                                                               Opacity="0.22" />
-                                                        <Line X1="0" Y1="64.5" X2="420" Y2="64.5"
+                                                        <Line X1="0" Y1="99" X2="540" Y2="99"
                                                               Stroke="{StaticResource TextMutedBrush}"
                                                               StrokeThickness="1"
                                                               StrokeDashArray="2 5"
                                                               Opacity="0.18" />
-                                                        <Line X1="60" Y1="0" X2="60" Y2="86"
+                                                        <Line X1="90" Y1="0" X2="90" Y2="132"
                                                               Stroke="{StaticResource TextMutedBrush}"
                                                               StrokeThickness="1"
                                                               Opacity="0.08" />
-                                                        <Line X1="140" Y1="0" X2="140" Y2="86"
+                                                        <Line X1="180" Y1="0" X2="180" Y2="132"
                                                               Stroke="{StaticResource TextMutedBrush}"
                                                               StrokeThickness="1"
                                                               Opacity="0.08" />
-                                                        <Line X1="220" Y1="0" X2="220" Y2="86"
+                                                        <Line X1="270" Y1="0" X2="270" Y2="132"
                                                               Stroke="{StaticResource TextMutedBrush}"
                                                               StrokeThickness="1"
                                                               Opacity="0.08" />
-                                                        <Line X1="300" Y1="0" X2="300" Y2="86"
+                                                        <Line X1="360" Y1="0" X2="360" Y2="132"
                                                               Stroke="{StaticResource TextMutedBrush}"
                                                               StrokeThickness="1"
                                                               Opacity="0.08" />
-                                                        <Line X1="380" Y1="0" X2="380" Y2="86"
+                                                        <Line X1="450" Y1="0" X2="450" Y2="132"
                                                               Stroke="{StaticResource TextMutedBrush}"
                                                               StrokeThickness="1"
                                                               Opacity="0.08" />
-                                                        <Line X1="0" Y1="85" X2="420" Y2="85"
+                                                        <Line X1="0" Y1="131" X2="540" Y2="131"
                                                               Stroke="{StaticResource TextMutedBrush}"
                                                               StrokeThickness="1"
                                                               Opacity="0.28" />
                                                         <Polyline Points="{Binding LatencyRateGraphPoints}"
                                                                   Stroke="{StaticResource ActiveBrush}"
-                                                                  StrokeThickness="3"
+                                                                  StrokeThickness="3.2"
                                                                   StrokeLineJoin="Round"
                                                                   StrokeStartLineCap="Round"
                                                                   StrokeEndLineCap="Round" />
                                                     </Canvas>
-                                                    <TextBlock Text="1000 Hz"
-                                                               Foreground="{StaticResource TextMutedBrush}"
-                                                               FontSize="10"
-                                                               HorizontalAlignment="Left"
-                                                               VerticalAlignment="Top"
-                                                               Margin="6,2,0,0"
-                                                               Opacity="0.75" />
-                                                    <TextBlock Text="0 Hz"
-                                                               Foreground="{StaticResource TextMutedBrush}"
-                                                               FontSize="10"
-                                                               HorizontalAlignment="Left"
-                                                               VerticalAlignment="Bottom"
-                                                               Margin="6,0,0,2"
-                                                               Opacity="0.75" />
-                                                </Grid>
-                                            </Border>
+                                                <TextBlock Grid.Row="1"
+                                                           Grid.Column="1"
+                                                           Text="{DynamicResource LOCGT_PollingLatencyTitle}"
+                                                           Foreground="{StaticResource TextMutedBrush}"
+                                                           FontSize="11"
+                                                           HorizontalAlignment="Center"
+                                                           Margin="0,8,0,0"
+                                                           Opacity="0.75" />
+                                            </Grid>
                                         </StackPanel>
                                     </Grid>
 
@@ -1032,7 +1109,7 @@
                                             BorderThickness="1"
                                             CornerRadius="8"
                                             Padding="14"
-                                            Background="{DynamicResource ControlBackgroundColorDark}"
+                                            Background="{StaticResource PanelBrush}"
                                             Margin="0,0,0,12">
                                         <StackPanel>
                                             <TextBlock Text="{DynamicResource LOCGT_DeviceConnected}"
@@ -1055,6 +1132,27 @@
                                             <StackPanel>
                                                 <TextBlock Text="{DynamicResource LOCGT_AverageRate}" Style="{StaticResource MetricLabel}" />
                                                 <TextBlock Text="{Binding PollingRateAverageValueLabel}" Style="{StaticResource MetricValue}" />
+                                            </StackPanel>
+                                        </Border>
+                                    </UniformGrid>
+
+                                    <UniformGrid Columns="3" Margin="0,0,0,12">
+                                        <Border Style="{StaticResource DashboardMetricTile}">
+                                            <StackPanel>
+                                                <TextBlock Text="{DynamicResource LOCGT_LatencySamples}" Style="{StaticResource MetricLabel}" />
+                                                <TextBlock Text="{Binding LatencySampleCountLabel}" Style="{StaticResource MetricValue}" />
+                                            </StackPanel>
+                                        </Border>
+                                        <Border Style="{StaticResource DashboardMetricTile}">
+                                            <StackPanel>
+                                                <TextBlock Text="{DynamicResource LOCGT_LatencyRange}" Style="{StaticResource MetricLabel}" />
+                                                <TextBlock Text="{Binding LatencyRangeLabel}" Style="{StaticResource MetricValue}" FontSize="13" />
+                                            </StackPanel>
+                                        </Border>
+                                        <Border Style="{StaticResource DashboardMetricTile}" Margin="0,0,0,8">
+                                            <StackPanel>
+                                                <TextBlock Text="{DynamicResource LOCGT_LatencyDuration}" Style="{StaticResource MetricLabel}" />
+                                                <TextBlock Text="{Binding LatencyTestDurationLabel}" Style="{StaticResource MetricValue}" FontSize="13" />
                                             </StackPanel>
                                         </Border>
                                     </UniformGrid>
@@ -1279,6 +1377,10 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
 
@@ -1298,8 +1400,16 @@
                                 <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding BackendLabel}" Margin="0,0,0,10" />
                                 <TextBlock Grid.Row="6" Text="{DynamicResource LOCGT_MappingStatus}" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
                                 <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding MappingStatusLabel}" Margin="0,0,0,10" />
-                                <TextBlock Grid.Row="7" Text="{DynamicResource LOCGT_Notes}" Foreground="{StaticResource TextMutedBrush}" />
-                                <TextBlock Grid.Row="7" Grid.Column="1" Text="{DynamicResource LOCGT_DeviceNotes}" TextWrapping="Wrap" />
+                                <TextBlock Grid.Row="7" Text="{DynamicResource LOCGT_InputApi}" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
+                                <TextBlock Grid.Row="7" Grid.Column="1" Text="{Binding DeviceApiLabel}" Margin="0,0,0,10" />
+                                <TextBlock Grid.Row="8" Text="{DynamicResource LOCGT_Capabilities}" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
+                                <TextBlock Grid.Row="8" Grid.Column="1" Text="{Binding DeviceCapabilitiesLabel}" Margin="0,0,0,10" TextWrapping="Wrap" />
+                                <TextBlock Grid.Row="9" Text="{DynamicResource LOCGT_ExtraControls}" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
+                                <TextBlock Grid.Row="9" Grid.Column="1" Text="{Binding ExtraButtonDetailLabel}" Margin="0,0,0,10" TextWrapping="Wrap" />
+                                <TextBlock Grid.Row="10" Text="{DynamicResource LOCGT_Rumble}" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,10" />
+                                <TextBlock Grid.Row="10" Grid.Column="1" Text="{Binding DeviceRumbleCapabilityLabel}" Margin="0,0,0,10" TextWrapping="Wrap" />
+                                <TextBlock Grid.Row="11" Text="{DynamicResource LOCGT_Notes}" Foreground="{StaticResource TextMutedBrush}" />
+                                <TextBlock Grid.Row="11" Grid.Column="1" Text="{DynamicResource LOCGT_DeviceNotes}" TextWrapping="Wrap" />
                             </Grid>
                         </Border>
                     </Grid>
@@ -1345,6 +1455,21 @@
                         </ComboBox.ItemTemplate>
                     </ComboBox>
                 </Grid>
+
+                <Border Grid.Row="1"
+                        Margin="2,10,2,0"
+                        Padding="12,8"
+                        CornerRadius="6"
+                        Background="{StaticResource IdleBrush}"
+                        BorderBrush="{StaticResource LineBrush}"
+                        BorderThickness="1"
+                        Visibility="{Binding IsFullscreenSimplifiedMode, Converter={StaticResource BoolToVisibility}}">
+                    <TextBlock Text="{Binding FullscreenNavigationHint}"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource PillIdleTextBrush}"
+                               HorizontalAlignment="Center" />
+                </Border>
+
             </Grid>
         </Border>
     </Grid>

@@ -57,6 +57,8 @@
       <DependentUpon>GamepadTesterSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\GamepadButtonState.cs" />
+    <Compile Include="Models\ControllerVisualSchemeCatalog.cs" />
+    <Compile Include="Models\ControllerVisualSchemeDefinition.cs" />
     <Compile Include="Models\ControllerVisualSchemeOption.cs" />
     <Compile Include="Models\GamepadControllerInfo.cs" />
     <Compile Include="Models\GamepadDeviceNames.cs" />
@@ -76,6 +78,12 @@
     <Compile Include="ViewModels\ObservableObject.cs" />
     <Compile Include="Views\ControllerLayouts\EightBitDoProTesterView.xaml.cs">
       <DependentUpon>EightBitDoProTesterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ControllerLayouts\Primitives\FaceButtonView.xaml.cs">
+      <DependentUpon>FaceButtonView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ControllerLayouts\Primitives\StickIndicatorView.xaml.cs">
+      <DependentUpon>StickIndicatorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ControllerLayouts\EightBitDoUltimateTesterView.xaml.cs">
       <DependentUpon>EightBitDoUltimateTesterView.xaml</DependentUpon>
@@ -104,6 +112,13 @@
     <Compile Include="Views\GamepadTesterView.xaml.cs">
       <DependentUpon>GamepadTesterView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\GamepadTesterThemeLauncherControl.cs" />
+    <Compile Include="Views\ThemeIntegration\GamepadTesterButtonMapControl.cs" />
+    <Compile Include="Views\ThemeIntegration\GamepadTesterLatencyMiniControl.cs" />
+    <Compile Include="Views\ThemeIntegration\GamepadTesterRumblePadControl.cs" />
+    <Compile Include="Views\ThemeIntegration\GamepadTesterStatusBadgeControl.cs" />
+    <Compile Include="Views\ThemeIntegration\GamepadTesterStickCheckControl.cs" />
+    <Compile Include="Views\ThemeIntegration\GamepadTesterThemeControlBase.cs" />
     <Compile Include="Views\GuidedTestView.xaml.cs">
       <DependentUpon>GuidedTestView.xaml</DependentUpon>
     </Compile>
@@ -134,6 +149,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GuidedTestView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ControllerLayouts\ControllerLayoutResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ControllerLayouts\Primitives\FaceButtonView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ControllerLayouts\Primitives\StickIndicatorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

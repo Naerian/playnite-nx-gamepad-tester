@@ -113,6 +113,8 @@ namespace GamepadTester.ViewModels
         private string inputLogExportStatusLabel;
         private string selectedVisualSchemeKey;
         private bool isVisualSchemeManuallySelected;
+        private int selectedTabIndex;
+        private bool isFullscreenSimplifiedMode;
 
         public GamepadTesterViewModel(GamepadPollingService pollingService, GamepadTesterSettings settings = null, Func<string, string> localizer = null, Action<GamepadTesterViewModel> openGuidedTest = null)
         {
@@ -314,7 +316,7 @@ namespace GamepadTester.ViewModels
 
         public bool IsControllerSelectorVisible
         {
-            get { return Controllers.Count > 1 || settings.ShowDeviceSelectorWhenSingleController; }
+            get { return !isFullscreenSimplifiedMode && (Controllers.Count > 1 || settings.ShowDeviceSelectorWhenSingleController); }
         }
 
         public bool IsControllerSelectorOpen
@@ -330,6 +332,75 @@ namespace GamepadTester.ViewModels
                 isControllerSelectorOpen = value;
                 OnPropertyChanged("IsControllerSelectorOpen");
             }
+        }
+
+        public int SelectedTabIndex
+        {
+            get { return selectedTabIndex; }
+            set
+            {
+                var next = Math.Max(0, Math.Min(5, value));
+                if (selectedTabIndex == next)
+                {
+                    return;
+                }
+
+                selectedTabIndex = next;
+                OnPropertyChanged("SelectedTabIndex");
+            }
+        }
+
+        public bool IsFullscreenSimplifiedMode
+        {
+            get { return isFullscreenSimplifiedMode; }
+            set
+            {
+                if (isFullscreenSimplifiedMode == value)
+                {
+                    return;
+                }
+
+                isFullscreenSimplifiedMode = value;
+                OnPropertyChanged("IsFullscreenSimplifiedMode");
+                OnPropertyChanged("IsControllerSelectorVisible");
+                OnPropertyChanged("IsVisualSchemeSelectorVisible");
+                OnPropertyChanged("IsFullTesterMode");
+                if (isFullscreenSimplifiedMode && selectedTabIndex > 3)
+                {
+                    SelectedTabIndex = 0;
+                }
+            }
+        }
+
+        public bool IsVisualSchemeSelectorVisible
+        {
+            get { return !isFullscreenSimplifiedMode; }
+        }
+
+        public bool IsFullTesterMode
+        {
+            get { return !isFullscreenSimplifiedMode; }
+        }
+
+        public string FullscreenNavigationHint
+        {
+            get { return L("LOCGT_FullscreenNavigationHint", "LB/RB sections  D-pad move  A select  Back+A latency  B close"); }
+        }
+
+        public void MoveSelectedTab(int direction)
+        {
+            var tabCount = isFullscreenSimplifiedMode ? 4 : 6;
+            var next = SelectedTabIndex + direction;
+            if (next < 0)
+            {
+                next = tabCount - 1;
+            }
+            else if (next >= tabCount)
+            {
+                next = 0;
+            }
+
+            SelectedTabIndex = next;
         }
 
         public bool HasController
@@ -890,6 +961,45 @@ namespace GamepadTester.ViewModels
             }
         }
 
+        public string LatencySampleCountLabel
+        {
+            get
+            {
+                return hasLatencyTestStarted
+                    ? string.Format(L("LOCGT_LatencySamplesFormat", "{0} samples"), inputEventIntervalSamples)
+                    : L("LOCGT_LatencyNoSamples", "No samples");
+            }
+        }
+
+        public string LatencyRangeLabel
+        {
+            get
+            {
+                if (!hasLatencyTestStarted || inputEventIntervalSamples == 0 || inputEventIntervalMinMs == double.MaxValue)
+                {
+                    return "-";
+                }
+
+                return string.Format(L("LOCGT_LatencyRangeFormat", "{0:0.0} ms min / {1:0.0} ms max"),
+                    inputEventIntervalMinMs,
+                    inputEventIntervalMaxMs);
+            }
+        }
+
+        public string LatencyTestDurationLabel
+        {
+            get
+            {
+                if (!hasLatencyTestStarted)
+                {
+                    return "-";
+                }
+
+                var seconds = Math.Max(0d, (DateTime.UtcNow - latencyTestStartedAt).TotalSeconds);
+                return string.Format(L("LOCGT_LatencyDurationFormat", "{0:0}s session"), seconds);
+            }
+        }
+
         public string PollingRateCurrentLabel
         {
             get
@@ -975,8 +1085,8 @@ namespace GamepadTester.ViewModels
                     return points;
                 }
 
-                const double width = 420d;
-                const double height = 86d;
+                const double width = 540d;
+                const double height = 132d;
                 var values = new List<double>(latencyRateHistory);
                 var step = values.Count <= 1 ? width : width / (values.Count - 1);
                 for (var index = 0; index < values.Count; index++)
@@ -1307,6 +1417,73 @@ namespace GamepadTester.ViewModels
             }
         }
 
+        public string DeviceCapabilitiesLabel
+        {
+            get
+            {
+                if (!State.IsConnected)
+                {
+                    return "-";
+                }
+
+                return string.Format(L("LOCGT_DeviceCapabilitiesFormat", "{0} normalized controls, 2 sticks, 2 analog triggers, {1} extra controls"),
+                    CountNormalizedControls(),
+                    State.ExtraButtons == null ? 0 : State.ExtraButtons.Count);
+            }
+        }
+
+        public string DeviceApiLabel
+        {
+            get
+            {
+                if (!State.IsConnected)
+                {
+                    return "-";
+                }
+
+                return string.Format(L("LOCGT_DeviceApiFormat", "{0} via SDL GameController"), State.Layout);
+            }
+        }
+
+        public string DeviceRumbleCapabilityLabel
+        {
+            get
+            {
+                if (!State.IsConnected)
+                {
+                    return "-";
+                }
+
+                return settings.EnableRumbleTests
+                    ? L("LOCGT_RumbleCapabilityEnabled", "Rumble test enabled; hardware support depends on controller mode and driver.")
+                    : L("LOCGT_RumbleCapabilityDisabled", "Rumble test disabled in plugin settings.");
+            }
+        }
+
+        public string ExtraButtonDetailLabel
+        {
+            get
+            {
+                if (!HasExtraButtons)
+                {
+                    return L("LOCGT_NoExtraButtons", "No additional buttons exposed by SDL.");
+                }
+
+                var builder = new StringBuilder();
+                for (var index = 0; index < State.ExtraButtons.Count; index++)
+                {
+                    if (index > 0)
+                    {
+                        builder.Append(", ");
+                    }
+
+                    builder.Append(State.ExtraButtons[index].Label);
+                }
+
+                return builder.ToString();
+            }
+        }
+
         public string SelectedVisualSchemeKey
         {
             get { return selectedVisualSchemeKey; }
@@ -1321,6 +1498,26 @@ namespace GamepadTester.ViewModels
                 isVisualSchemeManuallySelected = true;
                 NotifyVisualSchemeChanged();
             }
+        }
+
+        public double ControllerVisualWidth
+        {
+            get { return EffectiveVisualSchemeDefinition.TestWidth; }
+        }
+
+        public double ControllerVisualHeight
+        {
+            get { return EffectiveVisualSchemeDefinition.TestHeight; }
+        }
+
+        public double GuidedControllerVisualWidth
+        {
+            get { return EffectiveVisualSchemeDefinition.GuidedWidth; }
+        }
+
+        public double GuidedControllerVisualHeight
+        {
+            get { return EffectiveVisualSchemeDefinition.GuidedHeight; }
         }
 
         public string SouthLabel
@@ -1474,12 +1671,12 @@ namespace GamepadTester.ViewModels
 
         private bool UsesSwitchProLabels
         {
-            get { return EffectiveVisualSchemeKey == "SwitchPro"; }
+            get { return ControllerVisualSchemeCatalog.UsesSwitchProLabels(EffectiveVisualSchemeKey); }
         }
 
         private bool UsesPlayStationLabels
         {
-            get { return EffectiveVisualSchemeKey == "DualSense" || EffectiveVisualSchemeKey == "PlayStation"; }
+            get { return ControllerVisualSchemeCatalog.UsesPlayStationLabels(EffectiveVisualSchemeKey); }
         }
 
         public bool IsEightBitDoLayout
@@ -1529,7 +1726,7 @@ namespace GamepadTester.ViewModels
 
         public bool IsDualSenseLayout
         {
-            get { return EffectiveVisualSchemeKey == "DualSense"; }
+            get { return EffectiveVisualSchemeKey == ControllerVisualSchemeCatalog.DualSense; }
         }
 
         public bool IsXboxVisualScheme
@@ -1539,32 +1736,32 @@ namespace GamepadTester.ViewModels
 
         public bool IsXboxOneVisualScheme
         {
-            get { return EffectiveVisualSchemeKey == "XboxOne"; }
+            get { return EffectiveVisualSchemeKey == ControllerVisualSchemeCatalog.XboxOne; }
         }
 
         public bool IsXboxSeriesVisualScheme
         {
-            get { return EffectiveVisualSchemeKey == "XboxSeries"; }
+            get { return EffectiveVisualSchemeKey == ControllerVisualSchemeCatalog.XboxSeries; }
         }
 
         public bool IsSteamControllerVisualScheme
         {
-            get { return EffectiveVisualSchemeKey == "SteamController"; }
+            get { return EffectiveVisualSchemeKey == ControllerVisualSchemeCatalog.SteamController; }
         }
 
         public bool IsPlayStationVisualScheme
         {
-            get { return EffectiveVisualSchemeKey == "PlayStation"; }
+            get { return EffectiveVisualSchemeKey == ControllerVisualSchemeCatalog.PlayStation; }
         }
 
         public bool IsSwitchProVisualScheme
         {
-            get { return EffectiveVisualSchemeKey == "SwitchPro"; }
+            get { return EffectiveVisualSchemeKey == ControllerVisualSchemeCatalog.SwitchPro; }
         }
 
         public bool IsEightBitDoUltimateVisualScheme
         {
-            get { return EffectiveVisualSchemeKey == "EightBitDoUltimate"; }
+            get { return EffectiveVisualSchemeKey == ControllerVisualSchemeCatalog.EightBitDoUltimate; }
         }
 
         public bool IsEightBitDoUltimate2VisualScheme
@@ -1574,12 +1771,12 @@ namespace GamepadTester.ViewModels
 
         public bool IsEightBitDoProVisualScheme
         {
-            get { return EffectiveVisualSchemeKey == "EightBitDoPro"; }
+            get { return EffectiveVisualSchemeKey == ControllerVisualSchemeCatalog.EightBitDoPro; }
         }
 
         public bool IsUniversalControllerArtwork
         {
-            get { return EffectiveVisualSchemeKey == "Universal"; }
+            get { return EffectiveVisualSchemeKey == ControllerVisualSchemeCatalog.Universal; }
         }
 
         public bool IsGenericLayout
@@ -1619,22 +1816,22 @@ namespace GamepadTester.ViewModels
             get
             {
                 return string.IsNullOrEmpty(selectedVisualSchemeKey)
-                    ? GetDetectedVisualSchemeKey(State)
+                    ? ControllerVisualSchemeCatalog.Detect(State)
                     : selectedVisualSchemeKey;
             }
         }
 
+        private ControllerVisualSchemeDefinition EffectiveVisualSchemeDefinition
+        {
+            get { return ControllerVisualSchemeCatalog.GetDefinition(EffectiveVisualSchemeKey, L); }
+        }
+
         private void InitializeVisualSchemeOptions()
         {
-            VisualSchemeOptions.Add(new ControllerVisualSchemeOption { Key = "Universal", DisplayName = L("LOCGT_VisualSchemeUniversal", "Universal") });
-            VisualSchemeOptions.Add(new ControllerVisualSchemeOption { Key = "XboxSeries", DisplayName = "Xbox Series X / S" });
-            VisualSchemeOptions.Add(new ControllerVisualSchemeOption { Key = "XboxOne", DisplayName = "Xbox One" });
-            VisualSchemeOptions.Add(new ControllerVisualSchemeOption { Key = "PlayStation", DisplayName = L("LOCGT_VisualSchemePlayStation", "PlayStation") });
-            VisualSchemeOptions.Add(new ControllerVisualSchemeOption { Key = "DualSense", DisplayName = L("LOCGT_VisualSchemeDualSense", "DualSense") });
-            VisualSchemeOptions.Add(new ControllerVisualSchemeOption { Key = "SwitchPro", DisplayName = L("LOCGT_VisualSchemeSwitchPro", "Switch Pro") });
-            VisualSchemeOptions.Add(new ControllerVisualSchemeOption { Key = "EightBitDoUltimate", DisplayName = "8BitDo Ultimate" });
-            VisualSchemeOptions.Add(new ControllerVisualSchemeOption { Key = "EightBitDoPro", DisplayName = "8BitDo Pro" });
-            VisualSchemeOptions.Add(new ControllerVisualSchemeOption { Key = "SteamController", DisplayName = "Steam Controller" });
+            foreach (var option in ControllerVisualSchemeCatalog.CreateOptions(L))
+            {
+                VisualSchemeOptions.Add(option);
+            }
         }
 
         private void InitializeGuidedTestInputs()
@@ -1668,7 +1865,7 @@ namespace GamepadTester.ViewModels
                 return;
             }
 
-            var detectedSchemeKey = GetDetectedVisualSchemeKey(State);
+            var detectedSchemeKey = ControllerVisualSchemeCatalog.Detect(State);
             if (selectedVisualSchemeKey == detectedSchemeKey)
             {
                 return;
@@ -1678,62 +1875,13 @@ namespace GamepadTester.ViewModels
             NotifyVisualSchemeChanged();
         }
 
-        private static string GetDetectedVisualSchemeKey(GamepadState state)
-        {
-            if (state == null || !state.IsConnected)
-            {
-                return "Universal";
-            }
-
-            if (GamepadDeviceNames.IsSteamController(state.ControllerName, state.VendorId))
-            {
-                return "SteamController";
-            }
-
-            if (state.Layout == GamepadLayout.PlayStation && GamepadDeviceNames.IsDualSense(state.VendorId, state.ProductId))
-            {
-                return "DualSense";
-            }
-
-            if (state.Layout == GamepadLayout.PlayStation)
-            {
-                return "PlayStation";
-            }
-
-            if (state.Layout == GamepadLayout.SwitchPro)
-            {
-                return "SwitchPro";
-            }
-
-            if (state.Layout == GamepadLayout.EightBitDo)
-            {
-                if (state.EightBitDoModel == EightBitDoModel.Controller64)
-                {
-                    return "Universal";
-                }
-
-                if (state.EightBitDoModel == EightBitDoModel.Pro2 ||
-                    state.EightBitDoModel == EightBitDoModel.Pro3)
-                {
-                    return "EightBitDoPro";
-                }
-
-                return "EightBitDoUltimate";
-            }
-
-            if (state.Layout == GamepadLayout.Xbox)
-            {
-                return GamepadDeviceNames.IsXboxSeriesOrElite(state.ControllerName, state.VendorId, state.ProductId)
-                    ? "XboxSeries"
-                    : "XboxOne";
-            }
-
-            return "Universal";
-        }
-
         private void NotifyVisualSchemeChanged()
         {
             OnPropertyChanged("SelectedVisualSchemeKey");
+            OnPropertyChanged("ControllerVisualWidth");
+            OnPropertyChanged("ControllerVisualHeight");
+            OnPropertyChanged("GuidedControllerVisualWidth");
+            OnPropertyChanged("GuidedControllerVisualHeight");
             OnPropertyChanged("IsDualSenseLayout");
             OnPropertyChanged("IsXboxVisualScheme");
             OnPropertyChanged("IsXboxOneVisualScheme");
@@ -2186,6 +2334,9 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("LatencyStatsLabel");
             OnPropertyChanged("PollingLatencyAverageLabel");
             OnPropertyChanged("InputEventLatencyAverageLabel");
+            OnPropertyChanged("LatencySampleCountLabel");
+            OnPropertyChanged("LatencyRangeLabel");
+            OnPropertyChanged("LatencyTestDurationLabel");
             OnPropertyChanged("PollingRateCurrentLabel");
             OnPropertyChanged("PollingRateAverageValueLabel");
             OnPropertyChanged("PollingRateMaxValueLabel");
@@ -2240,6 +2391,9 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("PollingJitterLabel");
             OnPropertyChanged("EstimatedDelayLabel");
             OnPropertyChanged("InputEventLatencyAverageLabel");
+            OnPropertyChanged("LatencySampleCountLabel");
+            OnPropertyChanged("LatencyRangeLabel");
+            OnPropertyChanged("LatencyTestDurationLabel");
             OnPropertyChanged("LatencyRateGraphPoints");
             startLatencyTestCommand.RaiseCanExecuteChanged();
             resetLatencyCommand.RaiseCanExecuteChanged();
@@ -2267,6 +2421,9 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("PollingJitterLabel");
             OnPropertyChanged("EstimatedDelayLabel");
             OnPropertyChanged("InputEventLatencyAverageLabel");
+            OnPropertyChanged("LatencySampleCountLabel");
+            OnPropertyChanged("LatencyRangeLabel");
+            OnPropertyChanged("LatencyTestDurationLabel");
             startLatencyTestCommand.RaiseCanExecuteChanged();
             resetLatencyCommand.RaiseCanExecuteChanged();
             exportLatencyCommand.RaiseCanExecuteChanged();
@@ -2703,6 +2860,9 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("PollingJitterLabel");
             OnPropertyChanged("EstimatedDelayLabel");
             OnPropertyChanged("LatencyRateGraphPoints");
+            OnPropertyChanged("LatencySampleCountLabel");
+            OnPropertyChanged("LatencyRangeLabel");
+            OnPropertyChanged("LatencyTestDurationLabel");
             startLatencyTestCommand.RaiseCanExecuteChanged();
             resetLatencyCommand.RaiseCanExecuteChanged();
             exportLatencyCommand.RaiseCanExecuteChanged();
@@ -3104,6 +3264,11 @@ namespace GamepadTester.ViewModels
             return count;
         }
 
+        private static int CountNormalizedControls()
+        {
+            return 19;
+        }
+
         private static int CountPressedExtraButtons(IList<ExtraButtonState> buttons)
         {
             if (buttons == null)
@@ -3346,6 +3511,9 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("PollingRateMaxValueLabel");
             OnPropertyChanged("PollingJitterLabel");
             OnPropertyChanged("EstimatedDelayLabel");
+            OnPropertyChanged("LatencySampleCountLabel");
+            OnPropertyChanged("LatencyRangeLabel");
+            OnPropertyChanged("LatencyTestDurationLabel");
             OnPropertyChanged("QuickTestProgress");
             OnPropertyChanged("QuickTestLabel");
             OnPropertyChanged("ButtonCoverageLabel");
@@ -3387,6 +3555,10 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("IsNoControllerVisible");
             OnPropertyChanged("DeviceIdLabel");
             OnPropertyChanged("DeviceModelLabel");
+            OnPropertyChanged("DeviceCapabilitiesLabel");
+            OnPropertyChanged("DeviceApiLabel");
+            OnPropertyChanged("DeviceRumbleCapabilityLabel");
+            OnPropertyChanged("ExtraButtonDetailLabel");
             OnPropertyChanged("BackendLabel");
             OnPropertyChanged("MappingStatusLabel");
             OnPropertyChanged("RumbleStatusLabel");

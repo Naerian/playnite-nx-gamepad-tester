@@ -27,6 +27,12 @@
             <Setter Property="Padding" Value="12,7" />
             <Setter Property="Margin" Value="4" />
             <Setter Property="MinWidth" Value="76" />
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1" ScaleY="1" />
+                </Setter.Value>
+            </Setter>
             <Setter Property="TextElement.Foreground" Value="{DynamicResource TextBrush}" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsCovered}" Value="True">
@@ -37,19 +43,21 @@
                 <DataTrigger Binding="{Binding IsCurrent}" Value="True">
                     <Setter Property="Background" Value="#263A34" />
                     <Setter Property="BorderBrush" Value="{StaticResource ActiveBrush}" />
+                    <Setter Property="BorderThickness" Value="2" />
+                    <Setter Property="Padding" Value="15,8" />
                     <Setter Property="TextElement.Foreground" Value="#EFFFF7" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
 
         <Style x:Key="PrimaryCurrentChip" TargetType="Border">
-            <Setter Property="Background" Value="#11151B" />
-            <Setter Property="BorderBrush" Value="#D8DCE4" />
+            <Setter Property="Background" Value="{StaticResource PanelBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ActiveBrush}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="10" />
-            <Setter Property="Padding" Value="20,9" />
+            <Setter Property="Padding" Value="18,8" />
             <Setter Property="HorizontalAlignment" Value="Center" />
-            <Setter Property="MinWidth" Value="160" />
+            <Setter Property="MinWidth" Value="132" />
             <Setter Property="TextElement.Foreground" Value="{DynamicResource TextBrush}" />
         </Style>
     </UserControl.Resources>
@@ -78,33 +86,37 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <layouts:DualSenseControllerTesterView Width="500"
-                                                           Height="322"
+                <Grid Width="{Binding GuidedControllerVisualWidth}"
+                      Height="{Binding GuidedControllerVisualHeight}"
+                      ClipToBounds="True"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center">
+                    <layouts:DualSenseControllerTesterView Width="{Binding GuidedControllerVisualWidth}"
+                                                           Height="{Binding GuidedControllerVisualHeight}"
                                                            Visibility="{Binding IsDualSenseLayout, Converter={StaticResource BoolToVisibility}}" />
-                    <layouts:XboxControllerTesterView Width="570"
-                                                      Height="360"
+                    <layouts:XboxControllerTesterView Width="{Binding GuidedControllerVisualWidth}"
+                                                      Height="{Binding GuidedControllerVisualHeight}"
                                                       Visibility="{Binding IsXboxOneVisualScheme, Converter={StaticResource BoolToVisibility}}" />
-                    <layouts:XboxSeriesControllerTesterView Width="500"
-                                                            Height="322"
+                    <layouts:XboxSeriesControllerTesterView Width="{Binding GuidedControllerVisualWidth}"
+                                                            Height="{Binding GuidedControllerVisualHeight}"
                                                             Visibility="{Binding IsXboxSeriesVisualScheme, Converter={StaticResource BoolToVisibility}}" />
-                    <layouts:PlayStationControllerTesterView Width="500"
-                                                             Height="322"
+                    <layouts:PlayStationControllerTesterView Width="{Binding GuidedControllerVisualWidth}"
+                                                             Height="{Binding GuidedControllerVisualHeight}"
                                                              Visibility="{Binding IsPlayStationVisualScheme, Converter={StaticResource BoolToVisibility}}" />
-                    <layouts:SwitchProControllerTesterView Width="500"
-                                                           Height="322"
+                    <layouts:SwitchProControllerTesterView Width="{Binding GuidedControllerVisualWidth}"
+                                                           Height="{Binding GuidedControllerVisualHeight}"
                                                            Visibility="{Binding IsSwitchProVisualScheme, Converter={StaticResource BoolToVisibility}}" />
-                    <layouts:EightBitDoUltimateTesterView Width="500"
-                                                          Height="322"
+                    <layouts:EightBitDoUltimateTesterView Width="{Binding GuidedControllerVisualWidth}"
+                                                          Height="{Binding GuidedControllerVisualHeight}"
                                                           Visibility="{Binding IsEightBitDoUltimateVisualScheme, Converter={StaticResource BoolToVisibility}}" />
-                    <layouts:EightBitDoProTesterView Width="500"
-                                                     Height="322"
+                    <layouts:EightBitDoProTesterView Width="{Binding GuidedControllerVisualWidth}"
+                                                     Height="{Binding GuidedControllerVisualHeight}"
                                                      Visibility="{Binding IsEightBitDoProVisualScheme, Converter={StaticResource BoolToVisibility}}" />
-                    <layouts:SteamControllerTesterView Width="360"
-                                                       Height="238"
+                    <layouts:SteamControllerTesterView Width="{Binding GuidedControllerVisualWidth}"
+                                                       Height="{Binding GuidedControllerVisualHeight}"
                                                        Visibility="{Binding IsSteamControllerVisualScheme, Converter={StaticResource BoolToVisibility}}" />
-                    <layouts:UniversalControllerTesterView Width="500"
-                                                           Height="322"
+                    <layouts:UniversalControllerTesterView Width="{Binding GuidedControllerVisualWidth}"
+                                                           Height="{Binding GuidedControllerVisualHeight}"
                                                            Visibility="{Binding IsUniversalControllerArtwork, Converter={StaticResource BoolToVisibility}}" />
                 </Grid>
 

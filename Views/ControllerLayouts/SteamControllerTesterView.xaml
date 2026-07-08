@@ -1,10 +1,15 @@
-<UserControl x:Class="GamepadTester.Views.ControllerLayouts.SteamControllerTesterView"
+﻿<UserControl x:Class="GamepadTester.Views.ControllerLayouts.SteamControllerTesterView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:converters="clr-namespace:GamepadTester.Converters"
+             xmlns:primitives="clr-namespace:ControllerLayoutPrimitives"
              IsHitTestVisible="False">
     <UserControl.Resources>
-        <SolidColorBrush x:Key="ControllerFill" Color="#11151B" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ControllerLayoutResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <SolidColorBrush x:Key="ControllerFill" Color="#11151B" />
         <SolidColorBrush x:Key="SurfaceFill" Color="#1D232E" />
         <SolidColorBrush x:Key="LineBrush" Color="#D8DCE4" />
         <SolidColorBrush x:Key="MutedLineBrush" Color="#6F7889" />
@@ -14,11 +19,6 @@
         <SolidColorBrush x:Key="StickDotLeft" Color="#4CC9F0" />
         <SolidColorBrush x:Key="StickDotRight" Color="#F7B955" />
 
-        <converters:BoolToBrushConverter x:Key="InputFillBrush" FalseBrush="{StaticResource InputIdleFill}" TrueBrush="{StaticResource InputActiveFill}" />
-        <converters:BoolToBrushConverter x:Key="TriggerFillBrush" FalseBrush="{StaticResource SurfaceFill}" TrueBrush="{StaticResource InputActiveFill}" />
-        <converters:BoolToBrushConverter x:Key="InputStrokeBrush" FalseBrush="{StaticResource LineBrush}" TrueBrush="{StaticResource InputActiveStroke}" />
-        <converters:BoolToBrushConverter x:Key="ActiveOnlyStrokeBrush" FalseBrush="{StaticResource InputIdleFill}" TrueBrush="{StaticResource InputActiveStroke}" />
-
         <Style x:Key="MapLabel" TargetType="Label">
             <Setter Property="Foreground" Value="#F4F6FA" />
             <Setter Property="FontWeight" Value="SemiBold" />
@@ -27,11 +27,12 @@
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Viewbox Stretch="Uniform">
-        <Canvas Width="1052" Height="872">
-            <Canvas Canvas.Top="122">
+        <Canvas Width="1180" Height="980">
+            <Canvas Canvas.Left="64" Canvas.Top="190">
             <Path Data="M912.33,738.25c-2.24,0-4.48-.06-6.73-.17-1.04-.05-2.01-.09-2.93-.13-4.74-.19-8.48-.34-13.99-1.98h0c-12.59-3.74-24.36-12.38-34.99-25.68-6.57-8.23-10.86-17.65-15.01-26.76-2.24-4.92-4.55-10-7.16-14.71-9.89-17.84-21.95-37.82-40.04-49.2-10.63-6.68-22.6-10.03-36.59-10.23-16.41-.23-32.72-.48-48.98-.72-61.25-.92-119.11-1.79-179.72-2.1-60.56.3-118.42,1.17-179.67,2.1-16.26.24-32.57.49-48.98.72-14,.2-25.97,3.54-36.59,10.23-18.1,11.38-30.16,31.36-40.04,49.2-2.61,4.7-4.92,9.79-7.16,14.71-4.15,9.11-8.44,18.53-15.01,26.75-10.63,13.3-22.4,21.95-34.99,25.68-5.51,1.64-9.25,1.79-13.99,1.98-.92.04-1.89.08-2.93.13-36.3,1.87-72.64-11.37-97.19-35.35C-7.54,646.89-4.44,551.44,6.13,465.44c11.39-92.64,37.95-183.45,63.63-271.27,2.1-7.19,4.05-14.63,5.93-21.82,4.9-18.76,9.98-38.15,18.57-56.18,10.05-21.07,25.51-40.71,43.54-55.3,13.82-11.19,30.61-17.25,45.22-21.71,40.98-12.51,84.53-14.55,126.65-16.51l7.58-.36c71.79-3.42,145.51-3.74,208.96-3.77,63.46.03,137.17.36,208.96,3.77l7.58.36c42.12,1.97,85.67,4,126.65,16.51,14.61,4.46,31.4,10.53,45.22,21.71,18.03,14.59,33.49,34.23,43.54,55.3,8.6,18.04,13.67,37.44,18.57,56.2,1.88,7.18,3.82,14.61,5.92,21.8,25.68,87.81,52.24,178.61,63.63,271.26,10.57,86,13.67,181.45-43.49,237.29-23.03,22.5-56.44,35.52-90.46,35.52Z"
                   Fill="{StaticResource ControllerFill}"
                   Stroke="{StaticResource LineBrush}"
@@ -50,6 +51,12 @@
                   StrokeLineJoin="Round" />
 
             <Path Data="M912.33,738.25c-2.24,0-4.48-.06-6.73-.17-1.04-.05-2.01-.09-2.93-.13-4.74-.19-8.48-.34-13.99-1.98h0c-12.59-3.74-24.36-12.38-34.99-25.68-6.57-8.23-10.86-17.65-15.01-26.76-2.24-4.92-4.55-10-7.16-14.71-9.89-17.84-21.95-37.82-40.04-49.2-10.63-6.68-22.6-10.03-36.59-10.23-16.41-.23-32.72-.48-48.98-.72-61.25-.92-119.11-1.79-179.72-2.1-60.56.3-118.42,1.17-179.67,2.1-16.26.24-32.57.49-48.98.72-14,.2-25.97,3.54-36.59,10.23-18.1,11.38-30.16,31.36-40.04,49.2-2.61,4.7-4.92,9.79-7.16,14.71-4.15,9.11-8.44,18.53-15.01,26.75-10.63,13.3-22.4,21.95-34.99,25.68-5.51,1.64-9.25,1.79-13.99,1.98-.92.04-1.89.08-2.93.13-36.3,1.87-72.64-11.37-97.19-35.35C-7.54,646.89-4.44,551.44,6.13,465.44c11.39-92.64,37.95-183.45,63.63-271.27,2.1-7.19,4.05-14.63,5.93-21.82,4.9-18.76,9.98-38.15,18.57-56.18,10.05-21.07,25.51-40.71,43.54-55.3,13.82-11.19,30.61-17.25,45.22-21.71,40.98-12.51,84.53-14.55,126.65-16.51l7.58-.36c71.79-3.42,145.51-3.74,208.96-3.77,63.46.03,137.17.36,208.96,3.77l7.58.36c42.12,1.97,85.67,4,126.65,16.51,14.61,4.46,31.4,10.53,45.22,21.71,18.03,14.59,33.49,34.23,43.54,55.3,8.6,18.04,13.67,37.44,18.57,56.2,1.88,7.18,3.82,14.61,5.92,21.8,25.68,87.81,52.24,178.61,63.63,271.26,10.57,86,13.67,181.45-43.49,237.29-23.03,22.5-56.44,35.52-90.46,35.52Z"
+                  Fill="{StaticResource ControllerFill}"
+                  Stroke="{StaticResource LineBrush}"
+                  StrokeThickness="5"
+                  StrokeLineJoin="Round" />
+
+            <Path Data="M912.33,738.25c-2.24,0-4.48-.06-6.73-.17-1.04-.05-2.01-.09-2.93-.13-4.74-.19-8.48-.34-13.99-1.98h0c-12.59-3.74-24.36-12.38-34.99-25.68-6.57-8.23-10.86-17.65-15.01-26.76-2.24-4.92-4.55-10-7.16-14.71-9.89-17.84-21.95-37.82-40.04-49.2-10.63-6.68-22.6-10.03-36.59-10.23-16.41-.23-32.72-.48-48.98-.72-61.25-.92-119.11-1.79-179.72-2.1-60.56.3-118.42,1.17-179.67,2.1-16.26.24-32.57.49-48.98.72-14,.2-25.97,3.54-36.59,10.23-18.1,11.38-30.16,31.36-40.04,49.2-2.61,4.7-4.92,9.79-7.16,14.71-4.15,9.11-8.44,18.53-15.01,26.75-10.63,13.3-22.4,21.95-34.99,25.68-5.51,1.64-9.25,1.79-13.99,1.98-.92.04-1.89.08-2.93.13-36.3,1.87-72.64-11.37-97.19-35.35C-7.54,646.89-4.44,551.44,6.13,465.44c11.39-92.64,37.95-183.45,63.63-271.27,2.1-7.19,4.05-14.63,5.93-21.82,4.9-18.76,9.98-38.15,18.57-56.18,10.05-21.07,25.51-40.71,43.54-55.3,13.82-11.19,30.61-17.25,45.22-21.71,40.98-12.51,84.53-14.55,126.65-16.51l7.58-.36c71.79-3.42,145.51-3.74,208.96-3.77,63.46.03,137.17.36,208.96,3.77l7.58.36c42.12,1.97,85.67,4,126.65,16.51,14.61,4.46,31.4,10.53,45.22,21.71,18.03,14.59,33.49,34.23,43.54,55.3,8.6,18.04,13.67,37.44,18.57,56.2,1.88,7.18,3.82,14.61,5.92,21.8,25.68,87.81,52.24,178.61,63.63,271.26,10.57,86,13.67,181.45-43.49,237.29-23.03,22.5-56.44,35.52-90.46,35.52Z"
                   Fill="Transparent"
                   Stroke="{StaticResource LineBrush}"
                   StrokeThickness="5"
@@ -59,14 +66,14 @@
                 <Path Data="M58.689 67.9165L5.20399 73.9448C0.805227 74.4406 0.705254 71.4721 1.20511 69.9259C3.20455 62.3904 8.20315 44.4057 12.202 32.7509C17.2006 18.1822 32.6963 9.13966 38.6946 6.62782C44.6929 4.116 57.6893 2.10654 72.6851 1.1018C84.6817 0.298019 89.6803 4.4509 90.6801 6.62782C96.1785 19.187 107.975 46.2143 111.174 53.8502C114.373 61.4862 107.509 64.065 103.676 64.3999L58.689 67.9165Z"
                       Fill="{Binding IsLeftTriggerActive, Converter={StaticResource TriggerFillBrush}}"
                       Stroke="{Binding IsLeftTriggerActive, Converter={StaticResource InputStrokeBrush}}"
-                      StrokeThickness="5"
+                      StrokeThickness="3.6"
                       StrokeLineJoin="Round" />
             </Viewbox>
             <Viewbox Canvas.Left="734" Canvas.Top="-122" Width="170" Height="110" Stretch="Uniform">
                 <Path Data="M58.689 67.9165L5.20399 73.9448C0.805227 74.4406 0.705254 71.4721 1.20511 69.9259C3.20455 62.3904 8.20315 44.4057 12.202 32.7509C17.2006 18.1822 32.6963 9.13966 38.6946 6.62782C44.6929 4.116 57.6893 2.10654 72.6851 1.1018C84.6817 0.298019 89.6803 4.4509 90.6801 6.62782C96.1785 19.187 107.975 46.2143 111.174 53.8502C114.373 61.4862 107.509 64.065 103.676 64.3999L58.689 67.9165Z"
                       Fill="{Binding IsRightTriggerActive, Converter={StaticResource TriggerFillBrush}}"
                       Stroke="{Binding IsRightTriggerActive, Converter={StaticResource InputStrokeBrush}}"
-                      StrokeThickness="5"
+                      StrokeThickness="3.6"
                       StrokeLineJoin="Round"
                       RenderTransformOrigin="0.5,0.5">
                     <Path.RenderTransform>
@@ -122,14 +129,34 @@
                   Stroke="{StaticResource MutedLineBrush}"
                   StrokeThickness="4" />
 
-            <Ellipse Canvas.Left="815" Canvas.Top="201" Width="67" Height="67" Fill="{Binding State.Buttons.South, Converter={StaticResource InputFillBrush}}" Stroke="{Binding State.Buttons.South, Converter={StaticResource InputStrokeBrush}}" StrokeThickness="5" />
-            <Ellipse Canvas.Left="875" Canvas.Top="142" Width="67" Height="67" Fill="{Binding State.Buttons.East, Converter={StaticResource InputFillBrush}}" Stroke="{Binding State.Buttons.East, Converter={StaticResource InputStrokeBrush}}" StrokeThickness="5" />
-            <Ellipse Canvas.Left="755" Canvas.Top="142" Width="67" Height="67" Fill="{Binding State.Buttons.West, Converter={StaticResource InputFillBrush}}" Stroke="{Binding State.Buttons.West, Converter={StaticResource InputStrokeBrush}}" StrokeThickness="5" />
-            <Ellipse Canvas.Left="815" Canvas.Top="81" Width="67" Height="67" Fill="{Binding State.Buttons.North, Converter={StaticResource InputFillBrush}}" Stroke="{Binding State.Buttons.North, Converter={StaticResource InputStrokeBrush}}" StrokeThickness="5" />
-            <Label Canvas.Left="815" Canvas.Top="201" Width="67" Height="67" Content="{Binding SouthLabel}" Style="{StaticResource MapLabel}" />
-            <Label Canvas.Left="875" Canvas.Top="142" Width="67" Height="67" Content="{Binding EastLabel}" Style="{StaticResource MapLabel}" />
-            <Label Canvas.Left="755" Canvas.Top="142" Width="67" Height="67" Content="{Binding WestLabel}" Style="{StaticResource MapLabel}" />
-            <Label Canvas.Left="815" Canvas.Top="81" Width="67" Height="67" Content="{Binding NorthLabel}" Style="{StaticResource MapLabel}" />
+            <primitives:FaceButtonView Canvas.Left="815"
+                                       Canvas.Top="201"
+                                       ButtonSize="67"
+                                       LabelFontSize="25"
+                                       StrokeThickness="5"
+                                       Label="{Binding SouthLabel}"
+                                       IsActive="{Binding State.Buttons.South}" />
+            <primitives:FaceButtonView Canvas.Left="875"
+                                       Canvas.Top="142"
+                                       ButtonSize="67"
+                                       LabelFontSize="25"
+                                       StrokeThickness="5"
+                                       Label="{Binding EastLabel}"
+                                       IsActive="{Binding State.Buttons.East}" />
+            <primitives:FaceButtonView Canvas.Left="755"
+                                       Canvas.Top="142"
+                                       ButtonSize="67"
+                                       LabelFontSize="25"
+                                       StrokeThickness="5"
+                                       Label="{Binding WestLabel}"
+                                       IsActive="{Binding State.Buttons.West}" />
+            <primitives:FaceButtonView Canvas.Left="815"
+                                       Canvas.Top="81"
+                                       ButtonSize="67"
+                                       LabelFontSize="25"
+                                       StrokeThickness="5"
+                                       Label="{Binding NorthLabel}"
+                                       IsActive="{Binding State.Buttons.North}" />
 
             <Path Data="M552.52,467.44h-52.63c-9.47,0-17.18-7.71-17.18-17.18s7.71-17.18,17.18-17.18h52.63c9.48,0,17.18,7.71,17.18,17.18s-7.71,17.18-17.18,17.18Z"
                   Fill="{Binding State.Buttons.Guide, Converter={StaticResource InputFillBrush}}"
@@ -139,3 +166,6 @@
         </Canvas>
     </Viewbox>
 </UserControl>
+
+
+
