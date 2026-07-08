@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.1
+
+- Removed README build and QA sections to keep the documentation focused for users and theme developers.
+- Localized the bundled resource dictionaries for all included non-English languages.
+
 ## 0.3.0
 
 - Added fullscreen-friendly Playnite integration with a configurable top panel shortcut.
