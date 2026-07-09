@@ -1,5 +1,12 @@
 AddonId: GamepadTester_518dc982-32b5-4493-b32d-1f71de2fe4ad
 Packages:
+  - Version: 0.3.5
+    RequiredApiVersion: 6.16.0
+    ReleaseDate: 2026-07-10
+    PackageUrl: https://github.com/Naerian/playnite-nx-gamepad-tester/releases/download/v0.3.5/GamepadTester-0.3.5.pext
+    Changelog:
+      - Moved the repository root to the plugin project folder.
+      - Updated build and packaging scripts to run from the new repository root.
   - Version: 0.3.4
     RequiredApiVersion: 6.16.0
     ReleaseDate: 2026-07-09

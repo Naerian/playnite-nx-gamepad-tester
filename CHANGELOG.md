@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.5
+
+- Moved the repository root to the plugin project folder.
+- Updated build and packaging scripts to run from the new repository root.
+
 ## 0.3.4
 
 - Added support for Gamepad Tester embedded blocks in dynamically opened fullscreen theme views.
