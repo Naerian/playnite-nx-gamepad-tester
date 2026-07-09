@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.4
+
+- Added support for Gamepad Tester embedded blocks in dynamically opened fullscreen theme views.
+
 ## 0.3.3
 
 - Restored Desktop tabs to inherit the active Playnite theme style.

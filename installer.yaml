@@ -1,5 +1,11 @@
 AddonId: GamepadTester_518dc982-32b5-4493-b32d-1f71de2fe4ad
 Packages:
+  - Version: 0.3.4
+    RequiredApiVersion: 6.16.0
+    ReleaseDate: 2026-07-09
+    PackageUrl: https://github.com/Naerian/playnite-nx-gamepad-tester/releases/download/v0.3.4/GamepadTester-0.3.4.pext
+    Changelog:
+      - Added support for Gamepad Tester embedded blocks in dynamically opened fullscreen theme views.
   - Version: 0.3.3
     RequiredApiVersion: 6.16.0
     ReleaseDate: 2026-07-09
