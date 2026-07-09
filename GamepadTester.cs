@@ -57,10 +57,11 @@ namespace GamepadTester
             settings = new GamepadTesterSettingsViewModel(this);
             openTesterCommand = new global::GamepadTester.Commands.RelayCommand(() => OpenTesterWindow(0, false));
             openButtonTestCommand = new global::GamepadTester.Commands.RelayCommand(() => OpenTesterWindow(0, true));
-            openRumbleCommand = new global::GamepadTester.Commands.RelayCommand(() => OpenTesterWindow(1, true));
-            openSticksCommand = new global::GamepadTester.Commands.RelayCommand(() => OpenTesterWindow(2, true));
-            openLatencyCommand = new global::GamepadTester.Commands.RelayCommand(() => OpenTesterWindow(3, true));
+            openRumbleCommand = new global::GamepadTester.Commands.RelayCommand(() => OpenTesterWindow(0, true));
+            openSticksCommand = new global::GamepadTester.Commands.RelayCommand(() => OpenTesterWindow(1, true));
+            openLatencyCommand = new global::GamepadTester.Commands.RelayCommand(() => OpenTesterWindow(2, true));
             themeIntegration = new GamepadTesterThemeIntegration(settings, openTesterCommand, openButtonTestCommand, openSticksCommand, openRumbleCommand, openLatencyCommand);
+            GamepadTesterThemeHost.Configure(settings.Settings, Loc, () => OpenTesterWindow(0, true));
             Properties = new GenericPluginProperties
             {
                 HasSettings = true
