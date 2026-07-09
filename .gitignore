@@ -1,0 +1,16 @@
+.vs/
+.vscode/
+bin/
+obj/
+packages/
+*.user
+*.suo
+*.cache
+*.pdb
+*.pext
+*.zip
+*.log
+
+# Local signing/export artifacts
+*.cer
+*.pfx
