@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.3
+
+- Restored Desktop tabs to inherit the active Playnite theme style.
+- Removed the duplicated Vibration tab while keeping rumble controls in the Test dashboard.
+- Updated internal tab navigation indexes after removing the duplicate tab.
+
 ## 0.3.2
 
 - Added the Playnite add-on installer manifest.

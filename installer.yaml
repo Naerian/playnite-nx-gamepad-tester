@@ -1,5 +1,13 @@
 AddonId: GamepadTester_518dc982-32b5-4493-b32d-1f71de2fe4ad
 Packages:
+  - Version: 0.3.3
+    RequiredApiVersion: 6.16.0
+    ReleaseDate: 2026-07-09
+    PackageUrl: https://github.com/Naerian/playnite-nx-gamepad-tester/releases/download/v0.3.3/GamepadTester-0.3.3.pext
+    Changelog:
+      - Restored Desktop tabs to inherit the active Playnite theme style.
+      - Removed the duplicated Vibration tab while keeping rumble controls in the Test dashboard.
+      - Updated internal tab navigation indexes after removing the duplicate tab.
   - Version: 0.3.2
     RequiredApiVersion: 6.16.0
     ReleaseDate: 2026-07-09

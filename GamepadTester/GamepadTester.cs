@@ -336,7 +336,7 @@ namespace GamepadTester
                 return;
             }
 
-            if (testerBackButtonHeld && button == ControllerInput.A && testerWindowViewModel.IsFullscreenSimplifiedMode && testerWindowViewModel.SelectedTabIndex == 3)
+            if (testerBackButtonHeld && button == ControllerInput.A && testerWindowViewModel.IsFullscreenSimplifiedMode && testerWindowViewModel.SelectedTabIndex == 2)
             {
                 if (testerWindowViewModel.StartLatencyTestCommand.CanExecute(null))
                 {
