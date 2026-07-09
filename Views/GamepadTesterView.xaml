@@ -253,27 +253,6 @@
                             Padding="0"
                             SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}"
                             Visibility="{Binding HasController, Converter={StaticResource BoolToVisibility}}">
-                    <TabControl.ItemContainerStyle>
-                        <Style TargetType="TabItem">
-                            <Setter Property="MinHeight" Value="32" />
-                            <Setter Property="Padding" Value="12,6" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding DataContext.IsFullscreenSimplifiedMode, RelativeSource={RelativeSource AncestorType=TabControl}}" Value="True">
-                                    <Setter Property="Height" Value="0" />
-                                    <Setter Property="MinHeight" Value="0" />
-                                    <Setter Property="Padding" Value="0" />
-                                    <Setter Property="Margin" Value="0" />
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="TabItem">
-                                                <Border Height="0" />
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TabControl.ItemContainerStyle>
                 <TabItem Header="{DynamicResource LOCGT_TabTest}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto"
                                   HorizontalScrollBarVisibility="Disabled">
@@ -648,35 +627,6 @@
                             </Grid>
                         </Grid>
                     </ScrollViewer>
-                </TabItem>
-
-                <TabItem Header="{DynamicResource LOCGT_TabVibration}">
-                    <Grid Margin="0,10,12,0">
-                        <Border Style="{StaticResource DashboardPanel}"
-                                MaxWidth="780"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center">
-                            <StackPanel>
-                                <TextBlock Text="{DynamicResource LOCGT_RumbleTests}" Style="{StaticResource DashboardTitle}" />
-                                <Border Style="{StaticResource SubtleHorizontalSeparator}" Margin="0,0,0,12" />
-                                <TextBlock Text="{Binding RumbleStatusLabel}"
-                                           TextWrapping="Wrap"
-                                           Margin="0,0,0,16"
-                                           Foreground="{StaticResource TextMutedBrush}" />
-                                <UniformGrid Columns="3">
-                                    <Button Content="{DynamicResource LOCGT_Standard}" Height="44" Margin="0,0,8,8" Command="{Binding RumbleCommand}" />
-                                    <Button Content="{DynamicResource LOCGT_Light}" Height="44" Margin="0,0,8,8" Command="{Binding LightRumbleCommand}" />
-                                    <Button Content="{DynamicResource LOCGT_Medium}" Height="44" Margin="0,0,0,8" Command="{Binding MediumRumbleCommand}" />
-                                    <Button Content="{DynamicResource LOCGT_Heavy}" Height="44" Margin="0,0,8,8" Command="{Binding HeavyRumbleCommand}" />
-                                    <Button Content="{DynamicResource LOCGT_LowMotor}" Height="44" Margin="0,0,8,8" Command="{Binding LowMotorRumbleCommand}" />
-                                    <Button Content="{DynamicResource LOCGT_HighMotor}" Height="44" Margin="0,0,0,8" Command="{Binding HighMotorRumbleCommand}" />
-                                    <Button Content="{DynamicResource LOCGT_Pulse}" Height="44" Margin="0,0,8,0" Command="{Binding PulseRumbleCommand}" />
-                                    <Button Content="{DynamicResource LOCGT_Alternating}" Height="44" Margin="0,0,8,0" Command="{Binding AlternatingRumbleCommand}" />
-                                    <Button Content="{DynamicResource LOCGT_Ramp}" Height="44" Command="{Binding RampRumbleCommand}" />
-                                </UniformGrid>
-                            </StackPanel>
-                        </Border>
-                    </Grid>
                 </TabItem>
 
                 <TabItem Header="{DynamicResource LOCGT_TabSticks}">

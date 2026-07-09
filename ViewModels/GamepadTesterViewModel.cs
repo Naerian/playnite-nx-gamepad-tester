@@ -339,7 +339,7 @@ namespace GamepadTester.ViewModels
             get { return selectedTabIndex; }
             set
             {
-                var next = Math.Max(0, Math.Min(5, value));
+                var next = Math.Max(0, Math.Min(4, value));
                 if (selectedTabIndex == next)
                 {
                     return;
@@ -365,7 +365,7 @@ namespace GamepadTester.ViewModels
                 OnPropertyChanged("IsControllerSelectorVisible");
                 OnPropertyChanged("IsVisualSchemeSelectorVisible");
                 OnPropertyChanged("IsFullTesterMode");
-                if (isFullscreenSimplifiedMode && selectedTabIndex > 3)
+                if (isFullscreenSimplifiedMode && selectedTabIndex > 2)
                 {
                     SelectedTabIndex = 0;
                 }
@@ -389,7 +389,7 @@ namespace GamepadTester.ViewModels
 
         public void MoveSelectedTab(int direction)
         {
-            var tabCount = isFullscreenSimplifiedMode ? 4 : 6;
+            var tabCount = isFullscreenSimplifiedMode ? 3 : 5;
             var next = SelectedTabIndex + direction;
             if (next < 0)
             {
