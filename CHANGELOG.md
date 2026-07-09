@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.2
+
+- Added the Playnite add-on installer manifest.
+- Switched the packaged extension icon to `media/icon.png`.
+- Updated the Playnite sidebar and top panel icon to the bundled `gamepad-2` glyph.
+
 ## 0.3.1
 
 - Removed README build and QA sections to keep the documentation focused for users and theme developers.

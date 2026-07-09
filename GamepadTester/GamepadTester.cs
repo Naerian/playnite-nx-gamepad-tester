@@ -606,20 +606,20 @@ namespace GamepadTester
                     {
                         new System.Windows.Shapes.Path
                         {
-                            Data = Geometry.Parse("M7.2 8.2H16.8C19.7 8.2 21.8 10.4 22.2 13.8L22.6 17.1C22.9 19.4 20.4 20.7 18.8 19L16.4 16.4H7.6L5.2 19C3.6 20.7 1.1 19.4 1.4 17.1L1.8 13.8C2.2 10.4 4.3 8.2 7.2 8.2Z"),
+                            Data = Geometry.Parse("M17.32 5H6.68A4 4 0 0 0 2.702 8.59C2.696 8.642 2.692 8.691 2.685 8.742C2.604 9.416 2 14.456 2 16A3 3 0 0 0 5 19C6 19 6.5 18.5 7 18L8.414 16.586A2 2 0 0 1 9.828 16H14.172A2 2 0 0 1 15.586 16.586L17 18C17.5 18.5 18 19 19 19A3 3 0 0 0 22 16C22 14.455 21.396 9.416 21.315 8.742C21.308 8.692 21.304 8.642 21.298 8.591A4 4 0 0 0 17.32 5Z"),
                             Fill = Brushes.Transparent,
                             Stroke = Brushes.White,
-                            StrokeThickness = 1.7,
+                            StrokeThickness = 2,
                             StrokeStartLineCap = PenLineCap.Round,
                             StrokeEndLineCap = PenLineCap.Round,
                             StrokeLineJoin = PenLineJoin.Round
                         },
                         new System.Windows.Shapes.Path
                         {
-                            Data = Geometry.Parse("M7 12V15M5.5 13.5H8.5M16.2 12.2H16.25M18.4 14.5H18.45"),
+                            Data = Geometry.Parse("M6 11H10M8 9V13M15 12H15.01M18 10H18.01"),
                             Fill = Brushes.Transparent,
                             Stroke = Brushes.White,
-                            StrokeThickness = 1.7,
+                            StrokeThickness = 2,
                             StrokeStartLineCap = PenLineCap.Round,
                             StrokeEndLineCap = PenLineCap.Round,
                             StrokeLineJoin = PenLineJoin.Round

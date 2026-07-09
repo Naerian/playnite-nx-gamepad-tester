@@ -93,6 +93,16 @@ if (Test-Path -LiteralPath $localizationSource) {
     Copy-Item -Path (Join-Path $localizationSource "*.xaml") -Destination $localizationDestination -Force
 }
 
+$mediaSource = Join-Path $outputDir "media"
+$mediaDestination = Join-Path $playniteExtensionDir "media"
+if (Test-Path -LiteralPath $mediaSource) {
+    if (Test-Path -LiteralPath $mediaDestination) {
+        Remove-Item -LiteralPath $mediaDestination -Recurse -Force
+    }
+
+    Copy-Item -LiteralPath $mediaSource -Destination $playniteExtensionDir -Recurse -Force
+}
+
 $deployedAssembly = Join-Path $playniteExtensionDir "GamepadTester.dll"
 Sign-PluginAssembly -Path $deployedAssembly -Certificate $certificate
 

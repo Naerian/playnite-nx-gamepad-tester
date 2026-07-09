@@ -33,7 +33,16 @@ New-Item -ItemType Directory -Path $packageDir | Out-Null
 
 Copy-Item -LiteralPath (Join-Path $outputDir "GamepadTester.dll") -Destination $packageDir
 Copy-Item -LiteralPath (Join-Path $outputDir "extension.yaml") -Destination $packageDir
-Copy-Item -LiteralPath (Join-Path $outputDir "icon.png") -Destination $packageDir
+
+$legacyIcon = Join-Path $outputDir "icon.png"
+if (Test-Path -LiteralPath $legacyIcon) {
+    Copy-Item -LiteralPath $legacyIcon -Destination $packageDir
+}
+
+$mediaSource = Join-Path $outputDir "media"
+if (Test-Path -LiteralPath $mediaSource) {
+    Copy-Item -LiteralPath $mediaSource -Destination $packageDir -Recurse
+}
 
 $localizationSource = Join-Path $outputDir "Localization"
 if (Test-Path $localizationSource) {
