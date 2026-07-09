@@ -99,12 +99,29 @@ The recommended Fullscreen path is to use embeddable theme blocks instead of the
 <ContentControl x:Name="GamepadTester_LatencyMini" />
 ```
 
+The extension also initializes prefixed blocks when the host `ContentControl` is loaded later. This supports dynamic fullscreen views opened by helper plugins, not only controls that exist during the initial `Main.xaml` load.
+
 The extension accepts the short name, compact prefixed name, or underscore-prefixed name for each block. For example, these names all resolve to the same status badge:
 
 ```xaml
 <ContentControl x:Name="StatusBadge" />
 <ContentControl x:Name="GamepadTesterStatusBadge" />
 <ContentControl x:Name="GamepadTester_StatusBadge" />
+```
+
+For dynamically created views, prefer the `GamepadTester_` or `GamepadTester` prefix when relying on `x:Name` auto-initialization.
+
+For dynamic views, the recommended explicit form is the attached `Block` property. It avoids relying on the element name and initializes on `Loaded`:
+
+```xaml
+<UserControl
+    xmlns:gt="clr-namespace:GamepadTester.Views.ThemeIntegration;assembly=GamepadTester">
+
+    <ContentControl gt:GamepadTesterThemeHost.Block="ButtonMap" />
+    <ContentControl gt:GamepadTesterThemeHost.Block="StickCheck" />
+    <ContentControl gt:GamepadTesterThemeHost.Block="RumblePad" />
+    <ContentControl gt:GamepadTesterThemeHost.Block="LatencyMini" />
+</UserControl>
 ```
 
 Available block names:
