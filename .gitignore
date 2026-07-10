@@ -10,6 +10,8 @@ packages/
 *.pext
 *.zip
 *.log
+BuildGamepadTester.ps1
+PackageGamepadTester.ps1
 
 # Local signing/export artifacts
 *.cer
