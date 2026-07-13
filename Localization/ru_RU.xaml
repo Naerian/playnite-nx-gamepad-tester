@@ -238,4 +238,17 @@
     <sys:String x:Key="LOCGT_VisualSchemeSwitchPro">Switch Pro</sys:String>
     <sys:String x:Key="LOCGT_FullscreenNavigationHint">Разделы LB/RB D-pad перемещение A выбор Назад+задержка A B закрытие</sys:String>
     <sys:String x:Key="LOCGT_ExportCancelled">Экспорт отменен.</sys:String>
+    <sys:String x:Key="LOCGT_CollectingData">Сбор данных</sys:String>
+    <sys:String x:Key="LOCGT_HealthCollectingFormat">Отпустите оба стика, пока собираются стабильные данные в покое ({0}%).</sys:String>
+    <sys:String x:Key="LOCGT_RangeCollectingFormat">Сбор данных диапазона: {0}% ({1}/72 направлений)</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceNotEvaluated">Достоверность: не оценена</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceCollectingFormat">Достоверность: сбор данных ({0}%)</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceHigh">высокая</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceMedium">средняя</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceLow">низкая</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceReadyFormat">Достоверность: {0} ({1} выборок)</sys:String>
+    <sys:String x:Key="LOCGT_ExportCompatibilityReport">Экспортировать отчет о совместимости</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReportReady">Технический отчет об устройстве готов к экспорту.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReportExportedFormat">Отчет о совместимости экспортирован в {0}</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReportFailedFormat">Не удалось экспортировать отчет о совместимости: {0}</sys:String>
 </ResourceDictionary>

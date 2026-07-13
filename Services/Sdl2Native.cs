@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace GamepadTester.Services
 {
@@ -77,6 +78,42 @@ namespace GamepadTester.Services
 
         [DllImport("SDL2.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern int SDL_GameControllerRumble(IntPtr gamecontroller, ushort lowFrequencyRumble, ushort highFrequencyRumble, uint durationMs);
+
+        [DllImport("SDL2.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void SDL_GetVersion(out SdlVersion version);
+
+        [DllImport("SDL2.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern SdlJoystickGuid SDL_JoystickGetGUID(IntPtr joystick);
+
+        [DllImport("SDL2.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void SDL_JoystickGetGUIDString(SdlJoystickGuid guid, StringBuilder text, int textSize);
+
+        [DllImport("SDL2.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int SDL_JoystickNumAxes(IntPtr joystick);
+
+        [DllImport("SDL2.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int SDL_JoystickNumHats(IntPtr joystick);
+
+        [DllImport("SDL2.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr SDL_GameControllerMapping(IntPtr gamecontroller);
+
+        [DllImport("SDL2.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void SDL_free(IntPtr memory);
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct SdlVersion
+    {
+        public byte Major;
+        public byte Minor;
+        public byte Patch;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct SdlJoystickGuid
+    {
+        public ulong First;
+        public ulong Second;
     }
 
     internal enum SdlControllerAxis

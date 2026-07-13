@@ -238,4 +238,17 @@
     <sys:String x:Key="LOCGT_VisualSchemeSwitchPro">Switch Pro</sys:String>
     <sys:String x:Key="LOCGT_FullscreenNavigationHint">LB/RB sections  D-pad move  A select  Back+A latency  B close</sys:String>
     <sys:String x:Key="LOCGT_ExportCancelled">Export cancelled.</sys:String>
+    <sys:String x:Key="LOCGT_CollectingData">Collecting data</sys:String>
+    <sys:String x:Key="LOCGT_HealthCollectingFormat">Release both sticks while stable rest samples are collected ({0}%).</sys:String>
+    <sys:String x:Key="LOCGT_RangeCollectingFormat">Collecting range data: {0}% ({1}/72 directions)</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceNotEvaluated">Confidence: not evaluated</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceCollectingFormat">Confidence: collecting ({0}%)</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceHigh">high</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceMedium">medium</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceLow">low</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceReadyFormat">Confidence: {0} ({1} samples)</sys:String>
+    <sys:String x:Key="LOCGT_ExportCompatibilityReport">Export compatibility report</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReportReady">Technical device report ready to export.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReportExportedFormat">Compatibility report exported to {0}</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReportFailedFormat">Could not export compatibility report: {0}</sys:String>
 </ResourceDictionary>

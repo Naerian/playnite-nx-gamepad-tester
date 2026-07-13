@@ -18,9 +18,6 @@ namespace GamepadTester.ViewModels
     public sealed class GamepadTesterViewModel : ObservableObject, IDisposable
     {
         private const double StickRadius = 34d;
-        private const double RestStabilityDelta = 0.015d;
-        private const double RestObservationMilliseconds = 450d;
-        private const double MaximumRestDriftCandidate = 0.35d;
         private const int LatencyGraphMaxSamples = 48;
         private readonly GamepadPollingService pollingService;
         private readonly GamepadTesterSettings settings;
@@ -47,22 +44,17 @@ namespace GamepadTester.ViewModels
         private readonly RelayCommand exportInputLogCommand;
         private readonly RelayCommand exportLatencyCommand;
         private readonly RelayCommand exportSticksCommand;
+        private readonly RelayCommand exportCompatibilityReportCommand;
         private readonly RelayCommand resetInputLogCommand;
         private readonly StickDiagnosticsTracker leftStickDiagnostics;
         private readonly StickDiagnosticsTracker rightStickDiagnostics;
+        private readonly RestDriftTracker restDriftDiagnostics;
         private GamepadState state;
         private GamepadControllerInfo selectedController;
         private int controllerRefreshTick;
         private GamepadButtonState previousButtons;
         private List<ExtraButtonState> previousExtraButtons;
         private GamepadButtonState coveredButtons;
-        private double maxLeftRestDrift;
-        private double maxRightRestDrift;
-        private DateTime? restCandidateStartedAt;
-        private double lastRestCandidateLeftX;
-        private double lastRestCandidateLeftY;
-        private double lastRestCandidateRightX;
-        private double lastRestCandidateRightY;
         private double maxLeftStickMagnitude;
         private double maxRightStickMagnitude;
         private float maxLeftTrigger;
@@ -111,6 +103,7 @@ namespace GamepadTester.ViewModels
         private int latencyTestSamples;
         private string exportReportStatusLabel;
         private string inputLogExportStatusLabel;
+        private string compatibilityReportStatusLabel;
         private string selectedVisualSchemeKey;
         private bool isVisualSchemeManuallySelected;
         private int selectedTabIndex;
@@ -149,15 +142,18 @@ namespace GamepadTester.ViewModels
             exportInputLogCommand = new RelayCommand(ExportInputLog, () => InputHistory.Count > 0);
             exportLatencyCommand = new RelayCommand(ExportLatencyData, () => !isLatencyTestRunning && inputEventIntervalSamples > 0);
             exportSticksCommand = new RelayCommand(ExportStickData, () => State.IsConnected);
+            exportCompatibilityReportCommand = new RelayCommand(ExportCompatibilityReport, () => State.IsConnected);
             resetInputLogCommand = new RelayCommand(ClearInputHistory, () => InputHistory.Count > 0);
             leftStickDiagnostics = new StickDiagnosticsTracker();
             rightStickDiagnostics = new StickDiagnosticsTracker();
+            restDriftDiagnostics = new RestDriftTracker();
             coveredButtons = new GamepadButtonState();
             InitializeGuidedTestInputs();
             rumbleStatusLabel = L("LOCGT_Ready", "Ready");
             latencyStatusLabel = L("LOCGT_LatencyWaiting", "Waiting for input changes.");
             exportReportStatusLabel = L("LOCGT_ReportReady", "Report ready to export.");
             inputLogExportStatusLabel = L("LOCGT_InputLogExportReady", "Enable input log and press buttons to collect entries.");
+            compatibilityReportStatusLabel = L("LOCGT_CompatibilityReportReady", "Technical device report ready to export.");
             isInputLogEnabled = this.settings.EnableInputLogByDefault;
             pollingIntervalMinMs = double.MaxValue;
             inputEventIntervalMinMs = double.MaxValue;
@@ -282,6 +278,11 @@ namespace GamepadTester.ViewModels
         public ICommand ExportSticksCommand
         {
             get { return exportSticksCommand; }
+        }
+
+        public ICommand ExportCompatibilityReportCommand
+        {
+            get { return exportCompatibilityReportCommand; }
         }
 
         public ICommand ResetInputLogCommand
@@ -638,7 +639,7 @@ namespace GamepadTester.ViewModels
 
         public string SessionRestDriftLabel
         {
-            get { return string.Format("{0:0.000}", Math.Max(maxLeftRestDrift, maxRightRestDrift)); }
+            get { return string.Format("{0:0.000}", restDriftDiagnostics.MaxDrift); }
         }
 
         private double CurrentCenterDrift
@@ -648,7 +649,7 @@ namespace GamepadTester.ViewModels
 
         private double EvaluatedRestDrift
         {
-            get { return Math.Max(maxLeftRestDrift, maxRightRestDrift); }
+            get { return restDriftDiagnostics.MaxDrift; }
         }
 
         private double HealthyDeadzoneThreshold
@@ -894,6 +895,34 @@ namespace GamepadTester.ViewModels
             get { return GetRangeQualityPercent(rightStickDiagnostics); }
         }
 
+        public int LeftRangeDisplayProgress
+        {
+            get
+            {
+                var confidence = GetRangeConfidence(leftStickDiagnostics);
+                return confidence.IsReady ? LeftRangeQualityPercent : confidence.ProgressPercent;
+            }
+        }
+
+        public int RightRangeDisplayProgress
+        {
+            get
+            {
+                var confidence = GetRangeConfidence(rightStickDiagnostics);
+                return confidence.IsReady ? RightRangeQualityPercent : confidence.ProgressPercent;
+            }
+        }
+
+        public string LeftRangeConfidenceLabel
+        {
+            get { return GetConfidenceLabel(GetRangeConfidence(leftStickDiagnostics)); }
+        }
+
+        public string RightRangeConfidenceLabel
+        {
+            get { return GetConfidenceLabel(GetRangeConfidence(rightStickDiagnostics)); }
+        }
+
         public string LatencyStatusLabel
         {
             get
@@ -1073,6 +1102,11 @@ namespace GamepadTester.ViewModels
 
                 return string.Format(L("LOCGT_EventIntervalFormat", "Observed input event interval: {0:0.0} ms avg"), inputEventIntervalSumMs / inputEventIntervalSamples);
             }
+        }
+
+        public string LatencyConfidenceLabel
+        {
+            get { return GetConfidenceLabel(DiagnosticConfidenceEvaluator.ForLatency(hasLatencyTestStarted, inputEventIntervalSamples)); }
         }
 
         public PointCollection LatencyRateGraphPoints
@@ -1282,6 +1316,31 @@ namespace GamepadTester.ViewModels
             }
         }
 
+        public string HealthScoreDisplayLabel
+        {
+            get
+            {
+                return HealthConfidence.IsReady
+                    ? string.Format("{0}%", HealthScore)
+                    : "--";
+            }
+        }
+
+        public int HealthDisplayProgress
+        {
+            get { return HealthConfidence.IsReady ? HealthScore : HealthConfidence.ProgressPercent; }
+        }
+
+        public string HealthConfidenceLabel
+        {
+            get { return GetConfidenceLabel(HealthConfidence); }
+        }
+
+        private DiagnosticConfidence HealthConfidence
+        {
+            get { return DiagnosticConfidenceEvaluator.ForHealth(State.IsConnected, restDriftDiagnostics.SampleCount); }
+        }
+
         public string HealthLabel
         {
             get
@@ -1289,6 +1348,11 @@ namespace GamepadTester.ViewModels
                 if (!State.IsConnected)
                 {
                     return L("LOCGT_NoController", "No controller");
+                }
+
+                if (!HealthConfidence.IsReady)
+                {
+                    return L("LOCGT_CollectingData", "Collecting data");
                 }
 
                 var drift = EvaluatedRestDrift;
@@ -1323,6 +1387,11 @@ namespace GamepadTester.ViewModels
                 if (!State.IsConnected)
                 {
                     return L("LOCGT_ConnectControllerToStart", "Connect a controller to start.");
+                }
+
+                if (!HealthConfidence.IsReady)
+                {
+                    return string.Format(L("LOCGT_HealthCollectingFormat", "Release both sticks while stable rest samples are collected ({0}%)."), HealthConfidence.ProgressPercent);
                 }
 
                 if (EvaluatedRestDrift < HealthyDeadzoneThreshold)
@@ -1372,6 +1441,11 @@ namespace GamepadTester.ViewModels
         public string ExportReportStatusLabel
         {
             get { return exportReportStatusLabel; }
+        }
+
+        public string CompatibilityReportStatusLabel
+        {
+            get { return compatibilityReportStatusLabel; }
         }
 
         public string ControllerSummary
@@ -2175,9 +2249,7 @@ namespace GamepadTester.ViewModels
         {
             isGuidedTestRunning = false;
             guidedTestStepIndex = 0;
-            maxLeftRestDrift = 0d;
-            maxRightRestDrift = 0d;
-            ResetRestDriftCandidate();
+            restDriftDiagnostics.Reset();
             maxLeftStickMagnitude = 0d;
             maxRightStickMagnitude = 0d;
             maxLeftTrigger = 0f;
@@ -2542,6 +2614,41 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("ExportReportStatusLabel");
         }
 
+        private void ExportCompatibilityReport()
+        {
+            try
+            {
+                var fileName = string.Format("GamepadTester-compatibility-{0:yyyyMMdd-HHmmss}.txt", DateTime.Now);
+                var path = PromptExportPath(fileName);
+                if (string.IsNullOrWhiteSpace(path))
+                {
+                    compatibilityReportStatusLabel = L("LOCGT_ExportCancelled", "Export cancelled.");
+                    OnPropertyChanged("CompatibilityReportStatusLabel");
+                    return;
+                }
+
+                var report = GamepadCompatibilityReportBuilder.Build(
+                    State,
+                    SelectedController,
+                    HealthConfidenceLabel,
+                    LeftRangeConfidenceLabel,
+                    RightRangeConfidenceLabel,
+                    LatencyConfidenceLabel);
+                File.WriteAllText(path, report, Encoding.UTF8);
+                compatibilityReportStatusLabel = string.Format(
+                    L("LOCGT_CompatibilityReportExportedFormat", "Compatibility report exported to {0}"),
+                    path);
+            }
+            catch (Exception ex)
+            {
+                compatibilityReportStatusLabel = string.Format(
+                    L("LOCGT_CompatibilityReportFailedFormat", "Could not export compatibility report: {0}"),
+                    ex.Message);
+            }
+
+            OnPropertyChanged("CompatibilityReportStatusLabel");
+        }
+
         private static string PromptExportPath(string defaultFileName)
         {
             var dialog = new SaveFileDialog
@@ -2578,6 +2685,7 @@ namespace GamepadTester.ViewModels
             log.AppendLine(string.Format("Estimated interval: {0}", EstimatedDelayLabel));
             log.AppendLine(string.Format("Jitter: {0}", PollingJitterLabel));
             log.AppendLine(string.Format("Samples: {0}", inputEventIntervalSamples));
+            log.AppendLine(string.Format("Confidence: {0}", LatencyConfidenceLabel));
             log.AppendLine(string.Format("Best interval: {0:0.0} ms", inputEventIntervalMinMs == double.MaxValue ? 0d : inputEventIntervalMinMs));
             log.AppendLine(string.Format("Worst interval: {0:0.0} ms", inputEventIntervalMaxMs));
             log.AppendLine(string.Format("Average interval: {0:0.0} ms", inputEventIntervalSamples == 0 ? 0d : inputEventIntervalSumMs / inputEventIntervalSamples));
@@ -2611,6 +2719,7 @@ namespace GamepadTester.ViewModels
             log.AppendLine(LeftStickCircularCoverageLabel);
             log.AppendLine(LeftStickPathSampleLabel);
             log.AppendLine(LeftRangeQualityLabel);
+            log.AppendLine(string.Format("Confidence: {0}", LeftRangeConfidenceLabel));
             log.AppendLine();
             log.AppendLine("[Right stick]");
             log.AppendLine(RightStickVector);
@@ -2623,6 +2732,7 @@ namespace GamepadTester.ViewModels
             log.AppendLine(RightStickCircularCoverageLabel);
             log.AppendLine(RightStickPathSampleLabel);
             log.AppendLine(RightRangeQualityLabel);
+            log.AppendLine(string.Format("Confidence: {0}", RightRangeConfidenceLabel));
             log.AppendLine();
             log.AppendLine("[Calibration]");
             log.AppendLine(CalibrationStatusLabel);
@@ -2666,12 +2776,16 @@ namespace GamepadTester.ViewModels
             report.AppendLine(string.Format("Display name: {0}", DeviceModelLabel));
             report.AppendLine(string.Format("VID/PID: {0}", string.IsNullOrWhiteSpace(DeviceIdLabel) ? "Unknown" : DeviceIdLabel));
             report.AppendLine(string.Format("Layout: {0}", State.Layout));
-            report.AppendLine(string.Format("8BitDo model: {0}", State.EightBitDoModel));
+            if (State.Layout == GamepadLayout.EightBitDo)
+            {
+                report.AppendLine(string.Format("8BitDo model: {0}", State.EightBitDoModel));
+            }
             report.AppendLine();
 
             report.AppendLine("[Summary]");
-            report.AppendLine(string.Format("Health score: {0}%", HealthScore));
+            report.AppendLine(string.Format("Health score: {0}", HealthScoreDisplayLabel));
             report.AppendLine(string.Format("Health label: {0}", HealthLabel));
+            report.AppendLine(string.Format("Confidence: {0}", HealthConfidenceLabel));
             report.AppendLine(HealthSummaryLabel);
             report.AppendLine(HealthDriftFactorLabel);
             report.AppendLine(HealthRangeFactorLabel);
@@ -3183,71 +3297,7 @@ namespace GamepadTester.ViewModels
 
         private void TrackRestDrift(GamepadState nextState)
         {
-            if (!IsRestDriftCandidate(nextState))
-            {
-                ResetRestDriftCandidate();
-                return;
-            }
-
-            var now = DateTime.UtcNow;
-            if (!restCandidateStartedAt.HasValue)
-            {
-                StartRestDriftCandidate(nextState, now);
-                return;
-            }
-
-            var moved = Math.Abs(nextState.LeftStick.X - lastRestCandidateLeftX) > RestStabilityDelta ||
-                        Math.Abs(nextState.LeftStick.Y - lastRestCandidateLeftY) > RestStabilityDelta ||
-                        Math.Abs(nextState.RightStick.X - lastRestCandidateRightX) > RestStabilityDelta ||
-                        Math.Abs(nextState.RightStick.Y - lastRestCandidateRightY) > RestStabilityDelta;
-
-            if (moved)
-            {
-                StartRestDriftCandidate(nextState, now);
-                return;
-            }
-
-            StoreRestCandidatePosition(nextState);
-
-            if ((now - restCandidateStartedAt.Value).TotalMilliseconds < RestObservationMilliseconds)
-            {
-                return;
-            }
-
-            maxLeftRestDrift = Math.Max(maxLeftRestDrift, nextState.LeftStick.Magnitude);
-            maxRightRestDrift = Math.Max(maxRightRestDrift, nextState.RightStick.Magnitude);
-        }
-
-        private static bool IsRestDriftCandidate(GamepadState state)
-        {
-            return CountPressedButtons(state.Buttons) == 0 &&
-                   state.LeftTrigger < 0.02f &&
-                   state.RightTrigger < 0.02f &&
-                   state.LeftStick.Magnitude < MaximumRestDriftCandidate &&
-                   state.RightStick.Magnitude < MaximumRestDriftCandidate;
-        }
-
-        private void StartRestDriftCandidate(GamepadState state, DateTime now)
-        {
-            restCandidateStartedAt = now;
-            StoreRestCandidatePosition(state);
-        }
-
-        private void StoreRestCandidatePosition(GamepadState state)
-        {
-            lastRestCandidateLeftX = state.LeftStick.X;
-            lastRestCandidateLeftY = state.LeftStick.Y;
-            lastRestCandidateRightX = state.RightStick.X;
-            lastRestCandidateRightY = state.RightStick.Y;
-        }
-
-        private void ResetRestDriftCandidate()
-        {
-            restCandidateStartedAt = null;
-            lastRestCandidateLeftX = 0d;
-            lastRestCandidateLeftY = 0d;
-            lastRestCandidateRightX = 0d;
-            lastRestCandidateRightY = 0d;
+            restDriftDiagnostics.AddSample(nextState, DateTime.UtcNow);
         }
 
         private static int CountPressedButtons(GamepadButtonState buttons)
@@ -3390,12 +3440,45 @@ namespace GamepadTester.ViewModels
 
         private string GetRangeQualityLabel(StickDiagnosticsTracker tracker)
         {
-            if (tracker.SampleCount == 0)
+            var confidence = GetRangeConfidence(tracker);
+            if (confidence.Stage == DiagnosticStage.NotEvaluated)
             {
                 return L("LOCGT_RangeNotMeasured", "Range not measured yet.");
             }
 
+            if (!confidence.IsReady)
+            {
+                return string.Format(L("LOCGT_RangeCollectingFormat", "Collecting range data: {0}% ({1}/72 directions)"),
+                    confidence.ProgressPercent,
+                    tracker.ExploredSectors);
+            }
+
             return string.Format(L("LOCGT_RangeQualityFormat", "Outer range quality: {0}%"), GetRangeQualityPercent(tracker));
+        }
+
+        private static DiagnosticConfidence GetRangeConfidence(StickDiagnosticsTracker tracker)
+        {
+            return DiagnosticConfidenceEvaluator.ForStickRange(tracker.SampleCount, tracker.ExploredSectors);
+        }
+
+        private string GetConfidenceLabel(DiagnosticConfidence confidence)
+        {
+            if (confidence.Stage == DiagnosticStage.NotEvaluated)
+            {
+                return L("LOCGT_ConfidenceNotEvaluated", "Confidence: not evaluated");
+            }
+
+            if (confidence.Stage == DiagnosticStage.Collecting)
+            {
+                return string.Format(L("LOCGT_ConfidenceCollectingFormat", "Confidence: collecting ({0}%)"), confidence.ProgressPercent);
+            }
+
+            var level = confidence.Level == DiagnosticConfidenceLevel.High
+                ? L("LOCGT_ConfidenceHigh", "high")
+                : confidence.Level == DiagnosticConfidenceLevel.Medium
+                    ? L("LOCGT_ConfidenceMedium", "medium")
+                    : L("LOCGT_ConfidenceLow", "low");
+            return string.Format(L("LOCGT_ConfidenceReadyFormat", "Confidence: {0} ({1} samples)"), level, confidence.SampleCount);
         }
 
         private static int GetRangeQualityPercent(StickDiagnosticsTracker tracker)
@@ -3500,12 +3583,17 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("RightRangeQualityLabel");
             OnPropertyChanged("LeftRangeQualityPercent");
             OnPropertyChanged("RightRangeQualityPercent");
+            OnPropertyChanged("LeftRangeDisplayProgress");
+            OnPropertyChanged("RightRangeDisplayProgress");
+            OnPropertyChanged("LeftRangeConfidenceLabel");
+            OnPropertyChanged("RightRangeConfidenceLabel");
             OnPropertyChanged("LatencyStatusLabel");
             OnPropertyChanged("StartLatencyButtonLabel");
             OnPropertyChanged("LatencyResultLabel");
             OnPropertyChanged("LatencyStatsLabel");
             OnPropertyChanged("PollingLatencyAverageLabel");
             OnPropertyChanged("InputEventLatencyAverageLabel");
+            OnPropertyChanged("LatencyConfidenceLabel");
             OnPropertyChanged("PollingRateCurrentLabel");
             OnPropertyChanged("PollingRateAverageValueLabel");
             OnPropertyChanged("PollingRateMaxValueLabel");
@@ -3545,6 +3633,9 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("CoveredLeftStickRange");
             OnPropertyChanged("CoveredRightStickRange");
             OnPropertyChanged("HealthScore");
+            OnPropertyChanged("HealthScoreDisplayLabel");
+            OnPropertyChanged("HealthDisplayProgress");
+            OnPropertyChanged("HealthConfidenceLabel");
             OnPropertyChanged("HealthLabel");
             OnPropertyChanged("HealthSummaryLabel");
             OnPropertyChanged("HealthDriftFactorLabel");
@@ -3558,6 +3649,7 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("DeviceCapabilitiesLabel");
             OnPropertyChanged("DeviceApiLabel");
             OnPropertyChanged("DeviceRumbleCapabilityLabel");
+            OnPropertyChanged("CompatibilityReportStatusLabel");
             OnPropertyChanged("ExtraButtonDetailLabel");
             OnPropertyChanged("BackendLabel");
             OnPropertyChanged("MappingStatusLabel");
@@ -3600,6 +3692,7 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("IsGenericLayout");
             openGuidedTestCommand.RaiseCanExecuteChanged();
             startGuidedTestCommand.RaiseCanExecuteChanged();
+            exportCompatibilityReportCommand.RaiseCanExecuteChanged();
         }
 
         public void Dispose()

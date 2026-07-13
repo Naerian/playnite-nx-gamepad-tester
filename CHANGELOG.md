@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.0
+
+- Added readiness and confidence indicators for health, stick-range, and latency diagnostics.
+- Improved stable-rest drift tracking so normal stick movement, triggers, standard buttons, and extra buttons do not contaminate health results.
+- Added an exportable SDL compatibility report with runtime, GUID, mapping, capability, normalized-state, and confidence details.
+- Added automated regression coverage with a simulated controller provider, controller identification checks, visual-scheme validation, localization parity, and report privacy checks.
+- Fixed Xbox wireless controller identification precedence and made the Desktop sidebar icon inherit the active Playnite theme color.
+- Documented the stable release and new diagnostic behavior in the README and bilingual Wiki.
+
 ## 0.3.5
 
 - Moved the repository root to the plugin project folder.

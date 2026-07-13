@@ -238,4 +238,17 @@
     <sys:String x:Key="LOCGT_VisualSchemeSwitchPro">Switch Pro</sys:String>
     <sys:String x:Key="LOCGT_FullscreenNavigationHint">LB/RB 섹션 D 패드 이동 A 선택 뒤로+A 대기 시간 B 닫기</sys:String>
     <sys:String x:Key="LOCGT_ExportCancelled">내보내기가 취소되었습니다.</sys:String>
+    <sys:String x:Key="LOCGT_CollectingData">데이터 수집 중</sys:String>
+    <sys:String x:Key="LOCGT_HealthCollectingFormat">안정적인 정지 샘플을 수집하는 동안 두 스틱을 놓아 주세요 ({0}%).</sys:String>
+    <sys:String x:Key="LOCGT_RangeCollectingFormat">가동 범위 데이터 수집 중: {0}% ({1}/72 방향)</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceNotEvaluated">신뢰도: 평가되지 않음</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceCollectingFormat">신뢰도: 수집 중 ({0}%)</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceHigh">높음</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceMedium">보통</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceLow">낮음</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceReadyFormat">신뢰도: {0} ({1}개 샘플)</sys:String>
+    <sys:String x:Key="LOCGT_ExportCompatibilityReport">호환성 보고서 내보내기</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReportReady">기술 장치 보고서를 내보낼 준비가 되었습니다.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReportExportedFormat">호환성 보고서를 {0}(으)로 내보냈습니다</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReportFailedFormat">호환성 보고서를 내보내지 못했습니다: {0}</sys:String>
 </ResourceDictionary>

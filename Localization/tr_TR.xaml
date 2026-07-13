@@ -238,4 +238,17 @@
     <sys:String x:Key="LOCGT_VisualSchemeSwitchPro">Switch Pro</sys:String>
     <sys:String x:Key="LOCGT_FullscreenNavigationHint">LB/RB bölümleri D-pad hareket A'yı seçin Geri+A gecikme B'yi kapatın</sys:String>
     <sys:String x:Key="LOCGT_ExportCancelled">Dışa aktarma iptal edildi.</sys:String>
+    <sys:String x:Key="LOCGT_CollectingData">Veriler toplanıyor</sys:String>
+    <sys:String x:Key="LOCGT_HealthCollectingFormat">Kararlı dinlenme örnekleri toplanırken iki çubuğu da bırakın ({0}%).</sys:String>
+    <sys:String x:Key="LOCGT_RangeCollectingFormat">Hareket aralığı verileri toplanıyor: {0}% ({1}/72 yön)</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceNotEvaluated">Güven: değerlendirilmedi</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceCollectingFormat">Güven: veri toplanıyor ({0}%)</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceHigh">yüksek</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceMedium">orta</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceLow">düşük</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceReadyFormat">Güven: {0} ({1} örnek)</sys:String>
+    <sys:String x:Key="LOCGT_ExportCompatibilityReport">Uyumluluk raporunu dışa aktar</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReportReady">Teknik cihaz raporu dışa aktarılmaya hazır.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReportExportedFormat">Uyumluluk raporu şuraya aktarıldı: {0}</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReportFailedFormat">Uyumluluk raporu dışa aktarılamadı: {0}</sys:String>
 </ResourceDictionary>

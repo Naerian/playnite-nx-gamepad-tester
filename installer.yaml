@@ -1,5 +1,15 @@
 AddonId: GamepadTester_518dc982-32b5-4493-b32d-1f71de2fe4ad
 Packages:
+  - Version: 1.0.0
+    RequiredApiVersion: 6.16.0
+    ReleaseDate: 2026-07-14
+    PackageUrl: https://github.com/Naerian/playnite-nx-gamepad-tester/releases/download/v1.0.0/GamepadTester-1.0.0.pext
+    Changelog:
+      - Added diagnostic readiness and confidence for controller health, stick range, and latency measurements.
+      - Improved resting-drift detection so normal stick movement and button activity do not contaminate health results.
+      - Added an exportable SDL compatibility report with device mapping and capability details.
+      - Added automated coverage for controller identification, diagnostics, visual schemes, reports, and localization resources.
+      - Improved theme-aware Desktop presentation and kept Fullscreen integration blocks available for theme developers.
   - Version: 0.3.5
     RequiredApiVersion: 6.16.0
     ReleaseDate: 2026-07-10

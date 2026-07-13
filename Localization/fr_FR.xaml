@@ -238,4 +238,17 @@
     <sys:String x:Key="LOCGT_VisualSchemeSwitchPro">Switch Pro</sys:String>
     <sys:String x:Key="LOCGT_FullscreenNavigationHint">Sections LB/RB Déplacer le D-pad A sélectionner Retour+A latence B fermer</sys:String>
     <sys:String x:Key="LOCGT_ExportCancelled">Exportation annulée.</sys:String>
+    <sys:String x:Key="LOCGT_CollectingData">Collecte des donnees</sys:String>
+    <sys:String x:Key="LOCGT_HealthCollectingFormat">Relachez les deux sticks pendant la collecte de mesures stables au repos ({0}%).</sys:String>
+    <sys:String x:Key="LOCGT_RangeCollectingFormat">Collecte des donnees de course : {0}% ({1}/72 directions)</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceNotEvaluated">Confiance : non evaluee</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceCollectingFormat">Confiance : collecte en cours ({0}%)</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceHigh">elevee</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceMedium">moyenne</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceLow">faible</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceReadyFormat">Confiance : {0} ({1} mesures)</sys:String>
+    <sys:String x:Key="LOCGT_ExportCompatibilityReport">Exporter le rapport de compatibilite</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReportReady">Le rapport technique du peripherique est pret a etre exporte.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReportExportedFormat">Rapport de compatibilite exporte vers {0}</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReportFailedFormat">Impossible d'exporter le rapport de compatibilite : {0}</sys:String>
 </ResourceDictionary>

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace GamepadTester.Services
 {
@@ -13,6 +14,13 @@ namespace GamepadTester.Services
         private readonly object syncRoot = new object();
         private IntPtr controller;
         private int? selectedInstanceId;
+        private bool technicalDetailsInitialized;
+        private string cachedSdlVersion = "Unknown";
+        private string cachedSdlGuid = "Unavailable";
+        private string cachedSdlMapping = "Unavailable";
+        private int cachedAxisCount;
+        private int cachedButtonCount;
+        private int cachedHatCount;
 
         public SdlGamepadProvider()
         {
@@ -47,10 +55,10 @@ namespace GamepadTester.Services
                 ushort productId;
                 GetDeviceIds(out vendorId, out productId);
 
-                var layout = DetectLayout(name, vendorId, productId);
-                var eightBitDoModel = DetectEightBitDoModel(name, vendorId, productId);
+                var layout = ControllerIdentificationService.DetectLayout(name, vendorId, productId);
+                var eightBitDoModel = ControllerIdentificationService.DetectEightBitDoModel(name, vendorId, productId);
 
-                return new GamepadState
+                var state = new GamepadState
                 {
                     IsConnected = true,
                     ControllerName = name,
@@ -91,6 +99,8 @@ namespace GamepadTester.Services
                     },
                     ExtraButtons = ReadExtraButtons()
                 };
+                PopulateTechnicalDetails(state);
+                return state;
             }
         }
 
@@ -119,8 +129,8 @@ namespace GamepadTester.Services
                         Name = name,
                         VendorId = vendorId,
                         ProductId = productId,
-                        Layout = DetectLayout(name, vendorId, productId),
-                        EightBitDoModel = DetectEightBitDoModel(name, vendorId, productId)
+                        Layout = ControllerIdentificationService.DetectLayout(name, vendorId, productId),
+                        EightBitDoModel = ControllerIdentificationService.DetectEightBitDoModel(name, vendorId, productId)
                     });
                 }
 
@@ -287,6 +297,62 @@ namespace GamepadTester.Services
             productId = Sdl2Native.SDL_JoystickGetProduct(joystick);
         }
 
+        private void PopulateTechnicalDetails(GamepadState state)
+        {
+            if (!technicalDetailsInitialized)
+            {
+                try
+                {
+                    SdlVersion version;
+                    Sdl2Native.SDL_GetVersion(out version);
+                    cachedSdlVersion = string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Patch);
+
+                    var joystick = Sdl2Native.SDL_GameControllerGetJoystick(controller);
+                    if (joystick != IntPtr.Zero)
+                    {
+                        cachedAxisCount = Math.Max(0, Sdl2Native.SDL_JoystickNumAxes(joystick));
+                        cachedButtonCount = Math.Max(0, Sdl2Native.SDL_JoystickNumButtons(joystick));
+                        cachedHatCount = Math.Max(0, Sdl2Native.SDL_JoystickNumHats(joystick));
+                        var guidText = new StringBuilder(64);
+                        Sdl2Native.SDL_JoystickGetGUIDString(Sdl2Native.SDL_JoystickGetGUID(joystick), guidText, guidText.Capacity);
+                        cachedSdlGuid = guidText.Length == 0 ? "Unavailable" : guidText.ToString();
+                    }
+
+                    var mappingPointer = Sdl2Native.SDL_GameControllerMapping(controller);
+                    if (mappingPointer != IntPtr.Zero)
+                    {
+                        try
+                        {
+                            cachedSdlMapping = Marshal.PtrToStringAnsi(mappingPointer) ?? "Unavailable";
+                        }
+                        finally
+                        {
+                            Sdl2Native.SDL_free(mappingPointer);
+                        }
+                    }
+                }
+                catch (EntryPointNotFoundException)
+                {
+                    cachedSdlVersion = "SDL2 (technical detail API unavailable)";
+                }
+                catch (Exception)
+                {
+                    // Technical metadata is best-effort and must never stop controller input.
+                }
+                finally
+                {
+                    technicalDetailsInitialized = true;
+                }
+            }
+
+            state.SdlVersion = cachedSdlVersion;
+            state.SdlGuid = cachedSdlGuid;
+            state.SdlMapping = cachedSdlMapping;
+            state.AxisCount = cachedAxisCount;
+            state.ButtonCount = cachedButtonCount;
+            state.HatCount = cachedHatCount;
+        }
+
         private static float NormalizeAxis(short value)
         {
             var normalized = value < 0 ? value / 32768f : value / 32767f;
@@ -313,71 +379,6 @@ namespace GamepadTester.Services
             return value;
         }
 
-        private static GamepadLayout DetectLayout(string controllerName, ushort vendorId, ushort productId)
-        {
-            var name = (controllerName ?? string.Empty).ToLowerInvariant();
-
-            // 8BitDo's USB vendor ID is 0x2DC8. Some models in XInput mode still present an Xbox-like name.
-            if (vendorId == 0x2DC8 || name.Contains("8bitdo"))
-            {
-                return GamepadLayout.EightBitDo;
-            }
-
-            if ((vendorId == 0x057E && productId == 0x2009) || name.Contains("switch pro") || name.Contains("nintendo switch pro"))
-            {
-                return GamepadLayout.SwitchPro;
-            }
-
-            if (name.Contains("dualshock") || name.Contains("dualsense") || name.Contains("playstation") || name.Contains("wireless controller"))
-            {
-                return GamepadLayout.PlayStation;
-            }
-
-            if (name.Contains("xbox") || name.Contains("xinput"))
-            {
-                return GamepadLayout.Xbox;
-            }
-
-            return GamepadLayout.Generic;
-        }
-
-        private static EightBitDoModel DetectEightBitDoModel(string controllerName, ushort vendorId, ushort productId)
-        {
-            var name = (controllerName ?? string.Empty).ToLowerInvariant();
-
-            if (vendorId != 0x2DC8 && !name.Contains("8bitdo"))
-            {
-                return EightBitDoModel.Unknown;
-            }
-
-            if (productId == 0x3019 || name.Contains("8bitdo 64"))
-            {
-                return EightBitDoModel.Controller64;
-            }
-
-            if (name.Contains("pro 2") || name.Contains("pro2"))
-            {
-                return EightBitDoModel.Pro2;
-            }
-
-            if (productId == 0x6009 || name.Contains("pro 3") || name.Contains("pro3"))
-            {
-                return EightBitDoModel.Pro3;
-            }
-
-            if (productId == 0x301B || productId == 0x301C || productId == 0x301D || name.Contains("ultimate 2c"))
-            {
-                return EightBitDoModel.Ultimate2CWireless;
-            }
-
-            if (productId == 0x310B || productId == 0x6012 || productId == 0x3011 || productId == 0x3012 || productId == 0x3013 || name.Contains("ultimate 2") || name.Contains("ultimate"))
-            {
-                return EightBitDoModel.Ultimate2Wireless;
-            }
-
-            return EightBitDoModel.Unknown;
-        }
-
         private void CloseController()
         {
             if (controller != IntPtr.Zero)
@@ -385,6 +386,14 @@ namespace GamepadTester.Services
                 Sdl2Native.SDL_GameControllerClose(controller);
                 controller = IntPtr.Zero;
             }
+
+            technicalDetailsInitialized = false;
+            cachedSdlVersion = "Unknown";
+            cachedSdlGuid = "Unavailable";
+            cachedSdlMapping = "Unavailable";
+            cachedAxisCount = 0;
+            cachedButtonCount = 0;
+            cachedHatCount = 0;
         }
 
         public void Dispose()

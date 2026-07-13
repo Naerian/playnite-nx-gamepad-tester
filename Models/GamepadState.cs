@@ -10,6 +10,12 @@ namespace GamepadTester.Models
         public ushort ProductId { get; set; }
         public GamepadLayout Layout { get; set; }
         public EightBitDoModel EightBitDoModel { get; set; }
+        public string SdlVersion { get; set; }
+        public string SdlGuid { get; set; }
+        public string SdlMapping { get; set; }
+        public int AxisCount { get; set; }
+        public int ButtonCount { get; set; }
+        public int HatCount { get; set; }
         public StickState LeftStick { get; set; }
         public StickState RightStick { get; set; }
         public float LeftTrigger { get; set; }
@@ -20,6 +26,9 @@ namespace GamepadTester.Models
         public GamepadState()
         {
             ControllerName = "No controller detected";
+            SdlVersion = "Unknown";
+            SdlGuid = "Unavailable";
+            SdlMapping = "Unavailable";
             Layout = GamepadLayout.Unknown;
             LeftStick = new StickState();
             RightStick = new StickState();

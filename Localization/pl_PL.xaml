@@ -238,4 +238,17 @@
     <sys:String x:Key="LOCGT_VisualSchemeSwitchPro">Switch Pro</sys:String>
     <sys:String x:Key="LOCGT_FullscreenNavigationHint">Sekcje LB/RB Ruch za pomocą pada kierunkowego A wybierz Wstecz+A opóźnienie B zamknij</sys:String>
     <sys:String x:Key="LOCGT_ExportCancelled">Eksport anulowany.</sys:String>
+    <sys:String x:Key="LOCGT_CollectingData">Zbieranie danych</sys:String>
+    <sys:String x:Key="LOCGT_HealthCollectingFormat">Zwolnij oba drążki podczas zbierania stabilnych próbek spoczynkowych ({0}%).</sys:String>
+    <sys:String x:Key="LOCGT_RangeCollectingFormat">Zbieranie danych zakresu: {0}% ({1}/72 kierunków)</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceNotEvaluated">Wiarygodność: nie oceniono</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceCollectingFormat">Wiarygodność: zbieranie danych ({0}%)</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceHigh">wysoka</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceMedium">średnia</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceLow">niska</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceReadyFormat">Wiarygodność: {0} ({1} próbek)</sys:String>
+    <sys:String x:Key="LOCGT_ExportCompatibilityReport">Eksportuj raport zgodności</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReportReady">Raport techniczny urządzenia jest gotowy do eksportu.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReportExportedFormat">Raport zgodności wyeksportowano do {0}</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReportFailedFormat">Nie można wyeksportować raportu zgodności: {0}</sys:String>
 </ResourceDictionary>

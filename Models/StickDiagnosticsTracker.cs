@@ -14,12 +14,14 @@ namespace GamepadTester.Models
         private const double InnerRingRadius = 116d;
         private const double OuterRingRadius = 128d;
         private readonly double[] bucketMaxima;
+        private readonly bool[] exploredBuckets;
         private double magnitudeSum;
         private bool hasSamples;
 
         public StickDiagnosticsTracker()
         {
             bucketMaxima = new double[BucketCount];
+            exploredBuckets = new bool[BucketCount];
             PathPoints = new PointCollection();
             PathGeometry = Geometry.Empty;
             CoverageGeometry = Geometry.Empty;
@@ -30,6 +32,7 @@ namespace GamepadTester.Models
         public Geometry CoverageGeometry { get; private set; }
         public int CoveragePercent { get; private set; }
         public int CoveredSectors { get; private set; }
+        public int ExploredSectors { get; private set; }
         public double MaxMagnitude { get; private set; }
         public double AverageMagnitude { get; private set; }
         public int SampleCount { get; private set; }
@@ -54,11 +57,13 @@ namespace GamepadTester.Models
         public void Reset()
         {
             Array.Clear(bucketMaxima, 0, bucketMaxima.Length);
+            Array.Clear(exploredBuckets, 0, exploredBuckets.Length);
             PathPoints = new PointCollection();
             PathGeometry = Geometry.Empty;
             CoverageGeometry = Geometry.Empty;
             CoveragePercent = 0;
             CoveredSectors = 0;
+            ExploredSectors = 0;
             MaxMagnitude = 0d;
             AverageMagnitude = 0d;
             SampleCount = 0;
@@ -143,6 +148,12 @@ namespace GamepadTester.Models
             }
 
             var bucket = Math.Min(BucketCount - 1, (int)Math.Floor(angle / (Math.PI * 2d) * BucketCount));
+            if (magnitude >= 0.25d && !exploredBuckets[bucket])
+            {
+                exploredBuckets[bucket] = true;
+                ExploredSectors++;
+            }
+
             if (magnitude > bucketMaxima[bucket])
             {
                 bucketMaxima[bucket] = magnitude;

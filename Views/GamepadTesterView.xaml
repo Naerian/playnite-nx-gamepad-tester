@@ -385,15 +385,18 @@
                                                     <ColumnDefinition Width="Auto" />
                                                     <ColumnDefinition Width="*" />
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Text="{Binding HealthScore, StringFormat={}{0}%}" FontSize="36" FontWeight="SemiBold" />
+                                                <TextBlock Text="{Binding HealthScoreDisplayLabel}" FontSize="36" FontWeight="SemiBold" />
                                                 <StackPanel Grid.Column="1" Margin="16,6,0,0">
-                                                    <ProgressBar Minimum="0" Maximum="100" Value="{Binding HealthScore, Mode=OneWay}" Height="12" />
+                                                    <ProgressBar Minimum="0" Maximum="100" Value="{Binding HealthDisplayProgress, Mode=OneWay}" Height="12" />
                                                     <TextBlock Text="{Binding HealthLabel}" Margin="0,8,0,0" FontWeight="SemiBold" />
                                                 </StackPanel>
                                             </Grid>
                                             <TextBlock Text="{Binding HealthSummaryLabel}"
                                                        TextWrapping="Wrap"
                                                        Margin="0,12,0,0"
+                                                       Foreground="{StaticResource TextMutedBrush}" />
+                                            <TextBlock Text="{Binding HealthConfidenceLabel}"
+                                                       Margin="0,6,0,0"
                                                        Foreground="{StaticResource TextMutedBrush}" />
                                         </StackPanel>
                                     </Border>
@@ -868,13 +871,15 @@
                                             <StackPanel Margin="0,0,12,0">
                                                 <TextBlock Text="{DynamicResource LOCGT_LeftStick}" FontWeight="SemiBold" />
                                                 <TextBlock Text="{Binding LeftRangeQualityLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,6,0,0" />
-                                                <ProgressBar Minimum="0" Maximum="100" Value="{Binding LeftRangeQualityPercent, Mode=OneWay}" Height="10" Margin="0,6,0,10" />
+                                                <ProgressBar Minimum="0" Maximum="100" Value="{Binding LeftRangeDisplayProgress, Mode=OneWay}" Height="10" Margin="0,6,0,8" />
+                                                <TextBlock Text="{Binding LeftRangeConfidenceLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,8" />
                                                 <TextBlock Text="{Binding LeftStickAxisRangeLabel}" Foreground="{StaticResource TextMutedBrush}" TextWrapping="Wrap" />
                                             </StackPanel>
                                             <StackPanel Grid.Column="1">
                                                 <TextBlock Text="{DynamicResource LOCGT_RightStick}" FontWeight="SemiBold" />
                                                 <TextBlock Text="{Binding RightRangeQualityLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,6,0,0" />
-                                                <ProgressBar Minimum="0" Maximum="100" Value="{Binding RightRangeQualityPercent, Mode=OneWay}" Height="10" Margin="0,6,0,10" />
+                                                <ProgressBar Minimum="0" Maximum="100" Value="{Binding RightRangeDisplayProgress, Mode=OneWay}" Height="10" Margin="0,6,0,8" />
+                                                <TextBlock Text="{Binding RightRangeConfidenceLabel}" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,8" />
                                                 <TextBlock Text="{Binding RightStickAxisRangeLabel}" Foreground="{StaticResource TextMutedBrush}" TextWrapping="Wrap" />
                                             </StackPanel>
                                         </Grid>
@@ -1119,6 +1124,10 @@
                                                        TextWrapping="Wrap"
                                                        Foreground="{StaticResource TextMutedBrush}"
                                                        Margin="0,8,0,0" />
+                                            <TextBlock Text="{Binding LatencyConfidenceLabel}"
+                                                       TextWrapping="Wrap"
+                                                       Foreground="{StaticResource TextMutedBrush}"
+                                                       Margin="0,6,0,0" />
                                             <TextBlock Text="{Binding InputEventLatencyAverageLabel}"
                                                        TextWrapping="Wrap"
                                                        Foreground="{StaticResource TextMutedBrush}"
@@ -1332,6 +1341,7 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
 
                                 <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,14">
@@ -1360,6 +1370,22 @@
                                 <TextBlock Grid.Row="10" Grid.Column="1" Text="{Binding DeviceRumbleCapabilityLabel}" Margin="0,0,0,10" TextWrapping="Wrap" />
                                 <TextBlock Grid.Row="11" Text="{DynamicResource LOCGT_Notes}" Foreground="{StaticResource TextMutedBrush}" />
                                 <TextBlock Grid.Row="11" Grid.Column="1" Text="{DynamicResource LOCGT_DeviceNotes}" TextWrapping="Wrap" />
+                                <Grid Grid.Row="12" Grid.ColumnSpan="2" Margin="0,18,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Button Content="{DynamicResource LOCGT_ExportCompatibilityReport}"
+                                            Command="{Binding ExportCompatibilityReportCommand}"
+                                            Height="36"
+                                            MinWidth="210" />
+                                    <TextBlock Grid.Column="1"
+                                               Text="{Binding CompatibilityReportStatusLabel}"
+                                               Margin="14,0,0,0"
+                                               VerticalAlignment="Center"
+                                               Foreground="{StaticResource TextMutedBrush}"
+                                               TextWrapping="Wrap" />
+                                </Grid>
                             </Grid>
                         </Border>
                     </Grid>

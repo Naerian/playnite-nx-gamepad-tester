@@ -238,4 +238,17 @@
     <sys:String x:Key="LOCGT_VisualSchemeSwitchPro">Switch Pro</sys:String>
     <sys:String x:Key="LOCGT_FullscreenNavigationHint">LB/RB 部分 方向键移动 A 选择后退+A 延迟 B 关闭</sys:String>
     <sys:String x:Key="LOCGT_ExportCancelled">导出已取消。</sys:String>
+    <sys:String x:Key="LOCGT_CollectingData">正在收集数据</sys:String>
+    <sys:String x:Key="LOCGT_HealthCollectingFormat">收集稳定的静止样本时，请松开两个摇杆 ({0}%)。</sys:String>
+    <sys:String x:Key="LOCGT_RangeCollectingFormat">正在收集范围数据: {0}% ({1}/72 个方向)</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceNotEvaluated">置信度: 未评估</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceCollectingFormat">置信度: 收集中 ({0}%)</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceHigh">高</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceMedium">中</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceLow">低</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceReadyFormat">置信度: {0} ({1} 个样本)</sys:String>
+    <sys:String x:Key="LOCGT_ExportCompatibilityReport">导出兼容性报告</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReportReady">设备技术报告已准备好导出。</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReportExportedFormat">兼容性报告已导出到 {0}</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReportFailedFormat">无法导出兼容性报告: {0}</sys:String>
 </ResourceDictionary>

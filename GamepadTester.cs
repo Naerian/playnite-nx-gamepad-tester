@@ -594,42 +594,64 @@ namespace GamepadTester
 
         private static FrameworkElement CreateSidebarIcon()
         {
-            var icon = new Viewbox
+            var bodyPath = new System.Windows.Shapes.Path
+            {
+                Data = Geometry.Parse("M17.32 5H6.68A4 4 0 0 0 2.702 8.59C2.696 8.642 2.692 8.691 2.685 8.742C2.604 9.416 2 14.456 2 16A3 3 0 0 0 5 19C6 19 6.5 18.5 7 18L8.414 16.586A2 2 0 0 1 9.828 16H14.172A2 2 0 0 1 15.586 16.586L17 18C17.5 18.5 18 19 19 19A3 3 0 0 0 22 16C22 14.455 21.396 9.416 21.315 8.742C21.308 8.692 21.304 8.642 21.298 8.591A4 4 0 0 0 17.32 5Z"),
+                Fill = Brushes.Transparent,
+                Stroke = Brushes.White,
+                StrokeThickness = 2,
+                StrokeStartLineCap = PenLineCap.Round,
+                StrokeEndLineCap = PenLineCap.Round,
+                StrokeLineJoin = PenLineJoin.Round
+            };
+
+            var controlsPath = new System.Windows.Shapes.Path
+            {
+                Data = Geometry.Parse("M6 11H10M8 9V13M15 12H15.01M18 10H18.01"),
+                Fill = Brushes.Transparent,
+                Stroke = Brushes.White,
+                StrokeThickness = 2,
+                StrokeStartLineCap = PenLineCap.Round,
+                StrokeEndLineCap = PenLineCap.Round,
+                StrokeLineJoin = PenLineJoin.Round
+            };
+
+            var themeForegroundBinding = new System.Windows.Data.Binding("Foreground")
+            {
+                RelativeSource = new System.Windows.Data.RelativeSource(
+                    System.Windows.Data.RelativeSourceMode.FindAncestor,
+                    typeof(Control),
+                    1),
+                FallbackValue = Brushes.White
+            };
+
+            bodyPath.SetBinding(System.Windows.Shapes.Shape.StrokeProperty, themeForegroundBinding);
+            controlsPath.SetBinding(
+                System.Windows.Shapes.Shape.StrokeProperty,
+                new System.Windows.Data.Binding("Foreground")
+                {
+                    RelativeSource = new System.Windows.Data.RelativeSource(
+                        System.Windows.Data.RelativeSourceMode.FindAncestor,
+                        typeof(Control),
+                        1),
+                    FallbackValue = Brushes.White
+                });
+
+            var canvas = new Canvas
+            {
+                Width = 24,
+                Height = 24
+            };
+            canvas.Children.Add(bodyPath);
+            canvas.Children.Add(controlsPath);
+
+            return new Viewbox
             {
                 Width = 22,
                 Height = 22,
                 Stretch = Stretch.Uniform,
-                Child = new Canvas
-                {
-                    Width = 24,
-                    Height = 24,
-                    Children =
-                    {
-                        new System.Windows.Shapes.Path
-                        {
-                            Data = Geometry.Parse("M17.32 5H6.68A4 4 0 0 0 2.702 8.59C2.696 8.642 2.692 8.691 2.685 8.742C2.604 9.416 2 14.456 2 16A3 3 0 0 0 5 19C6 19 6.5 18.5 7 18L8.414 16.586A2 2 0 0 1 9.828 16H14.172A2 2 0 0 1 15.586 16.586L17 18C17.5 18.5 18 19 19 19A3 3 0 0 0 22 16C22 14.455 21.396 9.416 21.315 8.742C21.308 8.692 21.304 8.642 21.298 8.591A4 4 0 0 0 17.32 5Z"),
-                            Fill = Brushes.Transparent,
-                            Stroke = Brushes.White,
-                            StrokeThickness = 2,
-                            StrokeStartLineCap = PenLineCap.Round,
-                            StrokeEndLineCap = PenLineCap.Round,
-                            StrokeLineJoin = PenLineJoin.Round
-                        },
-                        new System.Windows.Shapes.Path
-                        {
-                            Data = Geometry.Parse("M6 11H10M8 9V13M15 12H15.01M18 10H18.01"),
-                            Fill = Brushes.Transparent,
-                            Stroke = Brushes.White,
-                            StrokeThickness = 2,
-                            StrokeStartLineCap = PenLineCap.Round,
-                            StrokeEndLineCap = PenLineCap.Round,
-                            StrokeLineJoin = PenLineJoin.Round
-                        }
-                    }
-                }
+                Child = canvas
             };
-
-            return icon;
         }
 
         public string Loc(string key)

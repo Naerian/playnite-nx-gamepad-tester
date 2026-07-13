@@ -238,4 +238,17 @@
     <sys:String x:Key="LOCGT_VisualSchemeSwitchPro">Switch Pro</sys:String>
     <sys:String x:Key="LOCGT_FullscreenNavigationHint">LB/RB セクション 十字キー移動 A 選択 戻る+A レイテンシー B 閉じる</sys:String>
     <sys:String x:Key="LOCGT_ExportCancelled">エクスポートがキャンセルされました。</sys:String>
+    <sys:String x:Key="LOCGT_CollectingData">データを収集中</sys:String>
+    <sys:String x:Key="LOCGT_HealthCollectingFormat">安定した静止サンプルを収集している間、両方のスティックを離してください ({0}%)。</sys:String>
+    <sys:String x:Key="LOCGT_RangeCollectingFormat">可動範囲データを収集中: {0}% ({1}/72 方向)</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceNotEvaluated">信頼度: 未評価</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceCollectingFormat">信頼度: 収集中 ({0}%)</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceHigh">高</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceMedium">中</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceLow">低</sys:String>
+    <sys:String x:Key="LOCGT_ConfidenceReadyFormat">信頼度: {0} ({1} サンプル)</sys:String>
+    <sys:String x:Key="LOCGT_ExportCompatibilityReport">互換性レポートをエクスポート</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReportReady">デバイス技術レポートをエクスポートできます。</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReportExportedFormat">互換性レポートを {0} にエクスポートしました</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReportFailedFormat">互換性レポートをエクスポートできませんでした: {0}</sys:String>
 </ResourceDictionary>
