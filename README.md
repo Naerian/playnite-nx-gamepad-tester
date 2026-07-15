@@ -4,9 +4,9 @@ Playnite NX Gamepad Tester is a Playnite extension for testing controllers in De
 
 It is designed for couch, TV, handheld-PC, and console-like setups where users want to verify gamepad buttons, sticks, triggers, rumble, drift, latency, and device metadata without leaving Playnite.
 
-## Version 1.0.1
+## Version 1.0.2
 
-Version `1.0.1` refines controller-first Fullscreen integration. Embedded tests now expose explicit capture modes, dynamic theme windows initialize reliably, Back navigation is protected during capture and restored afterwards, latency results freeze when stopped, and themes can embed a compact live trigger block.
+Version `1.0.2` adds dedicated dynamic brushes for embedded Fullscreen controls. Theme authors can now customize Gamepad Tester backgrounds, buttons, borders, and text locally without changing Playnite's generic resources; standard Playnite brushes remain the automatic fallback.
 
 ## Documentation
 
@@ -55,6 +55,8 @@ After installation, open **Extensions > Gamepad Tester**.
 Desktop mode provides the complete tester: controller selection, visual scheme override, guided checks, stick diagnostics, health, latency, input logs, vibration, device information, and exportable reports.
 
 Fullscreen themes can open focused tester views or embed independent `StatusBadge`, `ButtonMap`, `StickCheck`, `TriggerCheck`, `RumblePad`, and `LatencyMini` blocks. The theme remains responsible for focus, controller navigation, layout, animation, and modal behavior. See the [Fullscreen integration guide](https://github.com/Naerian/playnite-nx-gamepad-tester/wiki/EN-Fullscreen-Theme-Integration) for commands and XAML examples.
+
+Embedded controls expose dedicated `GamepadTesterControlBackgroundBrush`, `GamepadTesterButtonBackgroundBrush`, `GamepadTesterControlBorderBrush`, and `GamepadTesterTextBrush` resources. Themes can override them locally without changing Playnite's generic brushes.
 
 ## Compatibility note
 

@@ -61,12 +61,12 @@ namespace GamepadTester.Views.ThemeIntegration
                 MinWidth = 210,
                 MinHeight = 48,
                 Padding = new Thickness(18, 8, 18, 8),
-                Foreground = DynamicBrush("TextBrush", Brushes.White),
-                Background = DynamicBrush("ButtonBackgroundBrush", new SolidColorBrush(Color.FromRgb(31, 36, 47))),
-                BorderBrush = DynamicBrush("ControlBorderBrush", new SolidColorBrush(Color.FromRgb(68, 77, 92))),
                 BorderThickness = new Thickness(1),
                 HorizontalAlignment = HorizontalAlignment.Center
             };
+            SetThemeResource(actionButton, Control.ForegroundProperty, TextBrushKey);
+            SetThemeResource(actionButton, Control.BackgroundProperty, ButtonBackgroundBrushKey);
+            SetThemeResource(actionButton, Control.BorderBrushProperty, ControlBorderBrushKey);
             actionButton.SetBinding(Button.CommandProperty, new Binding("StartButtonCaptureCommand"));
             actionButton.SetBinding(ContentControl.ContentProperty, new Binding("ButtonCaptureButtonLabel"));
             actionButton.SetBinding(VisibilityProperty, Bind("IsButtonCaptureRunning", InverseBoolToVisibility()));
@@ -78,11 +78,11 @@ namespace GamepadTester.Views.ThemeIntegration
                 MinHeight = 48,
                 Padding = new Thickness(18, 8, 18, 8),
                 CornerRadius = new CornerRadius(6),
-                Background = DynamicBrush("ButtonBackgroundBrush", new SolidColorBrush(Color.FromRgb(31, 36, 47))),
-                BorderBrush = DynamicBrush("ControlBorderBrush", new SolidColorBrush(Color.FromRgb(68, 77, 92))),
                 BorderThickness = new Thickness(1),
                 HorizontalAlignment = HorizontalAlignment.Center
             };
+            SetThemeResource(exitHint, Border.BackgroundProperty, ButtonBackgroundBrushKey);
+            SetThemeResource(exitHint, Border.BorderBrushProperty, ControlBorderBrushKey);
             exitHint.SetBinding(VisibilityProperty, Bind("IsButtonCaptureRunning", BoolToVisibility()));
             var exitHintText = Text(string.Empty, 13, FontWeights.SemiBold);
             exitHintText.HorizontalAlignment = HorizontalAlignment.Center;
@@ -163,21 +163,17 @@ namespace GamepadTester.Views.ThemeIntegration
         {
             var border = new Border
             {
-                Background = new SolidColorBrush(Color.FromArgb(230, 14, 17, 22)),
                 CornerRadius = new CornerRadius(8),
+                Opacity = 0.96,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch
             };
+            SetThemeResource(border, Border.BackgroundProperty, ControlBackgroundBrushKey);
 
-            border.Child = new TextBlock
-            {
-                Text = L("LOCGT_NoControllerDetected", "No controller detected"),
-                Foreground = DynamicBrush("TextBrush", Brushes.White),
-                FontSize = 22,
-                FontWeight = FontWeights.SemiBold,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center
-            };
+            var message = Text(L("LOCGT_NoControllerDetected", "No controller detected"), 22, FontWeights.SemiBold);
+            message.HorizontalAlignment = HorizontalAlignment.Center;
+            message.VerticalAlignment = VerticalAlignment.Center;
+            border.Child = message;
 
             return border;
         }

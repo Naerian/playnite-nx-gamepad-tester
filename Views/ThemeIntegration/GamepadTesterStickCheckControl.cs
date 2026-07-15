@@ -77,12 +77,12 @@ namespace GamepadTester.Views.ThemeIntegration
                 MinWidth = 160,
                 MinHeight = 40,
                 Padding = new Thickness(14, 6, 14, 6),
-                Foreground = DynamicBrush("TextBrush", Brushes.White),
-                Background = DynamicBrush("ButtonBackgroundBrush", new SolidColorBrush(Color.FromRgb(31, 36, 47))),
-                BorderBrush = DynamicBrush("ControlBorderBrush", new SolidColorBrush(Color.FromRgb(68, 77, 92))),
                 BorderThickness = new Thickness(1),
                 HorizontalAlignment = HorizontalAlignment.Right
             };
+            SetThemeResource(actionButton, Control.ForegroundProperty, TextBrushKey);
+            SetThemeResource(actionButton, Control.BackgroundProperty, ButtonBackgroundBrushKey);
+            SetThemeResource(actionButton, Control.BorderBrushProperty, ControlBorderBrushKey);
             actionButton.SetBinding(Button.CommandProperty, Bind("StartStickCaptureCommand"));
             actionButton.SetBinding(ContentControl.ContentProperty, Bind("StickCaptureButtonLabel"));
             actionButton.SetBinding(VisibilityProperty, Bind("IsStickCaptureRunning", InverseBoolToVisibility()));
@@ -94,11 +94,11 @@ namespace GamepadTester.Views.ThemeIntegration
                 MinHeight = 40,
                 Padding = new Thickness(14, 6, 14, 6),
                 CornerRadius = new CornerRadius(6),
-                Background = DynamicBrush("ButtonBackgroundBrush", new SolidColorBrush(Color.FromRgb(31, 36, 47))),
-                BorderBrush = DynamicBrush("ControlBorderBrush", new SolidColorBrush(Color.FromRgb(68, 77, 92))),
                 BorderThickness = new Thickness(1),
                 HorizontalAlignment = HorizontalAlignment.Right
             };
+            SetThemeResource(exitHint, Border.BackgroundProperty, ButtonBackgroundBrushKey);
+            SetThemeResource(exitHint, Border.BorderBrushProperty, ControlBorderBrushKey);
             exitHint.SetBinding(VisibilityProperty, Bind("IsStickCaptureRunning", BoolToVisibility()));
             var exitHintText = Text(string.Empty, 13, FontWeights.SemiBold);
             exitHintText.HorizontalAlignment = HorizontalAlignment.Center;
@@ -213,21 +213,30 @@ namespace GamepadTester.Views.ThemeIntegration
             string pathGeometryPath)
         {
             var plot = new Grid { Width = 280, Height = 280 };
-            var surface = DynamicBrush("ControlBackgroundBrush", new SolidColorBrush(Color.FromRgb(20, 24, 31)));
-            var line = DynamicBrush("ControlBorderBrush", new SolidColorBrush(Color.FromRgb(82, 92, 110)));
 
-            plot.Children.Add(new Ellipse { Fill = surface, Stroke = line, StrokeThickness = 2 });
-            plot.Children.Add(new Ellipse
+            var surface = new Ellipse { StrokeThickness = 2 };
+            SetThemeResource(surface, Shape.FillProperty, ControlBackgroundBrushKey);
+            SetThemeResource(surface, Shape.StrokeProperty, ControlBorderBrushKey);
+            plot.Children.Add(surface);
+
+            var range = new Ellipse
             {
                 Width = 232,
                 Height = 232,
-                Stroke = line,
                 StrokeThickness = 1,
                 StrokeDashArray = new DoubleCollection { 3, 4 },
                 Opacity = 0.72
-            });
-            plot.Children.Add(new Line { X1 = 140, X2 = 140, Y1 = 18, Y2 = 262, Stroke = line, Opacity = 0.55 });
-            plot.Children.Add(new Line { X1 = 18, X2 = 262, Y1 = 140, Y2 = 140, Stroke = line, Opacity = 0.55 });
+            };
+            SetThemeResource(range, Shape.StrokeProperty, ControlBorderBrushKey);
+            plot.Children.Add(range);
+
+            var verticalAxis = new Line { X1 = 140, X2 = 140, Y1 = 18, Y2 = 262, Opacity = 0.55 };
+            SetThemeResource(verticalAxis, Shape.StrokeProperty, ControlBorderBrushKey);
+            plot.Children.Add(verticalAxis);
+
+            var horizontalAxis = new Line { X1 = 18, X2 = 262, Y1 = 140, Y2 = 140, Opacity = 0.55 };
+            SetThemeResource(horizontalAxis, Shape.StrokeProperty, ControlBorderBrushKey);
+            plot.Children.Add(horizontalAxis);
 
             var coverage = new Path { Fill = accent, Opacity = 0.24 };
             coverage.SetBinding(Path.DataProperty, Bind(coverageGeometryPath));
@@ -250,11 +259,11 @@ namespace GamepadTester.Views.ThemeIntegration
                 Width = 22,
                 Height = 22,
                 Fill = accent,
-                Stroke = DynamicBrush("TextBrush", Brushes.White),
                 StrokeThickness = 1.5,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center
             };
+            SetThemeResource(dot, Shape.StrokeProperty, TextBrushKey);
             var transform = new TranslateTransform();
             BindingOperations.SetBinding(transform, TranslateTransform.XProperty, Bind(dotXPath));
             BindingOperations.SetBinding(transform, TranslateTransform.YProperty, Bind(dotYPath));

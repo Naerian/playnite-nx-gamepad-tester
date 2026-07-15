@@ -13,6 +13,11 @@ namespace GamepadTester.Views.ThemeIntegration
 {
     public abstract class GamepadTesterThemeControlBase : PluginUserControl
     {
+        public const string ControlBackgroundBrushKey = "GamepadTesterControlBackgroundBrush";
+        public const string ButtonBackgroundBrushKey = "GamepadTesterButtonBackgroundBrush";
+        public const string ControlBorderBrushKey = "GamepadTesterControlBorderBrush";
+        public const string TextBrushKey = "GamepadTesterTextBrush";
+
         public static readonly DependencyProperty IsInputCaptureActiveProperty =
             DependencyProperty.Register(
                 "IsInputCaptureActive",
@@ -24,6 +29,7 @@ namespace GamepadTester.Views.ThemeIntegration
 
         protected GamepadTesterThemeControlBase(GamepadTesterSettings settings, Func<string, string> localizer)
         {
+            EnsureThemeBrushFallbacks();
             runtimeHandle = GamepadTesterThemeRuntime.Acquire(settings, localizer);
             DataContext = runtimeHandle.ViewModel;
             SetBinding(IsInputCaptureActiveProperty, Bind("IsFullscreenInputCaptureActive"));
@@ -57,33 +63,37 @@ namespace GamepadTester.Views.ThemeIntegration
 
         protected static TextBlock Text(string text, double size, FontWeight weight)
         {
-            return new TextBlock
+            var block = new TextBlock
             {
                 Text = text,
                 FontSize = size,
                 FontWeight = weight,
-                Foreground = DynamicBrush("TextBrush", Brushes.White),
                 TextTrimming = TextTrimming.CharacterEllipsis,
                 VerticalAlignment = VerticalAlignment.Center
             };
+            SetThemeResource(block, TextBlock.ForegroundProperty, TextBrushKey);
+            return block;
         }
 
         protected static Border Panel()
         {
-            return new Border
+            var panel = new Border
             {
                 Padding = new Thickness(18),
                 CornerRadius = new CornerRadius(8),
-                Background = DynamicBrush("ControlBackgroundBrush", new SolidColorBrush(Color.FromRgb(20, 24, 31))),
-                BorderBrush = DynamicBrush("ControlBorderBrush", new SolidColorBrush(Color.FromRgb(63, 72, 88))),
                 BorderThickness = new Thickness(1)
             };
+            SetThemeResource(panel, Border.BackgroundProperty, ControlBackgroundBrushKey);
+            SetThemeResource(panel, Border.BorderBrushProperty, ControlBorderBrushKey);
+            return panel;
         }
 
-        protected static Brush DynamicBrush(string key, Brush fallback)
+        protected static void SetThemeResource(FrameworkElement element, DependencyProperty property, string key)
         {
-            var brush = Application.Current == null ? null : Application.Current.TryFindResource(key) as Brush;
-            return brush ?? fallback;
+            if (element != null)
+            {
+                element.SetResourceReference(property, key);
+            }
         }
 
         protected static IValueConverter BoolToVisibility()
@@ -100,6 +110,35 @@ namespace GamepadTester.Views.ThemeIntegration
         {
             Unloaded -= OnUnloaded;
             runtimeHandle.Dispose();
+        }
+
+        private static void EnsureThemeBrushFallbacks()
+        {
+            EnsureThemeBrushFallback(
+                ControlBackgroundBrushKey,
+                "ControlBackgroundBrush",
+                new SolidColorBrush(Color.FromRgb(20, 24, 31)));
+            EnsureThemeBrushFallback(
+                ButtonBackgroundBrushKey,
+                "ButtonBackgroundBrush",
+                new SolidColorBrush(Color.FromRgb(31, 36, 47)));
+            EnsureThemeBrushFallback(
+                ControlBorderBrushKey,
+                "ControlBorderBrush",
+                new SolidColorBrush(Color.FromRgb(63, 72, 88)));
+            EnsureThemeBrushFallback(TextBrushKey, "TextBrush", Brushes.White);
+        }
+
+        private static void EnsureThemeBrushFallback(string key, string fallbackKey, Brush hardFallback)
+        {
+            var application = Application.Current;
+            if (application == null || application.TryFindResource(key) is Brush)
+            {
+                return;
+            }
+
+            var fallback = application.TryFindResource(fallbackKey) as Brush ?? hardFallback;
+            application.Resources[key] = fallback;
         }
     }
 

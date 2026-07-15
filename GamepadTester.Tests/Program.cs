@@ -34,6 +34,7 @@ namespace GamepadTester.Tests
                 TestThemeHostXamlContract();
                 TestLateThemeHostInitialization();
                 TestTriggerCheckBindings();
+                TestFullscreenThemeBrushOverrides();
                 TestFullscreenStickPlotSize();
                 TestFullscreenCaptureGating();
                 TestCompatibilityReport();
@@ -244,6 +245,31 @@ namespace GamepadTester.Tests
                 True(plot.Width <= 120d && plot.Height <= 120d,
                     "Fullscreen stick plots fit compact theme cards");
             }
+        }
+
+        private static void TestFullscreenThemeBrushOverrides()
+        {
+            var control = new GamepadTesterButtonMapControl(new GamepadTesterSettings(), key => key);
+            var background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Magenta);
+            var buttonBackground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Navy);
+            var border = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Lime);
+            var text = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Yellow);
+            var themeHost = new ContentControl { Content = control };
+            themeHost.Resources[GamepadTesterThemeControlBase.ControlBackgroundBrushKey] = background;
+            themeHost.Resources[GamepadTesterThemeControlBase.ButtonBackgroundBrushKey] = buttonBackground;
+            themeHost.Resources[GamepadTesterThemeControlBase.ControlBorderBrushKey] = border;
+            themeHost.Resources[GamepadTesterThemeControlBase.TextBrushKey] = text;
+
+            var panel = (Border)control.Content;
+            var root = (Grid)panel.Child;
+            var content = (StackPanel)root.Children[0];
+            var actionArea = (Grid)content.Children[1];
+            var actionButton = (Button)actionArea.Children[0];
+
+            Equal(background, panel.Background, "Theme can override the Gamepad Tester panel background");
+            Equal(border, panel.BorderBrush, "Theme can override the Gamepad Tester panel border");
+            Equal(buttonBackground, actionButton.Background, "Theme can override Gamepad Tester buttons");
+            Equal(text, actionButton.Foreground, "Theme can override Gamepad Tester text");
         }
 
         private sealed class ReadOnlyTriggerSource

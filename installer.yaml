@@ -1,5 +1,14 @@
 AddonId: GamepadTester_518dc982-32b5-4493-b32d-1f71de2fe4ad
 Packages:
+  - Version: 1.0.2
+    RequiredApiVersion: 6.16.0
+    ReleaseDate: 2026-07-16
+    PackageUrl: https://github.com/Naerian/playnite-nx-gamepad-tester/releases/download/v1.0.2/GamepadTester-1.0.2.pext
+    Changelog:
+      - Added dedicated dynamic brushes for Fullscreen theme integrations.
+      - Allowed themes to override Gamepad Tester backgrounds, buttons, borders, and text locally.
+      - Preserved Playnite's standard theme brushes as automatic fallbacks.
+      - Added automated coverage for resource overrides declared by parent theme views.
   - Version: 1.0.1
     RequiredApiVersion: 6.16.0
     ReleaseDate: 2026-07-15

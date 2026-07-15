@@ -60,11 +60,11 @@ namespace GamepadTester.Views.ThemeIntegration
                 Margin = new Thickness(0, 0, 8, 8),
                 Padding = new Thickness(12, 8, 12, 8),
                 Cursor = Cursors.Hand,
-                Foreground = DynamicBrush("TextBrush", Brushes.White),
-                Background = DynamicBrush("ButtonBackgroundBrush", new SolidColorBrush(Color.FromRgb(31, 36, 47))),
-                BorderBrush = DynamicBrush("ControlBorderBrush", new SolidColorBrush(Color.FromRgb(68, 77, 92))),
                 BorderThickness = new Thickness(1)
             };
+            SetThemeResource(button, Control.ForegroundProperty, TextBrushKey);
+            SetThemeResource(button, Control.BackgroundProperty, ButtonBackgroundBrushKey);
+            SetThemeResource(button, Control.BorderBrushProperty, ControlBorderBrushKey);
             button.SetBinding(Button.CommandProperty, new Binding(commandPath));
             return button;
         }

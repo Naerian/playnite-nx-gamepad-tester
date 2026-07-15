@@ -48,9 +48,9 @@ namespace GamepadTester.Views.ThemeIntegration
                 Maximum = 100,
                 Margin = new Thickness(0, 7, 0, 0),
                 Foreground = new SolidColorBrush(Color.FromRgb(66, 190, 245)),
-                Background = DynamicBrush("ButtonBackgroundBrush", new SolidColorBrush(Color.FromRgb(31, 36, 47))),
                 BorderThickness = new Thickness(0)
             };
+            SetThemeResource(progress, Control.BackgroundProperty, ButtonBackgroundBrushKey);
             progress.SetBinding(RangeBase.ValueProperty, new Binding(valuePath)
             {
                 Mode = BindingMode.OneWay

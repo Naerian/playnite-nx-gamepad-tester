@@ -49,12 +49,12 @@ namespace GamepadTester.Views.ThemeIntegration
                 Margin = new Thickness(18, 0, 0, 0),
                 Padding = new Thickness(14, 8, 14, 8),
                 Cursor = Cursors.Hand,
-                Foreground = DynamicBrush("TextBrush", Brushes.White),
-                Background = DynamicBrush("ButtonBackgroundBrush", new SolidColorBrush(Color.FromRgb(31, 36, 47))),
-                BorderBrush = DynamicBrush("ControlBorderBrush", new SolidColorBrush(Color.FromRgb(68, 77, 92))),
                 BorderThickness = new Thickness(1),
                 VerticalAlignment = VerticalAlignment.Center
             };
+            SetThemeResource(actionButton, Control.ForegroundProperty, TextBrushKey);
+            SetThemeResource(actionButton, Control.BackgroundProperty, ButtonBackgroundBrushKey);
+            SetThemeResource(actionButton, Control.BorderBrushProperty, ControlBorderBrushKey);
             actionButton.SetBinding(Button.CommandProperty, new Binding("StartLatencyTestCommand"));
             actionButton.SetBinding(ContentControl.ContentProperty, new Binding("StartLatencyButtonLabel"));
             actionButton.SetBinding(VisibilityProperty, Bind("IsLatencyTestRunning", InverseBoolToVisibility()));
@@ -68,11 +68,11 @@ namespace GamepadTester.Views.ThemeIntegration
                 Margin = new Thickness(18, 0, 0, 0),
                 Padding = new Thickness(14, 8, 14, 8),
                 CornerRadius = new CornerRadius(6),
-                Background = DynamicBrush("ButtonBackgroundBrush", new SolidColorBrush(Color.FromRgb(31, 36, 47))),
-                BorderBrush = DynamicBrush("ControlBorderBrush", new SolidColorBrush(Color.FromRgb(68, 77, 92))),
                 BorderThickness = new Thickness(1),
                 VerticalAlignment = VerticalAlignment.Center
             };
+            SetThemeResource(this.captureHint, Border.BackgroundProperty, ButtonBackgroundBrushKey);
+            SetThemeResource(this.captureHint, Border.BorderBrushProperty, ControlBorderBrushKey);
             this.captureHint.SetBinding(VisibilityProperty, Bind("IsLatencyTestRunning", BoolToVisibility()));
             var captureHintText = Text(string.Empty, 12, FontWeights.SemiBold);
             captureHintText.TextAlignment = TextAlignment.Center;
