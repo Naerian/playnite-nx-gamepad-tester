@@ -1,10 +1,17 @@
 using GamepadTester.Models;
 using GamepadTester.Services;
+using GamepadTester.ViewModels;
+using GamepadTester.Views.ThemeIntegration;
+using GamepadTester.Views;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 
 namespace GamepadTester.Tests
 {
@@ -12,6 +19,7 @@ namespace GamepadTester.Tests
     {
         private static int executed;
 
+        [STAThread]
         private static int Main()
         {
             try
@@ -22,6 +30,12 @@ namespace GamepadTester.Tests
                 TestStickDiagnostics();
                 TestSimulatedProvider();
                 TestVisualSchemeCatalog();
+                TestEmbeddedSidebarIcon();
+                TestThemeHostXamlContract();
+                TestLateThemeHostInitialization();
+                TestTriggerCheckBindings();
+                TestFullscreenStickPlotSize();
+                TestFullscreenCaptureGating();
                 TestCompatibilityReport();
                 TestLocalizationParity();
                 Console.WriteLine("GamepadTester.Tests: {0} checks passed.", executed);
@@ -158,6 +172,173 @@ namespace GamepadTester.Tests
             state.EightBitDoModel = EightBitDoModel.Pro2;
             report = GamepadCompatibilityReportBuilder.Build(state, null, "high", "medium", "medium", "low");
             True(report.Contains("8BitDo model: Pro2"), "8BitDo reports include the detected model");
+        }
+
+        private static void TestEmbeddedSidebarIcon()
+        {
+            const string resourceName = "GamepadTester.Icons.gamepad-2.svg";
+            using (var stream = typeof(GamepadState).Assembly.GetManifestResourceStream(resourceName))
+            {
+                True(stream != null, "Sidebar SVG is embedded in the plugin assembly");
+                var document = XDocument.Load(stream);
+                var paths = document.Descendants().Where(element => element.Name.LocalName == "path").ToArray();
+                True(paths.Length > 0, "Sidebar SVG contains path geometry");
+                True(paths.All(path => System.Windows.Media.Geometry.Parse((string)path.Attribute("d")) != null), "Sidebar SVG paths are valid WPF geometry");
+            }
+        }
+
+        private static void TestThemeHostXamlContract()
+        {
+            True(typeof(DependencyObject).IsAssignableFrom(typeof(GamepadTesterThemeHost)),
+                "Theme host is a WPF attached-property provider");
+
+            var target = new DependencyObject();
+            GamepadTesterThemeHost.SetBlock(target, "ButtonMap");
+            Equal("ButtonMap", GamepadTesterThemeHost.GetBlock(target),
+                "Theme host attached block round-trips");
+        }
+
+        private static void TestLateThemeHostInitialization()
+        {
+            GamepadTesterThemeHost.Configure(new GamepadTesterSettings(), key => key, () => { });
+            var host = new ContentControl { Tag = "GamepadTesterLauncher" };
+            Equal(1, GamepadTesterThemeHost.Refresh(host),
+                "Late theme host refresh finds its standard Tag marker");
+            True(host.Content is GamepadTesterThemeLauncherControl,
+                "Late theme host initializes from its standard Tag marker");
+
+            var triggerHost = new ContentControl { Tag = "GamepadTester_TriggerCheck" };
+            Equal(1, GamepadTesterThemeHost.Refresh(triggerHost),
+                "Late theme host finds the fullscreen trigger block");
+            True(triggerHost.Content is GamepadTesterTriggerCheckControl,
+                "Late theme host initializes the fullscreen trigger block");
+        }
+
+        private static void TestTriggerCheckBindings()
+        {
+            var control = new GamepadTesterTriggerCheckControl(new GamepadTesterSettings(), key => key);
+            control.DataContext = new ReadOnlyTriggerSource();
+            var root = (StackPanel)control.Content;
+            var meters = (Grid)root.Children[1];
+
+            foreach (StackPanel meter in meters.Children)
+            {
+                var progress = (ProgressBar)meter.Children[1];
+                var binding = BindingOperations.GetBinding(progress, RangeBase.ValueProperty);
+                Equal(BindingMode.OneWay, binding.Mode,
+                    "Fullscreen trigger meters use read-only bindings");
+                BindingOperations.GetBindingExpression(progress, RangeBase.ValueProperty).UpdateTarget();
+            }
+        }
+
+        private static void TestFullscreenStickPlotSize()
+        {
+            var control = new GamepadTesterStickCheckControl(new GamepadTesterSettings(), key => key);
+            var panel = (Border)control.Content;
+            var root = (StackPanel)panel.Child;
+            var sticks = (Grid)root.Children[1];
+
+            foreach (Grid stick in sticks.Children)
+            {
+                var plot = (Viewbox)stick.Children[0];
+                True(plot.Width <= 120d && plot.Height <= 120d,
+                    "Fullscreen stick plots fit compact theme cards");
+            }
+        }
+
+        private sealed class ReadOnlyTriggerSource
+        {
+            public string LiveLeftTriggerLabel { get { return "LT 25%"; } }
+            public string LiveRightTriggerLabel { get { return "RT 75%"; } }
+            public double LiveLeftTriggerPercent { get { return 25d; } }
+            public double LiveRightTriggerPercent { get { return 75d; } }
+        }
+
+        private static void TestFullscreenCaptureGating()
+        {
+            var provider = new SimulatedGamepadInputProvider();
+            var polling = new GamepadPollingService(provider);
+            using (var viewModel = new GamepadTesterViewModel(polling))
+            {
+                var raw = new GamepadState
+                {
+                    IsConnected = true,
+                    ControllerName = "Simulated Xbox",
+                    Layout = GamepadLayout.Xbox,
+                    LeftStick = new StickState { X = 0.75f, Y = -0.25f },
+                    RightStick = new StickState { X = -0.5f, Y = 0.5f },
+                    LeftTrigger = 0.8f,
+                    RightTrigger = 0.6f,
+                    Buttons = new GamepadButtonState { South = true, DpadRight = true }
+                };
+
+                SetPrivateField(viewModel, "state", raw);
+                SetPrivateField(viewModel, "latestInputState", raw);
+                viewModel.IsFullscreenSimplifiedMode = true;
+
+                var display = CreateFullscreenDisplayState(viewModel, raw);
+                True(!display.Buttons.South && display.LeftTrigger == 0f, "Fullscreen button map stays neutral before its test starts");
+                Equal(0f, display.LeftStick.X, "Fullscreen sticks stay neutral before diagnostics starts");
+
+                viewModel.StartButtonCaptureCommand.Execute(null);
+                display = CreateFullscreenDisplayState(viewModel, raw);
+                True(display.Buttons.South && display.LeftTrigger > 0f, "Button capture exposes buttons and triggers");
+                Equal(0.75f, display.LeftStick.X, "Button capture exposes live stick movement on the controller scheme");
+                viewModel.StartButtonCaptureCommand.Execute(null);
+
+                viewModel.StartStickCaptureCommand.Execute(null);
+                display = CreateFullscreenDisplayState(viewModel, raw);
+                True(!display.Buttons.South && display.LeftTrigger == 0f, "Stick diagnostics does not activate controller buttons");
+                Equal(0.75f, display.LeftStick.X, "Stick diagnostics exposes live stick movement");
+                True(viewModel.IsFullscreenInputCaptureActive, "Stick diagnostics engages the fullscreen navigation guard");
+                viewModel.StartStickCaptureCommand.Execute(null);
+                True(!viewModel.IsFullscreenInputCaptureActive, "Stopping stick diagnostics releases the fullscreen navigation guard");
+
+                viewModel.StartLatencyTestCommand.Execute(null);
+                SetPrivateField(viewModel, "inputEventIntervalSamples", 4);
+                SetPrivateField(viewModel, "pollingIntervalSamples", 7);
+                SetPrivateField(viewModel, "latencyTestStartedAt", DateTime.UtcNow.AddSeconds(-5));
+                viewModel.StartLatencyTestCommand.Execute(null);
+                var frozenDuration = viewModel.LatencyTestDurationLabel;
+
+                InvokePrivate(viewModel, "UpdateLatency", raw);
+                InvokePrivate(viewModel, "TrackButtonChange", "A", false, true);
+                Equal(4, GetPrivateField<int>(viewModel, "inputEventIntervalSamples"), "Stopped latency does not collect input samples");
+                Equal(7, GetPrivateField<int>(viewModel, "pollingIntervalSamples"), "Stopped latency does not collect polling samples");
+                Equal(frozenDuration, viewModel.LatencyTestDurationLabel, "Stopped latency keeps a frozen session duration");
+            }
+        }
+
+        private static GamepadState CreateFullscreenDisplayState(GamepadTesterViewModel viewModel, GamepadState raw)
+        {
+            var method = typeof(GamepadTesterViewModel).GetMethod(
+                "CreateDisplayState",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            return (GamepadState)method.Invoke(viewModel, new object[] { raw });
+        }
+
+        private static void SetPrivateField(object instance, string name, object value)
+        {
+            var field = instance.GetType().GetField(
+                name,
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            field.SetValue(instance, value);
+        }
+
+        private static T GetPrivateField<T>(object instance, string name)
+        {
+            var field = instance.GetType().GetField(
+                name,
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            return (T)field.GetValue(instance);
+        }
+
+        private static object InvokePrivate(object instance, string name, params object[] arguments)
+        {
+            var method = instance.GetType().GetMethod(
+                name,
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            return method.Invoke(instance, arguments);
         }
 
         private static void TestLocalizationParity()

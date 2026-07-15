@@ -28,6 +28,7 @@
     <sys:String x:Key="LOCGT_FaceButtons">Yüz düğmeleri</sys:String>
     <sys:String x:Key="LOCGT_ShouldersAndTriggers">Omuzlar ve tetikleyiciler</sys:String>
     <sys:String x:Key="LOCGT_Sticks">Sopalar</sys:String>
+    <sys:String x:Key="LOCGT_Triggers">Tetikler</sys:String>
     <sys:String x:Key="LOCGT_DpadAndSystem">D-pad ve sistem</sys:String>
     <sys:String x:Key="LOCGT_ButtonMatrix">Düğme matrisi</sys:String>
     <sys:String x:Key="LOCGT_InputHistory">Giriş geçmişi</sys:String>
@@ -251,4 +252,10 @@
     <sys:String x:Key="LOCGT_CompatibilityReportReady">Teknik cihaz raporu dışa aktarılmaya hazır.</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityReportExportedFormat">Uyumluluk raporu şuraya aktarıldı: {0}</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityReportFailedFormat">Uyumluluk raporu dışa aktarılamadı: {0}</sys:String>
+    <sys:String x:Key="LOCGT_StartButtonCapture">Düğmeleri test et</sys:String>
+    <sys:String x:Key="LOCGT_ButtonCaptureDescription">Playnite içinde gezinmeden odaklı bir düğme testi başlatın.</sys:String>
+    <sys:String x:Key="LOCGT_ButtonCaptureRunning">Düğmeler test ediliyor</sys:String>
+    <sys:String x:Key="LOCGT_StartStickCapture">Analog çubukları test et</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunning">Analog çubuklar test ediliyor</sys:String>
+    <sys:String x:Key="LOCGT_CaptureExitHint">Testi bitirmek için LB + RB tuşlarını basılı tutun.</sys:String>
 </ResourceDictionary>

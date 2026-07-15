@@ -36,6 +36,10 @@ namespace GamepadTester
         private Window testerWindow;
         private GamepadTesterViewModel testerWindowViewModel;
         private bool testerBackButtonHeld;
+        private bool themeCaptureLeftShoulderHeld;
+        private bool themeCaptureRightShoulderHeld;
+        private System.Windows.Threading.DispatcherTimer themeCaptureExitTimer;
+        private GamepadTesterThemeControlBase themeCaptureOwner;
 
         public GamepadTesterSettings ThemeSettings
         {
@@ -61,7 +65,11 @@ namespace GamepadTester
             openSticksCommand = new global::GamepadTester.Commands.RelayCommand(() => OpenTesterWindow(1, true));
             openLatencyCommand = new global::GamepadTester.Commands.RelayCommand(() => OpenTesterWindow(2, true));
             themeIntegration = new GamepadTesterThemeIntegration(settings, openTesterCommand, openButtonTestCommand, openSticksCommand, openRumbleCommand, openLatencyCommand);
-            GamepadTesterThemeHost.Configure(settings.Settings, Loc, () => OpenTesterWindow(0, true));
+            GamepadTesterThemeHost.Configure(
+                settings.Settings,
+                Loc,
+                () => OpenTesterWindow(0, true),
+                message => logger.Info(message));
             Properties = new GenericPluginProperties
             {
                 HasSettings = true
@@ -76,6 +84,7 @@ namespace GamepadTester
                     "StatusBadge",
                     "ButtonMap",
                     "StickCheck",
+                    "TriggerCheck",
                     "RumblePad",
                     "LatencyMini"
                 }
@@ -210,6 +219,11 @@ namespace GamepadTester
                 return new GamepadTesterStickCheckControl(settings.Settings, Loc);
             }
 
+            if (IsThemeControlName(args.Name, "TriggerCheck"))
+            {
+                return new GamepadTesterTriggerCheckControl(settings.Settings, Loc);
+            }
+
             if (IsThemeControlName(args.Name, "RumblePad"))
             {
                 return new GamepadTesterRumblePadControl(settings.Settings, Loc);
@@ -249,18 +263,161 @@ namespace GamepadTester
 
         private void HandleThemeControllerInput(ControllerInput button, ControllerInputState state)
         {
-            if (state != ControllerInputState.Pressed || button != ControllerInput.A)
-            {
-                return;
-            }
-
             var dispatcher = Application.Current == null ? null : Application.Current.Dispatcher;
             if (dispatcher == null)
             {
                 return;
             }
 
-            dispatcher.BeginInvoke(new Action(ActivateFocusedThemeControl));
+            dispatcher.BeginInvoke(new Action(() => HandleThemeControllerInputOnUiThread(button, state)));
+        }
+
+        private void HandleThemeControllerInputOnUiThread(ControllerInput button, ControllerInputState state)
+        {
+            var focused = Keyboard.FocusedElement as DependencyObject;
+            var focusedThemeControl = FindThemeControlFromFocus(focused);
+            var themeControl = GamepadTesterThemeHost.FindActiveCaptureControl() ?? focusedThemeControl;
+            var buttonMap = themeControl as GamepadTesterButtonMapControl;
+            var latencyControl = themeControl as GamepadTesterLatencyMiniControl;
+            var stickControl = themeControl as GamepadTesterStickCheckControl;
+            var captureActive = (buttonMap != null && buttonMap.IsTestRunning) ||
+                (latencyControl != null && latencyControl.IsTestRunning) ||
+                (stickControl != null && stickControl.IsTestRunning);
+
+            if (captureActive)
+            {
+                themeCaptureOwner = themeControl;
+                if (button == ControllerInput.LeftShoulder)
+                {
+                    themeCaptureLeftShoulderHeld = state == ControllerInputState.Pressed;
+                }
+                else if (button == ControllerInput.RightShoulder)
+                {
+                    themeCaptureRightShoulderHeld = state == ControllerInputState.Pressed;
+                }
+
+                UpdateThemeCaptureExitChord();
+                return;
+            }
+
+            ResetThemeCaptureExitChord();
+            if (state == ControllerInputState.Pressed && button == ControllerInput.A)
+            {
+                ActivateFocusedThemeControl();
+            }
+        }
+
+        private void UpdateThemeCaptureExitChord()
+        {
+            if (!themeCaptureLeftShoulderHeld || !themeCaptureRightShoulderHeld)
+            {
+                if (themeCaptureExitTimer != null)
+                {
+                    themeCaptureExitTimer.Stop();
+                }
+
+                return;
+            }
+
+            if (themeCaptureExitTimer == null)
+            {
+                themeCaptureExitTimer = new System.Windows.Threading.DispatcherTimer
+                {
+                    Interval = TimeSpan.FromSeconds(1)
+                };
+                themeCaptureExitTimer.Tick += OnThemeCaptureExitTimerTick;
+            }
+
+            themeCaptureExitTimer.Stop();
+            themeCaptureExitTimer.Start();
+        }
+
+        private void OnThemeCaptureExitTimerTick(object sender, EventArgs args)
+        {
+            themeCaptureExitTimer.Stop();
+            if (!themeCaptureLeftShoulderHeld || !themeCaptureRightShoulderHeld)
+            {
+                return;
+            }
+
+            var completedCaptureOwner = themeCaptureOwner;
+            var buttonMap = completedCaptureOwner as GamepadTesterButtonMapControl;
+            if (buttonMap != null)
+            {
+                buttonMap.StopButtonCapture();
+            }
+
+            var latencyControl = completedCaptureOwner as GamepadTesterLatencyMiniControl;
+            if (latencyControl != null)
+            {
+                latencyControl.StopLatencyTest();
+            }
+
+            var stickControl = completedCaptureOwner as GamepadTesterStickCheckControl;
+            if (stickControl != null)
+            {
+                stickControl.StopStickCapture();
+            }
+
+            ResetThemeCaptureExitChord();
+            FocusThemeBackButton(completedCaptureOwner);
+        }
+
+        private static void FocusThemeBackButton(FrameworkElement captureOwner)
+        {
+            var window = captureOwner == null ? null : Window.GetWindow(captureOwner);
+            if (window == null)
+            {
+                return;
+            }
+
+            window.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                var backButton = FindNamedButton(window, "GamepadTester_BackButton");
+                if (backButton != null && backButton.IsVisible && backButton.IsEnabled)
+                {
+                    backButton.Focus();
+                    Keyboard.Focus(backButton);
+                }
+            }), System.Windows.Threading.DispatcherPriority.ContextIdle);
+        }
+
+        private static ButtonBase FindNamedButton(DependencyObject root, string name)
+        {
+            if (root == null)
+            {
+                return null;
+            }
+
+            var element = root as FrameworkElement;
+            var button = root as ButtonBase;
+            if (button != null && element != null && element.Name == name)
+            {
+                return button;
+            }
+
+            var childCount = VisualTreeHelper.GetChildrenCount(root);
+            for (var index = 0; index < childCount; index++)
+            {
+                var match = FindNamedButton(VisualTreeHelper.GetChild(root, index), name);
+                if (match != null)
+                {
+                    return match;
+                }
+            }
+
+            return null;
+        }
+
+        private void ResetThemeCaptureExitChord()
+        {
+            themeCaptureLeftShoulderHeld = false;
+            themeCaptureRightShoulderHeld = false;
+            themeCaptureOwner = null;
+            if (themeCaptureExitTimer != null)
+            {
+                themeCaptureExitTimer.Stop();
+            }
         }
 
         private void OpenTesterWindow(int selectedTabIndex, bool fullscreenSimplified)
@@ -594,26 +751,10 @@ namespace GamepadTester
 
         private static FrameworkElement CreateSidebarIcon()
         {
-            var bodyPath = new System.Windows.Shapes.Path
+            var iconPath = new System.Windows.Shapes.Path
             {
-                Data = Geometry.Parse("M17.32 5H6.68A4 4 0 0 0 2.702 8.59C2.696 8.642 2.692 8.691 2.685 8.742C2.604 9.416 2 14.456 2 16A3 3 0 0 0 5 19C6 19 6.5 18.5 7 18L8.414 16.586A2 2 0 0 1 9.828 16H14.172A2 2 0 0 1 15.586 16.586L17 18C17.5 18.5 18 19 19 19A3 3 0 0 0 22 16C22 14.455 21.396 9.416 21.315 8.742C21.308 8.692 21.304 8.642 21.298 8.591A4 4 0 0 0 17.32 5Z"),
-                Fill = Brushes.Transparent,
-                Stroke = Brushes.White,
-                StrokeThickness = 2,
-                StrokeStartLineCap = PenLineCap.Round,
-                StrokeEndLineCap = PenLineCap.Round,
-                StrokeLineJoin = PenLineJoin.Round
-            };
-
-            var controlsPath = new System.Windows.Shapes.Path
-            {
-                Data = Geometry.Parse("M6 11H10M8 9V13M15 12H15.01M18 10H18.01"),
-                Fill = Brushes.Transparent,
-                Stroke = Brushes.White,
-                StrokeThickness = 2,
-                StrokeStartLineCap = PenLineCap.Round,
-                StrokeEndLineCap = PenLineCap.Round,
-                StrokeLineJoin = PenLineJoin.Round
+                Data = LoadSidebarIconGeometry(),
+                Fill = Brushes.White
             };
 
             var themeForegroundBinding = new System.Windows.Data.Binding("Foreground")
@@ -625,25 +766,14 @@ namespace GamepadTester
                 FallbackValue = Brushes.White
             };
 
-            bodyPath.SetBinding(System.Windows.Shapes.Shape.StrokeProperty, themeForegroundBinding);
-            controlsPath.SetBinding(
-                System.Windows.Shapes.Shape.StrokeProperty,
-                new System.Windows.Data.Binding("Foreground")
-                {
-                    RelativeSource = new System.Windows.Data.RelativeSource(
-                        System.Windows.Data.RelativeSourceMode.FindAncestor,
-                        typeof(Control),
-                        1),
-                    FallbackValue = Brushes.White
-                });
+            iconPath.SetBinding(System.Windows.Shapes.Shape.FillProperty, themeForegroundBinding);
 
             var canvas = new Canvas
             {
-                Width = 24,
-                Height = 24
+                Width = 511.983,
+                Height = 511.983
             };
-            canvas.Children.Add(bodyPath);
-            canvas.Children.Add(controlsPath);
+            canvas.Children.Add(iconPath);
 
             return new Viewbox
             {
@@ -652,6 +782,49 @@ namespace GamepadTester
                 Stretch = Stretch.Uniform,
                 Child = canvas
             };
+        }
+
+        private static Geometry LoadSidebarIconGeometry()
+        {
+            const string resourceName = "GamepadTester.Icons.gamepad-2.svg";
+
+            try
+            {
+                using (var stream = typeof(GamepadTester).Assembly.GetManifestResourceStream(resourceName))
+                {
+                    if (stream == null)
+                    {
+                        throw new InvalidOperationException("Embedded sidebar icon was not found.");
+                    }
+
+                    var document = System.Xml.Linq.XDocument.Load(stream);
+                    var geometry = new GeometryGroup { FillRule = FillRule.Nonzero };
+                    foreach (var pathElement in document.Descendants().Where(element => element.Name.LocalName == "path"))
+                    {
+                        var data = pathElement.Attribute("d");
+                        if (data != null && !string.IsNullOrWhiteSpace(data.Value))
+                        {
+                            geometry.Children.Add(Geometry.Parse(data.Value));
+                        }
+                    }
+
+                    if (geometry.Children.Count == 0)
+                    {
+                        throw new InvalidOperationException("Embedded sidebar icon has no path geometry.");
+                    }
+
+                    geometry.Freeze();
+                    return geometry;
+                }
+            }
+            catch (Exception exception)
+            {
+                logger.Warn(exception, "Failed to load the embedded Gamepad Tester sidebar icon.");
+                var fallback = Geometry.Parse("M17.32 5H6.68A4 4 0 0 0 2.702 8.59C2.604 9.416 2 14.456 2 16A3 3 0 0 0 5 19C6 19 6.5 18.5 7 18L8.414 16.586A2 2 0 0 1 9.828 16H14.172A2 2 0 0 1 15.586 16.586L17 18C17.5 18.5 18 19 19 19A3 3 0 0 0 22 16C22 14.455 21.396 9.416 21.298 8.591A4 4 0 0 0 17.32 5Z").Clone();
+                fallback.Transform = new ScaleTransform(21.332625, 21.332625);
+                fallback.Freeze();
+                return fallback;
+            }
         }
 
         public string Loc(string key)

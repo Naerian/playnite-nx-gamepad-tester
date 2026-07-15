@@ -1,5 +1,15 @@
 AddonId: GamepadTester_518dc982-32b5-4493-b32d-1f71de2fe4ad
 Packages:
+  - Version: 1.0.1
+    RequiredApiVersion: 6.16.0
+    ReleaseDate: 2026-07-15
+    PackageUrl: https://github.com/Naerian/playnite-nx-gamepad-tester/releases/download/v1.0.1/GamepadTester-1.0.1.pext
+    Changelog:
+      - Added controller-first Fullscreen capture modes for button, stick, and latency testing.
+      - Added a reusable TriggerCheck theme block with live LT and RT percentages.
+      - Improved dynamically opened theme-window initialization and input-capture safeguards.
+      - Restored focus and Back navigation after tests finish while suppressing accidental closure during capture.
+      - Fixed stopped latency sessions continuing to update and compacted Fullscreen stick diagnostics.
   - Version: 1.0.0
     RequiredApiVersion: 6.16.0
     ReleaseDate: 2026-07-14

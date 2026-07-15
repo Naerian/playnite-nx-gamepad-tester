@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -9,6 +10,9 @@ namespace GamepadTester.Views.ThemeIntegration
 {
     public sealed class GamepadTesterLatencyMiniControl : GamepadTesterThemeControlBase
     {
+        private readonly Button actionButton;
+        private readonly Border captureHint;
+
         public GamepadTesterLatencyMiniControl(GamepadTesterSettings settings, Func<string, string> localizer)
             : base(settings, localizer)
         {
@@ -38,7 +42,7 @@ namespace GamepadTester.Views.ThemeIntegration
 
             root.Children.Add(info);
 
-            var button = new Button
+            actionButton = new Button
             {
                 MinWidth = 140,
                 MinHeight = 48,
@@ -51,13 +55,100 @@ namespace GamepadTester.Views.ThemeIntegration
                 BorderThickness = new Thickness(1),
                 VerticalAlignment = VerticalAlignment.Center
             };
-            button.SetBinding(Button.CommandProperty, new Binding("StartLatencyTestCommand"));
-            button.SetBinding(ContentControl.ContentProperty, new Binding("StartLatencyButtonLabel"));
-            Grid.SetColumn(button, 1);
-            root.Children.Add(button);
+            actionButton.SetBinding(Button.CommandProperty, new Binding("StartLatencyTestCommand"));
+            actionButton.SetBinding(ContentControl.ContentProperty, new Binding("StartLatencyButtonLabel"));
+            actionButton.SetBinding(VisibilityProperty, Bind("IsLatencyTestRunning", InverseBoolToVisibility()));
+            Grid.SetColumn(actionButton, 1);
+            root.Children.Add(actionButton);
+
+            this.captureHint = new Border
+            {
+                MinWidth = 230,
+                MinHeight = 48,
+                Margin = new Thickness(18, 0, 0, 0),
+                Padding = new Thickness(14, 8, 14, 8),
+                CornerRadius = new CornerRadius(6),
+                Background = DynamicBrush("ButtonBackgroundBrush", new SolidColorBrush(Color.FromRgb(31, 36, 47))),
+                BorderBrush = DynamicBrush("ControlBorderBrush", new SolidColorBrush(Color.FromRgb(68, 77, 92))),
+                BorderThickness = new Thickness(1),
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            this.captureHint.SetBinding(VisibilityProperty, Bind("IsLatencyTestRunning", BoolToVisibility()));
+            var captureHintText = Text(string.Empty, 12, FontWeights.SemiBold);
+            captureHintText.TextAlignment = TextAlignment.Center;
+            captureHintText.HorizontalAlignment = HorizontalAlignment.Center;
+            captureHintText.SetBinding(TextBlock.TextProperty, Bind("CaptureExitHintLabel"));
+            this.captureHint.Child = captureHintText;
+            Grid.SetColumn(this.captureHint, 1);
+            root.Children.Add(this.captureHint);
 
             panel.Child = root;
             Content = panel;
+
+            ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+            Unloaded += OnControlUnloaded;
+            UpdateCaptureMode();
+        }
+
+        public bool IsTestRunning
+        {
+            get { return ViewModel.IsLatencyTestRunning; }
+        }
+
+        public void StopLatencyTest()
+        {
+            if (!IsTestRunning || !ViewModel.StartLatencyTestCommand.CanExecute(null))
+            {
+                return;
+            }
+
+            ViewModel.StartLatencyTestCommand.Execute(null);
+        }
+
+        private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "IsLatencyTestRunning")
+            {
+                UpdateCaptureMode();
+            }
+        }
+
+        private void UpdateCaptureMode()
+        {
+            KeyboardNavigation.SetDirectionalNavigation(
+                this,
+                IsTestRunning ? KeyboardNavigationMode.None : KeyboardNavigationMode.Continue);
+            KeyboardNavigation.SetTabNavigation(
+                this,
+                IsTestRunning ? KeyboardNavigationMode.None : KeyboardNavigationMode.Continue);
+
+            if (!IsTestRunning)
+            {
+                FocusActionButton();
+            }
+        }
+
+        private void FocusActionButton()
+        {
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (!IsTestRunning && actionButton.IsEnabled)
+                {
+                    actionButton.Focus();
+                    Keyboard.Focus(actionButton);
+                }
+            }), System.Windows.Threading.DispatcherPriority.Input);
+        }
+
+        public void FocusStartButton()
+        {
+            FocusActionButton();
+        }
+
+        private void OnControlUnloaded(object sender, RoutedEventArgs args)
+        {
+            ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+            Unloaded -= OnControlUnloaded;
         }
     }
 }

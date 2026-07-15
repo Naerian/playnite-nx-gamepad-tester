@@ -28,6 +28,7 @@
     <sys:String x:Key="LOCGT_FaceButtons">脸部按钮</sys:String>
     <sys:String x:Key="LOCGT_ShouldersAndTriggers">肩部和扳机</sys:String>
     <sys:String x:Key="LOCGT_Sticks">棍棒</sys:String>
+    <sys:String x:Key="LOCGT_Triggers">扳机键</sys:String>
     <sys:String x:Key="LOCGT_DpadAndSystem">方向键和系统</sys:String>
     <sys:String x:Key="LOCGT_ButtonMatrix">按键矩阵</sys:String>
     <sys:String x:Key="LOCGT_InputHistory">输入历史记录</sys:String>
@@ -251,4 +252,10 @@
     <sys:String x:Key="LOCGT_CompatibilityReportReady">设备技术报告已准备好导出。</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityReportExportedFormat">兼容性报告已导出到 {0}</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityReportFailedFormat">无法导出兼容性报告: {0}</sys:String>
+    <sys:String x:Key="LOCGT_StartButtonCapture">测试按键</sys:String>
+    <sys:String x:Key="LOCGT_ButtonCaptureDescription">启动按键专项测试，不会在 Playnite 中导航。</sys:String>
+    <sys:String x:Key="LOCGT_ButtonCaptureRunning">正在测试按键</sys:String>
+    <sys:String x:Key="LOCGT_StartStickCapture">测试摇杆</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunning">正在测试摇杆</sys:String>
+    <sys:String x:Key="LOCGT_CaptureExitHint">按住 LB + RB 结束测试。</sys:String>
 </ResourceDictionary>

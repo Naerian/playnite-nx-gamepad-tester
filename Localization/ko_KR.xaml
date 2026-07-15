@@ -28,6 +28,7 @@
     <sys:String x:Key="LOCGT_FaceButtons">페이스 버튼</sys:String>
     <sys:String x:Key="LOCGT_ShouldersAndTriggers">어깨와 방아쇠</sys:String>
     <sys:String x:Key="LOCGT_Sticks">스틱</sys:String>
+    <sys:String x:Key="LOCGT_Triggers">트리거</sys:String>
     <sys:String x:Key="LOCGT_DpadAndSystem">D 패드 및 시스템</sys:String>
     <sys:String x:Key="LOCGT_ButtonMatrix">버튼 매트릭스</sys:String>
     <sys:String x:Key="LOCGT_InputHistory">입력 이력</sys:String>
@@ -251,4 +252,10 @@
     <sys:String x:Key="LOCGT_CompatibilityReportReady">기술 장치 보고서를 내보낼 준비가 되었습니다.</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityReportExportedFormat">호환성 보고서를 {0}(으)로 내보냈습니다</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityReportFailedFormat">호환성 보고서를 내보내지 못했습니다: {0}</sys:String>
+    <sys:String x:Key="LOCGT_StartButtonCapture">버튼 테스트</sys:String>
+    <sys:String x:Key="LOCGT_ButtonCaptureDescription">Playnite를 탐색하지 않고 버튼 테스트를 시작합니다.</sys:String>
+    <sys:String x:Key="LOCGT_ButtonCaptureRunning">버튼 테스트 중</sys:String>
+    <sys:String x:Key="LOCGT_StartStickCapture">스틱 테스트</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunning">스틱 테스트 중</sys:String>
+    <sys:String x:Key="LOCGT_CaptureExitHint">테스트를 종료하려면 LB + RB을 길게 누르세요.</sys:String>
 </ResourceDictionary>

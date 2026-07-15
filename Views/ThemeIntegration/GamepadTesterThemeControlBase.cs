@@ -13,13 +13,26 @@ namespace GamepadTester.Views.ThemeIntegration
 {
     public abstract class GamepadTesterThemeControlBase : PluginUserControl
     {
+        public static readonly DependencyProperty IsInputCaptureActiveProperty =
+            DependencyProperty.Register(
+                "IsInputCaptureActive",
+                typeof(bool),
+                typeof(GamepadTesterThemeControlBase),
+                new PropertyMetadata(false));
+
         private readonly GamepadTesterThemeRuntimeHandle runtimeHandle;
 
         protected GamepadTesterThemeControlBase(GamepadTesterSettings settings, Func<string, string> localizer)
         {
             runtimeHandle = GamepadTesterThemeRuntime.Acquire(settings, localizer);
             DataContext = runtimeHandle.ViewModel;
+            SetBinding(IsInputCaptureActiveProperty, Bind("IsFullscreenInputCaptureActive"));
             Unloaded += OnUnloaded;
+        }
+
+        public bool IsInputCaptureActive
+        {
+            get { return (bool)GetValue(IsInputCaptureActiveProperty); }
         }
 
         protected GamepadTesterViewModel ViewModel

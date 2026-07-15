@@ -5,8 +5,8 @@
              IsHitTestVisible="False">
     <Grid Width="{Binding OuterSize, ElementName=Root}"
           Height="{Binding OuterSize, ElementName=Root}">
-        <Ellipse Fill="{DynamicResource SurfaceFill}"
-                 Stroke="{DynamicResource MutedLineBrush}"
+        <Ellipse Fill="{Binding OuterFill, ElementName=Root}"
+                 Stroke="{Binding OuterStroke, ElementName=Root}"
                  StrokeThickness="{Binding StrokeThickness, ElementName=Root}" />
         <Ellipse Width="{Binding DotSize, ElementName=Root}"
                  Height="{Binding DotSize, ElementName=Root}"

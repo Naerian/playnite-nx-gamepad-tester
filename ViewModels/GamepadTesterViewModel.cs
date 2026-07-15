@@ -38,6 +38,8 @@ namespace GamepadTester.ViewModels
         private readonly RelayCommand resetStickRangeCommand;
         private readonly RelayCommand resetLatencyCommand;
         private readonly RelayCommand startLatencyTestCommand;
+        private readonly RelayCommand startButtonCaptureCommand;
+        private readonly RelayCommand startStickCaptureCommand;
         private readonly RelayCommand openGuidedTestCommand;
         private readonly RelayCommand startGuidedTestCommand;
         private readonly RelayCommand exportReportCommand;
@@ -50,10 +52,13 @@ namespace GamepadTester.ViewModels
         private readonly StickDiagnosticsTracker rightStickDiagnostics;
         private readonly RestDriftTracker restDriftDiagnostics;
         private GamepadState state;
+        private GamepadState latestInputState;
         private GamepadControllerInfo selectedController;
         private int controllerRefreshTick;
         private GamepadButtonState previousButtons;
         private List<ExtraButtonState> previousExtraButtons;
+        private float previousLeftTrigger;
+        private float previousRightTrigger;
         private GamepadButtonState coveredButtons;
         private double maxLeftStickMagnitude;
         private double maxRightStickMagnitude;
@@ -96,7 +101,10 @@ namespace GamepadTester.ViewModels
         private string latencyStatusLabel;
         private bool hasLatencyTestStarted;
         private bool isLatencyTestRunning;
+        private bool isButtonCaptureRunning;
+        private bool isStickCaptureRunning;
         private DateTime latencyTestStartedAt;
+        private double latencyTestDurationSeconds;
         private double lastLatencyMs;
         private double bestLatencyMs;
         private double latencyTestSumMs;
@@ -116,6 +124,7 @@ namespace GamepadTester.ViewModels
             this.localizer = localizer;
             this.openGuidedTest = openGuidedTest;
             state = new GamepadState();
+            latestInputState = state;
             Controllers = new ObservableCollection<GamepadControllerInfo>();
             InputHistory = new ObservableCollection<InputHistoryItem>();
             GuidedTestInputs = new ObservableCollection<GuidedTestInputItem>();
@@ -135,7 +144,13 @@ namespace GamepadTester.ViewModels
             resetCalibrationCommand = new RelayCommand(ResetCalibration);
             resetStickRangeCommand = new RelayCommand(ResetStickRangeDiagnostics);
             resetLatencyCommand = new RelayCommand(ResetLatency, () => State.IsConnected && !isLatencyTestRunning);
-            startLatencyTestCommand = new RelayCommand(ToggleLatencyTest, () => State.IsConnected);
+            startLatencyTestCommand = new RelayCommand(ToggleLatencyTest, () => isLatencyTestRunning || State.IsConnected);
+            startButtonCaptureCommand = new RelayCommand(
+                ToggleButtonCapture,
+                () => isButtonCaptureRunning || (!isLatencyTestRunning && !isStickCaptureRunning));
+            startStickCaptureCommand = new RelayCommand(
+                ToggleStickCapture,
+                () => isStickCaptureRunning || (!isLatencyTestRunning && !isButtonCaptureRunning && State.IsConnected));
             openGuidedTestCommand = new RelayCommand(OpenGuidedTest, () => State.IsConnected && this.openGuidedTest != null);
             startGuidedTestCommand = new RelayCommand(StartGuidedTest, () => State.IsConnected);
             exportReportCommand = new RelayCommand(ExportReport);
@@ -250,6 +265,16 @@ namespace GamepadTester.ViewModels
             get { return startLatencyTestCommand; }
         }
 
+        public ICommand StartButtonCaptureCommand
+        {
+            get { return startButtonCaptureCommand; }
+        }
+
+        public ICommand StartStickCaptureCommand
+        {
+            get { return startStickCaptureCommand; }
+        }
+
         public ICommand OpenGuidedTestCommand
         {
             get { return openGuidedTestCommand; }
@@ -362,6 +387,7 @@ namespace GamepadTester.ViewModels
                 }
 
                 isFullscreenSimplifiedMode = value;
+                RefreshFullscreenDisplayState();
                 OnPropertyChanged("IsFullscreenSimplifiedMode");
                 OnPropertyChanged("IsControllerSelectorVisible");
                 OnPropertyChanged("IsVisualSchemeSelectorVisible");
@@ -549,6 +575,26 @@ namespace GamepadTester.ViewModels
         public int RightTriggerPercent
         {
             get { return (int)Math.Round(State.RightTrigger * 100); }
+        }
+
+        public int LiveLeftTriggerPercent
+        {
+            get { return latestInputState == null ? 0 : (int)Math.Round(latestInputState.LeftTrigger * 100); }
+        }
+
+        public int LiveRightTriggerPercent
+        {
+            get { return latestInputState == null ? 0 : (int)Math.Round(latestInputState.RightTrigger * 100); }
+        }
+
+        public string LiveLeftTriggerLabel
+        {
+            get { return string.Format("LT  {0}%", LiveLeftTriggerPercent); }
+        }
+
+        public string LiveRightTriggerLabel
+        {
+            get { return string.Format("RT  {0}%", LiveRightTriggerPercent); }
         }
 
         public bool IsLeftTriggerActive
@@ -1024,7 +1070,9 @@ namespace GamepadTester.ViewModels
                     return "-";
                 }
 
-                var seconds = Math.Max(0d, (DateTime.UtcNow - latencyTestStartedAt).TotalSeconds);
+                var seconds = isLatencyTestRunning
+                    ? Math.Max(0d, (DateTime.UtcNow - latencyTestStartedAt).TotalSeconds)
+                    : latencyTestDurationSeconds;
                 return string.Format(L("LOCGT_LatencyDurationFormat", "{0:0}s session"), seconds);
             }
         }
@@ -1102,6 +1150,56 @@ namespace GamepadTester.ViewModels
 
                 return string.Format(L("LOCGT_EventIntervalFormat", "Observed input event interval: {0:0.0} ms avg"), inputEventIntervalSumMs / inputEventIntervalSamples);
             }
+        }
+
+        public bool IsLatencyTestRunning
+        {
+            get { return isLatencyTestRunning; }
+        }
+
+        public bool IsButtonCaptureRunning
+        {
+            get { return isButtonCaptureRunning; }
+        }
+
+        public bool IsStickCaptureRunning
+        {
+            get { return isStickCaptureRunning; }
+        }
+
+        public bool IsFullscreenInputCaptureActive
+        {
+            get { return isButtonCaptureRunning || isStickCaptureRunning || isLatencyTestRunning; }
+        }
+
+        public bool IsRumbleRunning
+        {
+            get { return isRumbleRunning; }
+        }
+
+        public string ButtonCaptureButtonLabel
+        {
+            get
+            {
+                return isButtonCaptureRunning
+                    ? L("LOCGT_ButtonCaptureRunning", "Testing buttons")
+                    : L("LOCGT_StartButtonCapture", "Test buttons");
+            }
+        }
+
+        public string StickCaptureButtonLabel
+        {
+            get
+            {
+                return isStickCaptureRunning
+                    ? L("LOCGT_StickCaptureRunning", "Testing sticks")
+                    : L("LOCGT_StartStickCapture", "Test sticks");
+            }
+        }
+
+        public string CaptureExitHintLabel
+        {
+            get { return L("LOCGT_CaptureExitHint", "Hold LB + RB to finish the test."); }
         }
 
         public string LatencyConfidenceLabel
@@ -1874,12 +1972,15 @@ namespace GamepadTester.ViewModels
                     RefreshControllers();
                 }
 
+                latestInputState = nextState;
                 UpdateDiagnostics(nextState);
-                State = nextState;
+                State = CreateDisplayState(nextState);
                 SyncDetectedVisualScheme();
                 RaiseRumbleCanExecuteChanged();
                 startCenterCalibrationCommand.RaiseCanExecuteChanged();
                 startLatencyTestCommand.RaiseCanExecuteChanged();
+                startButtonCaptureCommand.RaiseCanExecuteChanged();
+                startStickCaptureCommand.RaiseCanExecuteChanged();
                 exportLatencyCommand.RaiseCanExecuteChanged();
                 exportSticksCommand.RaiseCanExecuteChanged();
             }));
@@ -1997,22 +2098,33 @@ namespace GamepadTester.ViewModels
             {
                 previousButtons = null;
                 previousExtraButtons = null;
+                previousLeftTrigger = 0f;
+                previousRightTrigger = 0f;
+                StopStickCapture();
                 return;
             }
 
             UpdateCenterCalibration(nextState);
 
-            TrackRestDrift(nextState);
+            if (!isFullscreenSimplifiedMode || isStickCaptureRunning)
+            {
+                TrackRestDrift(nextState);
+                leftStickDiagnostics.AddSample(nextState.LeftStick);
+                rightStickDiagnostics.AddSample(nextState.RightStick);
+            }
 
-            leftStickDiagnostics.AddSample(nextState.LeftStick);
-            rightStickDiagnostics.AddSample(nextState.RightStick);
-            UpdateCoverage(nextState);
-            UpdateGuidedTestProgress(nextState);
+            if (!isFullscreenSimplifiedMode || isButtonCaptureRunning)
+            {
+                UpdateCoverage(nextState);
+                UpdateGuidedTestProgress(nextState);
+            }
 
             if (previousButtons == null)
             {
                 previousButtons = CopyButtons(nextState.Buttons);
                 previousExtraButtons = CopyExtraButtons(nextState.ExtraButtons);
+                previousLeftTrigger = nextState.LeftTrigger;
+                previousRightTrigger = nextState.RightTrigger;
                 return;
             }
 
@@ -2028,8 +2140,8 @@ namespace GamepadTester.ViewModels
             TrackButtonChange("Touchpad", previousButtons.Touchpad, nextState.Buttons.Touchpad);
             TrackButtonChange(LeftStickButtonLabel, previousButtons.LeftStick, nextState.Buttons.LeftStick);
             TrackButtonChange(RightStickButtonLabel, previousButtons.RightStick, nextState.Buttons.RightStick);
-            TrackButtonChange(LeftTriggerLabel, State.LeftTrigger > 0.02f, nextState.LeftTrigger > 0.02f);
-            TrackButtonChange(RightTriggerLabel, State.RightTrigger > 0.02f, nextState.RightTrigger > 0.02f);
+            TrackButtonChange(LeftTriggerLabel, previousLeftTrigger > 0.02f, nextState.LeftTrigger > 0.02f);
+            TrackButtonChange(RightTriggerLabel, previousRightTrigger > 0.02f, nextState.RightTrigger > 0.02f);
             TrackButtonChange(DpadUpLabel, previousButtons.DpadUp, nextState.Buttons.DpadUp);
             TrackButtonChange(DpadDownLabel, previousButtons.DpadDown, nextState.Buttons.DpadDown);
             TrackButtonChange(DpadLeftLabel, previousButtons.DpadLeft, nextState.Buttons.DpadLeft);
@@ -2038,6 +2150,8 @@ namespace GamepadTester.ViewModels
 
             previousButtons = CopyButtons(nextState.Buttons);
             previousExtraButtons = CopyExtraButtons(nextState.ExtraButtons);
+            previousLeftTrigger = nextState.LeftTrigger;
+            previousRightTrigger = nextState.RightTrigger;
         }
 
         private void TrackExtraButtonChanges(IList<ExtraButtonState> previous, IList<ExtraButtonState> current)
@@ -2077,10 +2191,6 @@ namespace GamepadTester.ViewModels
             if (isLatencyTestRunning)
             {
                 TrackLatencyTest(current);
-            }
-            else
-            {
-                TrackInputEventLatency();
             }
 
             if (!isInputLogEnabled)
@@ -2227,6 +2337,8 @@ namespace GamepadTester.ViewModels
             {
                 isRumbleRunning = isRunning;
                 rumbleStatusLabel = statusLabel;
+                OnPropertyChanged("IsRumbleRunning");
+                OnPropertyChanged("IsFullscreenInputCaptureActive");
                 OnPropertyChanged("RumbleStatusLabel");
                 RaiseRumbleCanExecuteChanged();
             }));
@@ -2399,8 +2511,11 @@ namespace GamepadTester.ViewModels
             bestLatencyMs = 0d;
             latencyTestSumMs = 0d;
             latencyTestSamples = 0;
+            latencyTestDurationSeconds = 0d;
             latencyStatusLabel = L("LOCGT_LatencyWaiting", "Waiting for input changes.");
             OnPropertyChanged("LatencyStatusLabel");
+            OnPropertyChanged("IsLatencyTestRunning");
+            OnPropertyChanged("IsFullscreenInputCaptureActive");
             OnPropertyChanged("StartLatencyButtonLabel");
             OnPropertyChanged("LatencyResultLabel");
             OnPropertyChanged("LatencyStatsLabel");
@@ -2416,6 +2531,8 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("EstimatedDelayLabel");
             OnPropertyChanged("LatencyRateGraphPoints");
             startLatencyTestCommand.RaiseCanExecuteChanged();
+            startButtonCaptureCommand.RaiseCanExecuteChanged();
+            startStickCaptureCommand.RaiseCanExecuteChanged();
             resetLatencyCommand.RaiseCanExecuteChanged();
             exportLatencyCommand.RaiseCanExecuteChanged();
         }
@@ -2431,6 +2548,61 @@ namespace GamepadTester.ViewModels
             StartLatencyTest();
         }
 
+        private void ToggleButtonCapture()
+        {
+            isButtonCaptureRunning = !isButtonCaptureRunning;
+            RefreshFullscreenDisplayState();
+            OnPropertyChanged("IsButtonCaptureRunning");
+            OnPropertyChanged("IsFullscreenInputCaptureActive");
+            OnPropertyChanged("ButtonCaptureButtonLabel");
+            startButtonCaptureCommand.RaiseCanExecuteChanged();
+            startStickCaptureCommand.RaiseCanExecuteChanged();
+            startLatencyTestCommand.RaiseCanExecuteChanged();
+        }
+
+        private void ToggleStickCapture()
+        {
+            if (isStickCaptureRunning)
+            {
+                StopStickCapture();
+                return;
+            }
+
+            if (!State.IsConnected || isButtonCaptureRunning || isLatencyTestRunning)
+            {
+                return;
+            }
+
+            ResetStickRangeDiagnostics();
+            restDriftDiagnostics.Reset();
+            isStickCaptureRunning = true;
+            RefreshFullscreenDisplayState();
+            OnPropertyChanged("IsStickCaptureRunning");
+            OnPropertyChanged("IsFullscreenInputCaptureActive");
+            OnPropertyChanged("StickCaptureButtonLabel");
+            OnPropertyChanged("SessionRestDriftLabel");
+            startStickCaptureCommand.RaiseCanExecuteChanged();
+            startButtonCaptureCommand.RaiseCanExecuteChanged();
+            startLatencyTestCommand.RaiseCanExecuteChanged();
+        }
+
+        private void StopStickCapture()
+        {
+            if (!isStickCaptureRunning)
+            {
+                return;
+            }
+
+            isStickCaptureRunning = false;
+            RefreshFullscreenDisplayState();
+            OnPropertyChanged("IsStickCaptureRunning");
+            OnPropertyChanged("IsFullscreenInputCaptureActive");
+            OnPropertyChanged("StickCaptureButtonLabel");
+            startStickCaptureCommand.RaiseCanExecuteChanged();
+            startButtonCaptureCommand.RaiseCanExecuteChanged();
+            startLatencyTestCommand.RaiseCanExecuteChanged();
+        }
+
         private void StartLatencyTest()
         {
             if (!State.IsConnected)
@@ -2439,7 +2611,11 @@ namespace GamepadTester.ViewModels
             }
 
             isLatencyTestRunning = true;
+            isButtonCaptureRunning = false;
+            isStickCaptureRunning = false;
+            RefreshFullscreenDisplayState();
             hasLatencyTestStarted = true;
+            lastStateSampleAt = null;
             lastInputEventAt = null;
             currentInputEventIntervalMs = 0d;
             inputEventIntervalSumMs = 0d;
@@ -2450,10 +2626,17 @@ namespace GamepadTester.ViewModels
             bestLatencyMs = 0d;
             latencyTestSumMs = 0d;
             latencyTestSamples = 0;
+            latencyTestDurationSeconds = 0d;
             latencyRateHistory.Clear();
             latencyTestStartedAt = DateTime.UtcNow;
             latencyStatusLabel = L("LOCGT_LatencyArmed", "Latency test armed. Press any controller button.");
             OnPropertyChanged("LatencyStatusLabel");
+            OnPropertyChanged("IsLatencyTestRunning");
+            OnPropertyChanged("IsButtonCaptureRunning");
+            OnPropertyChanged("IsStickCaptureRunning");
+            OnPropertyChanged("IsFullscreenInputCaptureActive");
+            OnPropertyChanged("ButtonCaptureButtonLabel");
+            OnPropertyChanged("StickCaptureButtonLabel");
             OnPropertyChanged("StartLatencyButtonLabel");
             OnPropertyChanged("LatencyResultLabel");
             OnPropertyChanged("LatencyStatsLabel");
@@ -2468,6 +2651,8 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("LatencyTestDurationLabel");
             OnPropertyChanged("LatencyRateGraphPoints");
             startLatencyTestCommand.RaiseCanExecuteChanged();
+            startButtonCaptureCommand.RaiseCanExecuteChanged();
+            startStickCaptureCommand.RaiseCanExecuteChanged();
             resetLatencyCommand.RaiseCanExecuteChanged();
             exportLatencyCommand.RaiseCanExecuteChanged();
         }
@@ -2480,10 +2665,13 @@ namespace GamepadTester.ViewModels
             }
 
             isLatencyTestRunning = false;
+            latencyTestDurationSeconds = Math.Max(0d, (DateTime.UtcNow - latencyTestStartedAt).TotalSeconds);
             latencyStatusLabel = latencyTestSamples == 0
                 ? L("LOCGT_LatencyStoppedNoSample", "Latency test stopped. No button press was captured.")
                 : string.Format(L("LOCGT_LatencyStoppedFormat", "Latency test stopped. Last captured value: {0:0} ms."), lastLatencyMs);
             OnPropertyChanged("LatencyStatusLabel");
+            OnPropertyChanged("IsLatencyTestRunning");
+            OnPropertyChanged("IsFullscreenInputCaptureActive");
             OnPropertyChanged("StartLatencyButtonLabel");
             OnPropertyChanged("LatencyResultLabel");
             OnPropertyChanged("LatencyStatsLabel");
@@ -2497,6 +2685,8 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("LatencyRangeLabel");
             OnPropertyChanged("LatencyTestDurationLabel");
             startLatencyTestCommand.RaiseCanExecuteChanged();
+            startButtonCaptureCommand.RaiseCanExecuteChanged();
+            startStickCaptureCommand.RaiseCanExecuteChanged();
             resetLatencyCommand.RaiseCanExecuteChanged();
             exportLatencyCommand.RaiseCanExecuteChanged();
         }
@@ -2865,6 +3055,11 @@ namespace GamepadTester.ViewModels
 
         private void UpdateLatency(GamepadState nextState)
         {
+            if (!isLatencyTestRunning)
+            {
+                return;
+            }
+
             if (!nextState.IsConnected)
             {
                 lastStateSampleAt = null;
@@ -2898,29 +3093,6 @@ namespace GamepadTester.ViewModels
             return hz < 10d
                 ? string.Format("{0:0.0} Hz", hz)
                 : string.Format("{0:0} Hz", hz);
-        }
-
-        private void TrackInputEventLatency()
-        {
-            var now = DateTime.UtcNow;
-            if (lastInputEventAt.HasValue)
-            {
-                var interval = (now - lastInputEventAt.Value).TotalMilliseconds;
-                if (interval > 0d && interval < 10000d)
-                {
-                    inputEventIntervalSamples++;
-                    inputEventIntervalSumMs += interval;
-                    inputEventIntervalMinMs = Math.Min(inputEventIntervalMinMs, interval);
-                    inputEventIntervalMaxMs = Math.Max(inputEventIntervalMaxMs, interval);
-                    latencyStatusLabel = string.Format(L("LOCGT_LastInputObservedFormat", "Last input observed after {0:0.0} ms."), currentPollingIntervalMs);
-                }
-            }
-            else
-            {
-                latencyStatusLabel = L("LOCGT_FirstInputObserved", "First input observed. Press repeatedly for an average.");
-            }
-
-            lastInputEventAt = now;
         }
 
         private void TrackLatencyTest(bool isPressed)
@@ -3295,6 +3467,60 @@ namespace GamepadTester.ViewModels
             return copy;
         }
 
+        private GamepadState CreateDisplayState(GamepadState source)
+        {
+            if (source == null || !isFullscreenSimplifiedMode)
+            {
+                return source ?? new GamepadState();
+            }
+
+            var showButtons = isButtonCaptureRunning;
+            var showSticks = isButtonCaptureRunning || isStickCaptureRunning;
+            var display = new GamepadState
+            {
+                IsConnected = source.IsConnected,
+                ControllerName = source.ControllerName,
+                VendorId = source.VendorId,
+                ProductId = source.ProductId,
+                Layout = source.Layout,
+                EightBitDoModel = source.EightBitDoModel,
+                SdlVersion = source.SdlVersion,
+                SdlGuid = source.SdlGuid,
+                SdlMapping = source.SdlMapping,
+                AxisCount = source.AxisCount,
+                ButtonCount = source.ButtonCount,
+                HatCount = source.HatCount,
+                LeftStick = showSticks
+                    ? new StickState { X = source.LeftStick.X, Y = source.LeftStick.Y }
+                    : new StickState(),
+                RightStick = showSticks
+                    ? new StickState { X = source.RightStick.X, Y = source.RightStick.Y }
+                    : new StickState(),
+                LeftTrigger = showButtons ? source.LeftTrigger : 0f,
+                RightTrigger = showButtons ? source.RightTrigger : 0f,
+                Buttons = showButtons ? CopyButtons(source.Buttons) : new GamepadButtonState(),
+                ExtraButtons = CopyExtraButtons(source.ExtraButtons)
+            };
+
+            if (!showButtons)
+            {
+                for (var index = 0; index < display.ExtraButtons.Count; index++)
+                {
+                    display.ExtraButtons[index].IsPressed = false;
+                }
+            }
+
+            return display;
+        }
+
+        private void RefreshFullscreenDisplayState()
+        {
+            if (latestInputState != null)
+            {
+                State = CreateDisplayState(latestInputState);
+            }
+        }
+
         private void TrackRestDrift(GamepadState nextState)
         {
             restDriftDiagnostics.AddSample(nextState, DateTime.UtcNow);
@@ -3529,6 +3755,10 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("RightStickDiagnosticsDotY");
             OnPropertyChanged("LeftTriggerPercent");
             OnPropertyChanged("RightTriggerPercent");
+            OnPropertyChanged("LiveLeftTriggerPercent");
+            OnPropertyChanged("LiveRightTriggerPercent");
+            OnPropertyChanged("LiveLeftTriggerLabel");
+            OnPropertyChanged("LiveRightTriggerLabel");
             OnPropertyChanged("IsLeftTriggerActive");
             OnPropertyChanged("IsRightTriggerActive");
             OnPropertyChanged("LeftStickDriftPercent");

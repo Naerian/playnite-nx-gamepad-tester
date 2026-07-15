@@ -28,6 +28,7 @@
     <sys:String x:Key="LOCGT_FaceButtons">Botones frontales</sys:String>
     <sys:String x:Key="LOCGT_ShouldersAndTriggers">Bumpers y gatillos</sys:String>
     <sys:String x:Key="LOCGT_Sticks">Sticks</sys:String>
+    <sys:String x:Key="LOCGT_Triggers">Gatillos</sys:String>
     <sys:String x:Key="LOCGT_DpadAndSystem">Cruceta y sistema</sys:String>
     <sys:String x:Key="LOCGT_ButtonMatrix">Matriz de botones</sys:String>
     <sys:String x:Key="LOCGT_InputHistory">Historial de inputs</sys:String>
@@ -251,4 +252,10 @@
     <sys:String x:Key="LOCGT_CompatibilityReportReady">El informe tecnico del dispositivo esta listo para exportar.</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityReportExportedFormat">Informe de compatibilidad exportado a {0}</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityReportFailedFormat">No se pudo exportar el informe de compatibilidad: {0}</sys:String>
+    <sys:String x:Key="LOCGT_StartButtonCapture">Probar botones</sys:String>
+    <sys:String x:Key="LOCGT_ButtonCaptureDescription">Inicia una prueba de botones sin navegar por Playnite.</sys:String>
+    <sys:String x:Key="LOCGT_ButtonCaptureRunning">Probando botones</sys:String>
+    <sys:String x:Key="LOCGT_StartStickCapture">Probar sticks</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunning">Probando sticks</sys:String>
+    <sys:String x:Key="LOCGT_CaptureExitHint">Mantén LB + RB pulsados para finalizar la prueba.</sys:String>
 </ResourceDictionary>

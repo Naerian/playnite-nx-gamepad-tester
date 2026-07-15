@@ -122,6 +122,7 @@
     <Compile Include="Views\ThemeIntegration\GamepadTesterRumblePadControl.cs" />
     <Compile Include="Views\ThemeIntegration\GamepadTesterStatusBadgeControl.cs" />
     <Compile Include="Views\ThemeIntegration\GamepadTesterStickCheckControl.cs" />
+    <Compile Include="Views\ThemeIntegration\GamepadTesterTriggerCheckControl.cs" />
     <Compile Include="Views\ThemeIntegration\GamepadTesterThemeHost.cs" />
     <Compile Include="Views\ThemeIntegration\GamepadTesterThemeControlBase.cs" />
     <Compile Include="Views\GuidedTestView.xaml.cs">
@@ -213,7 +214,9 @@
     <None Include="media\icon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Icons\gamepad-2.svg" />
+    <EmbeddedResource Include="Icons\gamepad-2.svg">
+      <LogicalName>GamepadTester.Icons.gamepad-2.svg</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

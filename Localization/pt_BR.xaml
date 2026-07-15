@@ -28,6 +28,7 @@
     <sys:String x:Key="LOCGT_FaceButtons">Botões de rosto</sys:String>
     <sys:String x:Key="LOCGT_ShouldersAndTriggers">Ombros e gatilhos</sys:String>
     <sys:String x:Key="LOCGT_Sticks">Varas</sys:String>
+    <sys:String x:Key="LOCGT_Triggers">Gatilhos</sys:String>
     <sys:String x:Key="LOCGT_DpadAndSystem">D-pad e sistema</sys:String>
     <sys:String x:Key="LOCGT_ButtonMatrix">Matriz de botão</sys:String>
     <sys:String x:Key="LOCGT_InputHistory">Histórico de entrada</sys:String>
@@ -251,4 +252,10 @@
     <sys:String x:Key="LOCGT_CompatibilityReportReady">O relatorio tecnico do dispositivo esta pronto para exportacao.</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityReportExportedFormat">Relatorio de compatibilidade exportado para {0}</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityReportFailedFormat">Nao foi possivel exportar o relatorio de compatibilidade: {0}</sys:String>
+    <sys:String x:Key="LOCGT_StartButtonCapture">Testar botões</sys:String>
+    <sys:String x:Key="LOCGT_ButtonCaptureDescription">Inicie um teste focado de botões sem navegar pelo Playnite.</sys:String>
+    <sys:String x:Key="LOCGT_ButtonCaptureRunning">Testando botões</sys:String>
+    <sys:String x:Key="LOCGT_StartStickCapture">Testar analógicos</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunning">Testando analógicos</sys:String>
+    <sys:String x:Key="LOCGT_CaptureExitHint">Mantenha LB + RB pressionados para encerrar o teste.</sys:String>
 </ResourceDictionary>

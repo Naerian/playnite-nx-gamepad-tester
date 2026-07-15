@@ -28,6 +28,7 @@
     <sys:String x:Key="LOCGT_FaceButtons">Pulsanti frontali</sys:String>
     <sys:String x:Key="LOCGT_ShouldersAndTriggers">Spalle e grilletti</sys:String>
     <sys:String x:Key="LOCGT_Sticks">Bastoni</sys:String>
+    <sys:String x:Key="LOCGT_Triggers">Grilletti</sys:String>
     <sys:String x:Key="LOCGT_DpadAndSystem">D-pad e sistema</sys:String>
     <sys:String x:Key="LOCGT_ButtonMatrix">Matrice di pulsanti</sys:String>
     <sys:String x:Key="LOCGT_InputHistory">Inserisci la cronologia</sys:String>
@@ -251,4 +252,10 @@
     <sys:String x:Key="LOCGT_CompatibilityReportReady">Il rapporto tecnico del dispositivo e pronto per l'esportazione.</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityReportExportedFormat">Rapporto di compatibilita esportato in {0}</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityReportFailedFormat">Impossibile esportare il rapporto di compatibilita: {0}</sys:String>
+    <sys:String x:Key="LOCGT_StartButtonCapture">Testa pulsanti</sys:String>
+    <sys:String x:Key="LOCGT_ButtonCaptureDescription">Avvia un test mirato dei pulsanti senza navigare in Playnite.</sys:String>
+    <sys:String x:Key="LOCGT_ButtonCaptureRunning">Test pulsanti in corso</sys:String>
+    <sys:String x:Key="LOCGT_StartStickCapture">Testa stick</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunning">Test stick in corso</sys:String>
+    <sys:String x:Key="LOCGT_CaptureExitHint">Tieni premuti LB + RB per terminare il test.</sys:String>
 </ResourceDictionary>

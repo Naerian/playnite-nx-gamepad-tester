@@ -28,6 +28,7 @@
     <sys:String x:Key="LOCGT_FaceButtons">Face buttons</sys:String>
     <sys:String x:Key="LOCGT_ShouldersAndTriggers">Shoulders and triggers</sys:String>
     <sys:String x:Key="LOCGT_Sticks">Sticks</sys:String>
+    <sys:String x:Key="LOCGT_Triggers">Triggers</sys:String>
     <sys:String x:Key="LOCGT_DpadAndSystem">D-pad and system</sys:String>
     <sys:String x:Key="LOCGT_ButtonMatrix">Button matrix</sys:String>
     <sys:String x:Key="LOCGT_InputHistory">Input history</sys:String>
@@ -251,4 +252,10 @@
     <sys:String x:Key="LOCGT_CompatibilityReportReady">Technical device report ready to export.</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityReportExportedFormat">Compatibility report exported to {0}</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityReportFailedFormat">Could not export compatibility report: {0}</sys:String>
+    <sys:String x:Key="LOCGT_StartButtonCapture">Test buttons</sys:String>
+    <sys:String x:Key="LOCGT_ButtonCaptureDescription">Start a focused button test without navigating Playnite.</sys:String>
+    <sys:String x:Key="LOCGT_ButtonCaptureRunning">Testing buttons</sys:String>
+    <sys:String x:Key="LOCGT_StartStickCapture">Test sticks</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunning">Testing sticks</sys:String>
+    <sys:String x:Key="LOCGT_CaptureExitHint">Hold LB + RB to finish the test.</sys:String>
 </ResourceDictionary>

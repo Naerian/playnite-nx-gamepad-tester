@@ -28,6 +28,7 @@
     <sys:String x:Key="LOCGT_FaceButtons">Gesichtsknöpfe</sys:String>
     <sys:String x:Key="LOCGT_ShouldersAndTriggers">Schultern und Auslöser</sys:String>
     <sys:String x:Key="LOCGT_Sticks">Stöcke</sys:String>
+    <sys:String x:Key="LOCGT_Triggers">Auslöser</sys:String>
     <sys:String x:Key="LOCGT_DpadAndSystem">D-Pad und System</sys:String>
     <sys:String x:Key="LOCGT_ButtonMatrix">Tastenmatrix</sys:String>
     <sys:String x:Key="LOCGT_InputHistory">Eingabeverlauf</sys:String>
@@ -251,4 +252,10 @@
     <sys:String x:Key="LOCGT_CompatibilityReportReady">Der technische Geraetebericht kann exportiert werden.</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityReportExportedFormat">Kompatibilitaetsbericht wurde nach {0} exportiert</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityReportFailedFormat">Kompatibilitaetsbericht konnte nicht exportiert werden: {0}</sys:String>
+    <sys:String x:Key="LOCGT_StartButtonCapture">Tasten testen</sys:String>
+    <sys:String x:Key="LOCGT_ButtonCaptureDescription">Starte einen fokussierten Tastentest, ohne Playnite zu navigieren.</sys:String>
+    <sys:String x:Key="LOCGT_ButtonCaptureRunning">Tastentest läuft</sys:String>
+    <sys:String x:Key="LOCGT_StartStickCapture">Sticks testen</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunning">Stick-Test läuft</sys:String>
+    <sys:String x:Key="LOCGT_CaptureExitHint">Halte LB + RB gedrückt, um den Test zu beenden.</sys:String>
 </ResourceDictionary>

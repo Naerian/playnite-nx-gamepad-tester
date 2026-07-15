@@ -1,13 +1,18 @@
 using GamepadTester.Views.ControllerLayouts;
 using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace GamepadTester.Views.ThemeIntegration
 {
     public sealed class GamepadTesterButtonMapControl : GamepadTesterThemeControlBase
     {
+        private readonly Button actionButton;
+
         public GamepadTesterButtonMapControl(GamepadTesterSettings settings, Func<string, string> localizer)
             : base(settings, localizer)
         {
@@ -19,10 +24,6 @@ namespace GamepadTester.Views.ThemeIntegration
             };
 
             var content = new StackPanel();
-            var header = Text(L("LOCGT_TestDetails", "Test details"), 14, FontWeights.SemiBold);
-            header.Margin = new Thickness(0, 0, 0, 10);
-            content.Children.Add(header);
-
             var host = new Grid
             {
                 Width = 620,
@@ -44,9 +45,52 @@ namespace GamepadTester.Views.ThemeIntegration
             content.Children.Add(new Viewbox
             {
                 Stretch = Stretch.Uniform,
-                MaxHeight = 380,
+                MaxHeight = 285,
                 Child = host
             });
+
+            var actionArea = new Grid
+            {
+                MinHeight = 54,
+                Margin = new Thickness(0, 12, 0, 0)
+            };
+
+            actionButton = new Button
+            {
+                Name = "GamepadTester_ButtonTestAction",
+                MinWidth = 210,
+                MinHeight = 48,
+                Padding = new Thickness(18, 8, 18, 8),
+                Foreground = DynamicBrush("TextBrush", Brushes.White),
+                Background = DynamicBrush("ButtonBackgroundBrush", new SolidColorBrush(Color.FromRgb(31, 36, 47))),
+                BorderBrush = DynamicBrush("ControlBorderBrush", new SolidColorBrush(Color.FromRgb(68, 77, 92))),
+                BorderThickness = new Thickness(1),
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
+            actionButton.SetBinding(Button.CommandProperty, new Binding("StartButtonCaptureCommand"));
+            actionButton.SetBinding(ContentControl.ContentProperty, new Binding("ButtonCaptureButtonLabel"));
+            actionButton.SetBinding(VisibilityProperty, Bind("IsButtonCaptureRunning", InverseBoolToVisibility()));
+            actionArea.Children.Add(actionButton);
+
+            var exitHint = new Border
+            {
+                MinWidth = 310,
+                MinHeight = 48,
+                Padding = new Thickness(18, 8, 18, 8),
+                CornerRadius = new CornerRadius(6),
+                Background = DynamicBrush("ButtonBackgroundBrush", new SolidColorBrush(Color.FromRgb(31, 36, 47))),
+                BorderBrush = DynamicBrush("ControlBorderBrush", new SolidColorBrush(Color.FromRgb(68, 77, 92))),
+                BorderThickness = new Thickness(1),
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
+            exitHint.SetBinding(VisibilityProperty, Bind("IsButtonCaptureRunning", BoolToVisibility()));
+            var exitHintText = Text(string.Empty, 13, FontWeights.SemiBold);
+            exitHintText.HorizontalAlignment = HorizontalAlignment.Center;
+            exitHintText.TextAlignment = TextAlignment.Center;
+            exitHintText.SetBinding(TextBlock.TextProperty, new Binding("CaptureExitHintLabel"));
+            exitHint.Child = exitHintText;
+            actionArea.Children.Add(exitHint);
+            content.Children.Add(actionArea);
 
             root.Children.Add(content);
 
@@ -56,6 +100,53 @@ namespace GamepadTester.Views.ThemeIntegration
 
             panel.Child = root;
             Content = panel;
+
+            ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+            Unloaded += OnControlUnloaded;
+        }
+
+        public bool IsTestRunning
+        {
+            get { return ViewModel.IsButtonCaptureRunning; }
+        }
+
+        public void StopButtonCapture()
+        {
+            if (IsTestRunning && ViewModel.StartButtonCaptureCommand.CanExecute(null))
+            {
+                ViewModel.StartButtonCaptureCommand.Execute(null);
+            }
+        }
+
+        private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "IsButtonCaptureRunning" && !IsTestRunning)
+            {
+                FocusActionButton();
+            }
+        }
+
+        private void FocusActionButton()
+        {
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (IsVisible && actionButton.IsEnabled)
+                {
+                    actionButton.Focus();
+                    Keyboard.Focus(actionButton);
+                }
+            }), System.Windows.Threading.DispatcherPriority.Input);
+        }
+
+        public void FocusStartButton()
+        {
+            FocusActionButton();
+        }
+
+        private void OnControlUnloaded(object sender, RoutedEventArgs args)
+        {
+            ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+            Unloaded -= OnControlUnloaded;
         }
 
         private static void AddLayout(Panel host, FrameworkElement layout, string visibilityPath)

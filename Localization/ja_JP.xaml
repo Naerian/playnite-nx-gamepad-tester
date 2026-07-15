@@ -28,6 +28,7 @@
     <sys:String x:Key="LOCGT_FaceButtons">フェイスボタン</sys:String>
     <sys:String x:Key="LOCGT_ShouldersAndTriggers">ショルダーとトリガー</sys:String>
     <sys:String x:Key="LOCGT_Sticks">スティック</sys:String>
+    <sys:String x:Key="LOCGT_Triggers">トリガー</sys:String>
     <sys:String x:Key="LOCGT_DpadAndSystem">十字キーとシステム</sys:String>
     <sys:String x:Key="LOCGT_ButtonMatrix">ボタンマトリックス</sys:String>
     <sys:String x:Key="LOCGT_InputHistory">入力履歴</sys:String>
@@ -251,4 +252,10 @@
     <sys:String x:Key="LOCGT_CompatibilityReportReady">デバイス技術レポートをエクスポートできます。</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityReportExportedFormat">互換性レポートを {0} にエクスポートしました</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityReportFailedFormat">互換性レポートをエクスポートできませんでした: {0}</sys:String>
+    <sys:String x:Key="LOCGT_StartButtonCapture">ボタンをテスト</sys:String>
+    <sys:String x:Key="LOCGT_ButtonCaptureDescription">Playnite を操作せずにボタンテストを開始します。</sys:String>
+    <sys:String x:Key="LOCGT_ButtonCaptureRunning">ボタンをテスト中</sys:String>
+    <sys:String x:Key="LOCGT_StartStickCapture">スティックをテスト</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunning">スティックをテスト中</sys:String>
+    <sys:String x:Key="LOCGT_CaptureExitHint">LB + RB を長押ししてテストを終了します。</sys:String>
 </ResourceDictionary>

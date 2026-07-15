@@ -28,6 +28,7 @@
     <sys:String x:Key="LOCGT_FaceButtons">Лицевые кнопки</sys:String>
     <sys:String x:Key="LOCGT_ShouldersAndTriggers">Плечи и триггеры</sys:String>
     <sys:String x:Key="LOCGT_Sticks">Палочки</sys:String>
+    <sys:String x:Key="LOCGT_Triggers">Триггеры</sys:String>
     <sys:String x:Key="LOCGT_DpadAndSystem">D-pad и система</sys:String>
     <sys:String x:Key="LOCGT_ButtonMatrix">Матрица кнопок</sys:String>
     <sys:String x:Key="LOCGT_InputHistory">История ввода</sys:String>
@@ -251,4 +252,10 @@
     <sys:String x:Key="LOCGT_CompatibilityReportReady">Технический отчет об устройстве готов к экспорту.</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityReportExportedFormat">Отчет о совместимости экспортирован в {0}</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityReportFailedFormat">Не удалось экспортировать отчет о совместимости: {0}</sys:String>
+    <sys:String x:Key="LOCGT_StartButtonCapture">Проверить кнопки</sys:String>
+    <sys:String x:Key="LOCGT_ButtonCaptureDescription">Запустите проверку кнопок без навигации по Playnite.</sys:String>
+    <sys:String x:Key="LOCGT_ButtonCaptureRunning">Проверка кнопок</sys:String>
+    <sys:String x:Key="LOCGT_StartStickCapture">Проверить стики</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunning">Проверка стиков</sys:String>
+    <sys:String x:Key="LOCGT_CaptureExitHint">Удерживайте LB + RB, чтобы завершить тест.</sys:String>
 </ResourceDictionary>

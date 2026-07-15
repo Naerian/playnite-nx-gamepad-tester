@@ -4,9 +4,9 @@ Playnite NX Gamepad Tester is a Playnite extension for testing controllers in De
 
 It is designed for couch, TV, handheld-PC, and console-like setups where users want to verify gamepad buttons, sticks, triggers, rumble, drift, latency, and device metadata without leaving Playnite.
 
-## Version 1.0.0
+## Version 1.0.1
 
-Version `1.0.0` establishes the first stable release. Diagnostics now expose collection readiness and confidence, resting drift excludes normal controller activity, and Device Info can export a privacy-conscious SDL compatibility report for troubleshooting unusual mappings or hardware modes.
+Version `1.0.1` refines controller-first Fullscreen integration. Embedded tests now expose explicit capture modes, dynamic theme windows initialize reliably, Back navigation is protected during capture and restored afterwards, latency results freeze when stopped, and themes can embed a compact live trigger block.
 
 ## Documentation
 
@@ -54,7 +54,7 @@ After installation, open **Extensions > Gamepad Tester**.
 
 Desktop mode provides the complete tester: controller selection, visual scheme override, guided checks, stick diagnostics, health, latency, input logs, vibration, device information, and exportable reports.
 
-Fullscreen themes can open focused tester views or embed independent `StatusBadge`, `ButtonMap`, `StickCheck`, `RumblePad`, and `LatencyMini` blocks. The theme remains responsible for focus, controller navigation, layout, animation, and modal behavior. See the [Fullscreen integration guide](https://github.com/Naerian/playnite-nx-gamepad-tester/wiki/EN-Fullscreen-Theme-Integration) for commands and XAML examples.
+Fullscreen themes can open focused tester views or embed independent `StatusBadge`, `ButtonMap`, `StickCheck`, `TriggerCheck`, `RumblePad`, and `LatencyMini` blocks. The theme remains responsible for focus, controller navigation, layout, animation, and modal behavior. See the [Fullscreen integration guide](https://github.com/Naerian/playnite-nx-gamepad-tester/wiki/EN-Fullscreen-Theme-Integration) for commands and XAML examples.
 
 ## Compatibility note
 
