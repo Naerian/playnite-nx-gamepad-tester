@@ -24,6 +24,8 @@ namespace GamepadTester.Tests
         {
             try
             {
+                GamepadTesterThemeRuntime.SetInputProviderFactoryForTests(
+                    () => new SimulatedGamepadInputProvider());
                 TestControllerIdentification();
                 TestDiagnosticConfidence();
                 TestRestDriftTracking();
@@ -35,6 +37,7 @@ namespace GamepadTester.Tests
                 TestLateThemeHostInitialization();
                 TestTriggerCheckBindings();
                 TestFullscreenThemeBrushOverrides();
+                TestFullscreenStickGuideBrushOverride();
                 TestFullscreenStickPlotSize();
                 TestFullscreenCaptureGating();
                 TestCompatibilityReport();
@@ -201,7 +204,8 @@ namespace GamepadTester.Tests
 
         private static void TestLateThemeHostInitialization()
         {
-            GamepadTesterThemeHost.Configure(new GamepadTesterSettings(), key => key, () => { });
+            var hostMessages = new List<string>();
+            GamepadTesterThemeHost.Configure(new GamepadTesterSettings(), key => key, () => { }, hostMessages.Add);
             var host = new ContentControl { Tag = "GamepadTesterLauncher" };
             Equal(1, GamepadTesterThemeHost.Refresh(host),
                 "Late theme host refresh finds its standard Tag marker");
@@ -209,8 +213,9 @@ namespace GamepadTester.Tests
                 "Late theme host initializes from its standard Tag marker");
 
             var triggerHost = new ContentControl { Tag = "GamepadTester_TriggerCheck" };
-            Equal(1, GamepadTesterThemeHost.Refresh(triggerHost),
-                "Late theme host finds the fullscreen trigger block");
+            var initializedTriggers = GamepadTesterThemeHost.Refresh(triggerHost);
+            True(initializedTriggers == 1,
+                "Late theme host finds the fullscreen trigger block: " + string.Join(" | ", hostMessages));
             True(triggerHost.Content is GamepadTesterTriggerCheckControl,
                 "Late theme host initializes the fullscreen trigger block");
         }
@@ -270,6 +275,33 @@ namespace GamepadTester.Tests
             Equal(border, panel.BorderBrush, "Theme can override the Gamepad Tester panel border");
             Equal(buttonBackground, actionButton.Background, "Theme can override Gamepad Tester buttons");
             Equal(text, actionButton.Foreground, "Theme can override Gamepad Tester text");
+        }
+
+        private static void TestFullscreenStickGuideBrushOverride()
+        {
+            var control = new GamepadTesterStickCheckControl(new GamepadTesterSettings(), key => key);
+            var border = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Lime);
+            var guide = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Cyan);
+            var themeHost = new ContentControl { Content = control };
+            themeHost.Resources[GamepadTesterThemeControlBase.ControlBorderBrushKey] = border;
+            themeHost.Resources[GamepadTesterThemeControlBase.StickGuideBrushKey] = guide;
+
+            var panel = (Border)control.Content;
+            var root = (StackPanel)panel.Child;
+            var sticks = (Grid)root.Children[1];
+            var leftStick = (Grid)sticks.Children[0];
+            var viewbox = (Viewbox)leftStick.Children[0];
+            var plot = (Grid)viewbox.Child;
+            var surface = (System.Windows.Shapes.Ellipse)plot.Children[0];
+            var range = (System.Windows.Shapes.Ellipse)plot.Children[1];
+            var verticalAxis = (System.Windows.Shapes.Line)plot.Children[2];
+            var horizontalAxis = (System.Windows.Shapes.Line)plot.Children[3];
+
+            Equal(border, panel.BorderBrush, "Stick guide override does not change panel borders");
+            Equal(guide, surface.Stroke, "Theme can override the stick outer circle");
+            Equal(guide, range.Stroke, "Theme can override the stick range guide");
+            Equal(guide, verticalAxis.Stroke, "Theme can override the stick vertical guide");
+            Equal(guide, horizontalAxis.Stroke, "Theme can override the stick horizontal guide");
         }
 
         private sealed class ReadOnlyTriggerSource

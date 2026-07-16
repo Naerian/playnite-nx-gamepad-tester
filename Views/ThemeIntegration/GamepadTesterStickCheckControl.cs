@@ -216,7 +216,7 @@ namespace GamepadTester.Views.ThemeIntegration
 
             var surface = new Ellipse { StrokeThickness = 2 };
             SetThemeResource(surface, Shape.FillProperty, ControlBackgroundBrushKey);
-            SetThemeResource(surface, Shape.StrokeProperty, ControlBorderBrushKey);
+            SetThemeResource(surface, Shape.StrokeProperty, StickGuideBrushKey);
             plot.Children.Add(surface);
 
             var range = new Ellipse
@@ -227,15 +227,15 @@ namespace GamepadTester.Views.ThemeIntegration
                 StrokeDashArray = new DoubleCollection { 3, 4 },
                 Opacity = 0.72
             };
-            SetThemeResource(range, Shape.StrokeProperty, ControlBorderBrushKey);
+            SetThemeResource(range, Shape.StrokeProperty, StickGuideBrushKey);
             plot.Children.Add(range);
 
             var verticalAxis = new Line { X1 = 140, X2 = 140, Y1 = 18, Y2 = 262, Opacity = 0.55 };
-            SetThemeResource(verticalAxis, Shape.StrokeProperty, ControlBorderBrushKey);
+            SetThemeResource(verticalAxis, Shape.StrokeProperty, StickGuideBrushKey);
             plot.Children.Add(verticalAxis);
 
             var horizontalAxis = new Line { X1 = 18, X2 = 262, Y1 = 140, Y2 = 140, Opacity = 0.55 };
-            SetThemeResource(horizontalAxis, Shape.StrokeProperty, ControlBorderBrushKey);
+            SetThemeResource(horizontalAxis, Shape.StrokeProperty, StickGuideBrushKey);
             plot.Children.Add(horizontalAxis);
 
             var coverage = new Path { Fill = accent, Opacity = 0.24 };

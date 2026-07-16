@@ -16,6 +16,7 @@ namespace GamepadTester.Views.ThemeIntegration
         public const string ControlBackgroundBrushKey = "GamepadTesterControlBackgroundBrush";
         public const string ButtonBackgroundBrushKey = "GamepadTesterButtonBackgroundBrush";
         public const string ControlBorderBrushKey = "GamepadTesterControlBorderBrush";
+        public const string StickGuideBrushKey = "GamepadTesterStickGuideBrush";
         public const string TextBrushKey = "GamepadTesterTextBrush";
 
         public static readonly DependencyProperty IsInputCaptureActiveProperty =
@@ -126,6 +127,10 @@ namespace GamepadTester.Views.ThemeIntegration
                 ControlBorderBrushKey,
                 "ControlBorderBrush",
                 new SolidColorBrush(Color.FromRgb(63, 72, 88)));
+            EnsureThemeBrushFallback(
+                StickGuideBrushKey,
+                "ControlBorderBrush",
+                new SolidColorBrush(Color.FromRgb(63, 72, 88)));
             EnsureThemeBrushFallback(TextBrushKey, "TextBrush", Brushes.White);
         }
 
@@ -185,7 +190,21 @@ namespace GamepadTester.Views.ThemeIntegration
         private static readonly object sync = new object();
         private static GamepadTesterViewModel viewModel;
         private static Func<string, string> localizer;
+        private static Func<IGamepadInputProvider> inputProviderFactory = () => new SdlGamepadProvider();
         private static int referenceCount;
+
+        internal static void SetInputProviderFactoryForTests(Func<IGamepadInputProvider> factory)
+        {
+            lock (sync)
+            {
+                if (viewModel != null)
+                {
+                    throw new InvalidOperationException("The theme runtime is already active.");
+                }
+
+                inputProviderFactory = factory ?? (() => new SdlGamepadProvider());
+            }
+        }
 
         public static GamepadTesterThemeRuntimeHandle Acquire(GamepadTesterSettings settings, Func<string, string> localize)
         {
@@ -195,7 +214,7 @@ namespace GamepadTester.Views.ThemeIntegration
                 {
                     localizer = localize;
                     viewModel = new GamepadTesterViewModel(
-                        new GamepadPollingService(new SdlGamepadProvider()),
+                        new GamepadPollingService(inputProviderFactory()),
                         settings,
                         localize);
                     viewModel.IsFullscreenSimplifiedMode = true;

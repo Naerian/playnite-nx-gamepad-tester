@@ -4,9 +4,9 @@ Playnite NX Gamepad Tester is a Playnite extension for testing controllers in De
 
 It is designed for couch, TV, handheld-PC, and console-like setups where users want to verify gamepad buttons, sticks, triggers, rumble, drift, latency, and device metadata without leaving Playnite.
 
-## Version 1.0.2
+## Version 1.0.3
 
-Version `1.0.2` adds dedicated dynamic brushes for embedded Fullscreen controls. Theme authors can now customize Gamepad Tester backgrounds, buttons, borders, and text locally without changing Playnite's generic resources; standard Playnite brushes remain the automatic fallback.
+Version `1.0.3` adds `GamepadTesterStickGuideBrush`, allowing Fullscreen themes to style stick diagnostic circles, range rings, and axis guides independently from panel and button borders. Existing themes retain their previous appearance through the automatic `ControlBorderBrush` fallback.
 
 ## Documentation
 
@@ -56,7 +56,7 @@ Desktop mode provides the complete tester: controller selection, visual scheme o
 
 Fullscreen themes can open focused tester views or embed independent `StatusBadge`, `ButtonMap`, `StickCheck`, `TriggerCheck`, `RumblePad`, and `LatencyMini` blocks. The theme remains responsible for focus, controller navigation, layout, animation, and modal behavior. See the [Fullscreen integration guide](https://github.com/Naerian/playnite-nx-gamepad-tester/wiki/EN-Fullscreen-Theme-Integration) for commands and XAML examples.
 
-Embedded controls expose dedicated `GamepadTesterControlBackgroundBrush`, `GamepadTesterButtonBackgroundBrush`, `GamepadTesterControlBorderBrush`, and `GamepadTesterTextBrush` resources. Themes can override them locally without changing Playnite's generic brushes.
+Embedded controls expose dedicated `GamepadTesterControlBackgroundBrush`, `GamepadTesterButtonBackgroundBrush`, `GamepadTesterControlBorderBrush`, `GamepadTesterStickGuideBrush`, and `GamepadTesterTextBrush` resources. `GamepadTesterStickGuideBrush` styles the circles, range ring, and axis guides in stick diagnostics independently from panel borders. Themes can override these resources locally without changing Playnite's generic brushes.
 
 ## Compatibility note
 
