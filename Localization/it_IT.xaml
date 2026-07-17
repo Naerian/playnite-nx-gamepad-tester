@@ -258,4 +258,16 @@
     <sys:String x:Key="LOCGT_StartStickCapture">Testa stick</sys:String>
     <sys:String x:Key="LOCGT_StickCaptureRunning">Test stick in corso</sys:String>
     <sys:String x:Key="LOCGT_CaptureExitHint">Tieni premuti LB + RB per terminare il test.</sys:String>
+    <sys:String x:Key="LOCGT_SettingsTabGeneral">Generale</sys:String>
+    <sys:String x:Key="LOCGT_SettingsTabDiagnostics">Diagnostica</sys:String>
+    <sys:String x:Key="LOCGT_SettingsTabAbout">Informazioni</sys:String>
+    <sys:String x:Key="LOCGT_SettingsAboutTitle">Informazioni su Gamepad Tester</sys:String>
+    <sys:String x:Key="LOCGT_SettingsAboutDescription">Verifica pulsanti, stick, grilletti, vibrazione, drift, latenza e informazioni del dispositivo direttamente in Playnite.</sys:String>
+    <sys:String x:Key="LOCGT_SettingsSupportTitle">Sostieni il progetto</sys:String>
+    <sys:String x:Key="LOCGT_SettingsSupportHelp">Se Gamepad Tester ti è utile, puoi sostenere il suo sviluppo continuo su Ko-fi.</sys:String>
+    <sys:String x:Key="LOCGT_SettingsSupportKoFi">Sostieni su Ko-fi</sys:String>
+    <sys:String x:Key="LOCGT_SettingsLinksTitle">Collegamenti diretti</sys:String>
+    <sys:String x:Key="LOCGT_SettingsGitHub">GitHub</sys:String>
+    <sys:String x:Key="LOCGT_SettingsDocumentationWiki">Documentazione Wiki</sys:String>
+    <sys:String x:Key="LOCGT_SettingsReportIssue">Segnala un problema</sys:String>
 </ResourceDictionary>

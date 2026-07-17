@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.4
+
+- Reorganized extension settings into General, Diagnostics, and About tabs.
+- Added an About page with the installed version, author, project links, issue reporting, and Ko-fi support.
+- Updated settings inputs to inherit the active Playnite theme styling.
+- Added localized settings and About text for all bundled languages.
+
 ## 1.0.0
 
 - Added readiness and confidence indicators for health, stick-range, and latency diagnostics.

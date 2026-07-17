@@ -4,9 +4,9 @@ Playnite NX Gamepad Tester is a Playnite extension for testing controllers in De
 
 It is designed for couch, TV, handheld-PC, and console-like setups where users want to verify gamepad buttons, sticks, triggers, rumble, drift, latency, and device metadata without leaving Playnite.
 
-## Version 1.0.3
+## Version 1.0.4
 
-Version `1.0.3` adds `GamepadTesterStickGuideBrush`, allowing Fullscreen themes to style stick diagnostic circles, range rings, and axis guides independently from panel and button borders. Existing themes retain their previous appearance through the automatic `ControlBorderBrush` fallback.
+Version `1.0.4` reorganizes extension settings into General, Diagnostics, and About tabs. The new About page includes the installed version and author, direct links to GitHub, the documentation Wiki and issue reporting, plus an optional Ko-fi support link. Settings inputs continue to inherit the active Playnite theme.
 
 ## Documentation
 

@@ -258,4 +258,16 @@
     <sys:String x:Key="LOCGT_StartStickCapture">Проверить стики</sys:String>
     <sys:String x:Key="LOCGT_StickCaptureRunning">Проверка стиков</sys:String>
     <sys:String x:Key="LOCGT_CaptureExitHint">Удерживайте LB + RB, чтобы завершить тест.</sys:String>
+    <sys:String x:Key="LOCGT_SettingsTabGeneral">Общие</sys:String>
+    <sys:String x:Key="LOCGT_SettingsTabDiagnostics">Диагностика</sys:String>
+    <sys:String x:Key="LOCGT_SettingsTabAbout">О расширении</sys:String>
+    <sys:String x:Key="LOCGT_SettingsAboutTitle">О Gamepad Tester</sys:String>
+    <sys:String x:Key="LOCGT_SettingsAboutDescription">Проверяйте кнопки, стики, триггеры, вибрацию, дрейф, задержку и сведения об устройстве прямо в Playnite.</sys:String>
+    <sys:String x:Key="LOCGT_SettingsSupportTitle">Поддержать проект</sys:String>
+    <sys:String x:Key="LOCGT_SettingsSupportHelp">Если Gamepad Tester вам полезен, вы можете поддержать его дальнейшую разработку на Ko-fi.</sys:String>
+    <sys:String x:Key="LOCGT_SettingsSupportKoFi">Поддержать на Ko-fi</sys:String>
+    <sys:String x:Key="LOCGT_SettingsLinksTitle">Прямые ссылки</sys:String>
+    <sys:String x:Key="LOCGT_SettingsGitHub">GitHub</sys:String>
+    <sys:String x:Key="LOCGT_SettingsDocumentationWiki">Документация Wiki</sys:String>
+    <sys:String x:Key="LOCGT_SettingsReportIssue">Сообщить о проблеме</sys:String>
 </ResourceDictionary>

@@ -258,4 +258,16 @@
     <sys:String x:Key="LOCGT_StartStickCapture">Analog çubukları test et</sys:String>
     <sys:String x:Key="LOCGT_StickCaptureRunning">Analog çubuklar test ediliyor</sys:String>
     <sys:String x:Key="LOCGT_CaptureExitHint">Testi bitirmek için LB + RB tuşlarını basılı tutun.</sys:String>
+    <sys:String x:Key="LOCGT_SettingsTabGeneral">Genel</sys:String>
+    <sys:String x:Key="LOCGT_SettingsTabDiagnostics">Tanılama</sys:String>
+    <sys:String x:Key="LOCGT_SettingsTabAbout">Hakkında</sys:String>
+    <sys:String x:Key="LOCGT_SettingsAboutTitle">Gamepad Tester Hakkında</sys:String>
+    <sys:String x:Key="LOCGT_SettingsAboutDescription">Kumanda düğmelerini, analog çubukları, tetikleri, titreşimi, kaymayı, gecikmeyi ve cihaz bilgilerini doğrudan Playnite içinde test edin.</sys:String>
+    <sys:String x:Key="LOCGT_SettingsSupportTitle">Projeyi destekleyin</sys:String>
+    <sys:String x:Key="LOCGT_SettingsSupportHelp">Gamepad Tester sizin için yararlıysa Ko-fi üzerinden geliştirme çalışmalarını destekleyebilirsiniz.</sys:String>
+    <sys:String x:Key="LOCGT_SettingsSupportKoFi">Ko-fi'de destekle</sys:String>
+    <sys:String x:Key="LOCGT_SettingsLinksTitle">Doğrudan bağlantılar</sys:String>
+    <sys:String x:Key="LOCGT_SettingsGitHub">GitHub</sys:String>
+    <sys:String x:Key="LOCGT_SettingsDocumentationWiki">Wiki belgeleri</sys:String>
+    <sys:String x:Key="LOCGT_SettingsReportIssue">Sorun bildir</sys:String>
 </ResourceDictionary>

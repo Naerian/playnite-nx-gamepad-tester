@@ -4,131 +4,231 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="420"
-             d:DesignWidth="640">
+             d:DesignHeight="720"
+             d:DesignWidth="900">
     <UserControl.Resources>
-        <Style x:Key="SectionTitle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="18" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Margin" Value="0,0,0,8" />
+        <Style x:Key="SectionHeaderBorder" TargetType="Border">
+            <Setter Property="BorderBrush" Value="{DynamicResource GlyphBrush}" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+            <Setter Property="Padding" Value="0,0,0,6" />
+            <Setter Property="Margin" Value="0,18,0,10" />
         </Style>
 
-        <Style x:Key="MutedText" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="{DynamicResource TextBrushDarker}" />
+        <Style x:Key="FirstSectionHeaderBorder"
+               TargetType="Border"
+               BasedOn="{StaticResource SectionHeaderBorder}">
+            <Setter Property="Margin" Value="0,0,0,10" />
+        </Style>
+
+        <Style x:Key="SectionHeaderText" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+
+        <Style x:Key="HelpText" TargetType="TextBlock">
             <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Opacity" Value="0.72" />
             <Setter Property="Margin" Value="28,0,0,12" />
         </Style>
 
         <Style x:Key="FieldLabel" TargetType="TextBlock">
             <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="Margin" Value="0,0,12,0" />
+            <Setter Property="Margin" Value="0,0,16,10" />
         </Style>
 
-        <Style x:Key="CompactTextBox" TargetType="TextBox">
-            <Setter Property="Width" Value="96" />
+        <Style x:Key="CompactTextBox"
+               TargetType="TextBox"
+               BasedOn="{StaticResource {x:Type TextBox}}">
+            <Setter Property="Width" Value="120" />
             <Setter Property="HorizontalAlignment" Value="Left" />
-            <Setter Property="Margin" Value="0,0,0,8" />
-        </Style>
-
-        <Style x:Key="SettingsSection" TargetType="Border">
-            <Setter Property="Background" Value="{DynamicResource GroupBoxBackgroundBrush}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource PopupBorderBrush}" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="6" />
-            <Setter Property="Padding" Value="16" />
-            <Setter Property="Margin" Value="0,0,0,14" />
+            <Setter Property="Margin" Value="0,0,0,10" />
         </Style>
     </UserControl.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Margin="16" TextElement.Foreground="{DynamicResource TextBrush}">
-            <Border Style="{StaticResource SettingsSection}">
-                <StackPanel>
-                    <TextBlock Text="{DynamicResource LOCGT_SettingsPlayniteIntegration}" Style="{StaticResource SectionTitle}" />
-                    <CheckBox Content="{DynamicResource LOCGT_SettingsShowSidebar}"
-                              IsChecked="{Binding Settings.ShowSidebarItem}" />
-                    <TextBlock Text="{DynamicResource LOCGT_SettingsShowSidebarHelp}"
-                               Style="{StaticResource MutedText}" />
+    <Grid Margin="12" TextElement.Foreground="{DynamicResource TextBrush}">
+        <TabControl>
+            <TabItem Header="{DynamicResource LOCGT_SettingsTabGeneral}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Margin="8" HorizontalAlignment="Stretch">
+                        <Border Style="{StaticResource FirstSectionHeaderBorder}">
+                            <TextBlock Text="{DynamicResource LOCGT_SettingsPlayniteIntegration}"
+                                       Style="{StaticResource SectionHeaderText}" />
+                        </Border>
 
-                    <CheckBox Content="{DynamicResource LOCGT_SettingsShowTopPanel}"
-                              IsChecked="{Binding Settings.ShowTopPanelItem}" />
-                    <TextBlock Text="{DynamicResource LOCGT_SettingsShowTopPanelHelp}"
-                               Style="{StaticResource MutedText}" />
+                        <CheckBox Content="{DynamicResource LOCGT_SettingsShowSidebar}"
+                                  IsChecked="{Binding Settings.ShowSidebarItem}" />
+                        <TextBlock Text="{DynamicResource LOCGT_SettingsShowSidebarHelp}"
+                                   Style="{StaticResource HelpText}" />
 
-                    <CheckBox Content="{DynamicResource LOCGT_SettingsFullscreenWindow}"
-                              IsChecked="{Binding Settings.UseFullscreenFriendlyWindow}" />
-                    <TextBlock Text="{DynamicResource LOCGT_SettingsFullscreenWindowHelp}"
-                               Style="{StaticResource MutedText}" />
-                </StackPanel>
-            </Border>
+                        <CheckBox Content="{DynamicResource LOCGT_SettingsShowTopPanel}"
+                                  IsChecked="{Binding Settings.ShowTopPanelItem}" />
+                        <TextBlock Text="{DynamicResource LOCGT_SettingsShowTopPanelHelp}"
+                                   Style="{StaticResource HelpText}" />
 
-            <Border Style="{StaticResource SettingsSection}">
-                <StackPanel>
-                    <TextBlock Text="{DynamicResource LOCGT_SettingsTestingBehavior}" Style="{StaticResource SectionTitle}" />
-                    <CheckBox Content="{DynamicResource LOCGT_SettingsResetOnSwitch}"
-                              IsChecked="{Binding Settings.AutoResetDiagnosticsOnControllerChange}" />
-                    <TextBlock Text="{DynamicResource LOCGT_SettingsResetOnSwitchHelp}"
-                               Style="{StaticResource MutedText}" />
+                        <CheckBox Content="{DynamicResource LOCGT_SettingsFullscreenWindow}"
+                                  IsChecked="{Binding Settings.UseFullscreenFriendlyWindow}" />
+                        <TextBlock Text="{DynamicResource LOCGT_SettingsFullscreenWindowHelp}"
+                                   Style="{StaticResource HelpText}" />
 
-                    <CheckBox Content="{DynamicResource LOCGT_SettingsShowSingleSelector}"
-                              IsChecked="{Binding Settings.ShowDeviceSelectorWhenSingleController}" />
-                    <TextBlock Text="{DynamicResource LOCGT_SettingsShowSingleSelectorHelp}"
-                               Style="{StaticResource MutedText}" />
+                        <Border Style="{StaticResource SectionHeaderBorder}">
+                            <TextBlock Text="{DynamicResource LOCGT_SettingsTestingBehavior}"
+                                       Style="{StaticResource SectionHeaderText}" />
+                        </Border>
 
-                    <CheckBox Content="{DynamicResource LOCGT_SettingsEnableRumble}"
-                              IsChecked="{Binding Settings.EnableRumbleTests}" />
-                    <TextBlock Text="{DynamicResource LOCGT_SettingsEnableRumbleHelp}"
-                               Style="{StaticResource MutedText}" />
+                        <CheckBox Content="{DynamicResource LOCGT_SettingsResetOnSwitch}"
+                                  IsChecked="{Binding Settings.AutoResetDiagnosticsOnControllerChange}" />
+                        <TextBlock Text="{DynamicResource LOCGT_SettingsResetOnSwitchHelp}"
+                                   Style="{StaticResource HelpText}" />
 
-                    <CheckBox Content="{DynamicResource LOCGT_SettingsInputLogDefault}"
-                              IsChecked="{Binding Settings.EnableInputLogByDefault}" />
-                    <TextBlock Text="{DynamicResource LOCGT_SettingsInputLogDefaultHelp}"
-                               Style="{StaticResource MutedText}" />
-                </StackPanel>
-            </Border>
+                        <CheckBox Content="{DynamicResource LOCGT_SettingsShowSingleSelector}"
+                                  IsChecked="{Binding Settings.ShowDeviceSelectorWhenSingleController}" />
+                        <TextBlock Text="{DynamicResource LOCGT_SettingsShowSingleSelectorHelp}"
+                                   Style="{StaticResource HelpText}" />
 
-            <Border Style="{StaticResource SettingsSection}">
-                <StackPanel>
-                    <TextBlock Text="{DynamicResource LOCGT_SettingsThresholds}" Style="{StaticResource SectionTitle}" />
+                        <CheckBox Content="{DynamicResource LOCGT_SettingsEnableRumble}"
+                                  IsChecked="{Binding Settings.EnableRumbleTests}" />
+                        <TextBlock Text="{DynamicResource LOCGT_SettingsEnableRumbleHelp}"
+                                   Style="{StaticResource HelpText}" />
 
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="260" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
+                        <CheckBox Content="{DynamicResource LOCGT_SettingsInputLogDefault}"
+                                  IsChecked="{Binding Settings.EnableInputLogByDefault}" />
+                        <TextBlock Text="{DynamicResource LOCGT_SettingsInputLogDefaultHelp}"
+                                   Style="{StaticResource HelpText}" />
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
 
-                        <TextBlock Grid.Row="0" Text="{DynamicResource LOCGT_SettingsHealthyDeadzone}" Style="{StaticResource FieldLabel}" />
-                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Settings.HealthyDeadzone}" Style="{StaticResource CompactTextBox}" />
+            <TabItem Header="{DynamicResource LOCGT_SettingsTabDiagnostics}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Margin="8" HorizontalAlignment="Stretch">
+                        <Border Style="{StaticResource FirstSectionHeaderBorder}">
+                            <TextBlock Text="{DynamicResource LOCGT_SettingsThresholds}"
+                                       Style="{StaticResource SectionHeaderText}" />
+                        </Border>
 
-                        <TextBlock Grid.Row="1" Text="{DynamicResource LOCGT_SettingsMinorDrift}" Style="{StaticResource FieldLabel}" />
-                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Settings.MinorDriftThreshold}" Style="{StaticResource CompactTextBox}" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="300" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="2" Text="{DynamicResource LOCGT_SettingsAttentionDrift}" Style="{StaticResource FieldLabel}" />
-                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Settings.AttentionDriftThreshold}" Style="{StaticResource CompactTextBox}" />
+                            <TextBlock Grid.Row="0"
+                                       Text="{DynamicResource LOCGT_SettingsHealthyDeadzone}"
+                                       Style="{StaticResource FieldLabel}" />
+                            <TextBox Grid.Row="0" Grid.Column="1"
+                                     Text="{Binding Settings.HealthyDeadzone}"
+                                     Style="{StaticResource CompactTextBox}" />
 
-                        <TextBlock Grid.Row="3" Text="{DynamicResource LOCGT_SettingsStickEdge}" Style="{StaticResource FieldLabel}" />
-                        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Settings.StickEdgeThreshold}" Style="{StaticResource CompactTextBox}" />
+                            <TextBlock Grid.Row="1"
+                                       Text="{DynamicResource LOCGT_SettingsMinorDrift}"
+                                       Style="{StaticResource FieldLabel}" />
+                            <TextBox Grid.Row="1" Grid.Column="1"
+                                     Text="{Binding Settings.MinorDriftThreshold}"
+                                     Style="{StaticResource CompactTextBox}" />
 
-                        <TextBlock Grid.Row="4" Text="{DynamicResource LOCGT_SettingsTriggerFullPress}" Style="{StaticResource FieldLabel}" />
-                        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Settings.TriggerFullPressThreshold}" Style="{StaticResource CompactTextBox}" />
+                            <TextBlock Grid.Row="2"
+                                       Text="{DynamicResource LOCGT_SettingsAttentionDrift}"
+                                       Style="{StaticResource FieldLabel}" />
+                            <TextBox Grid.Row="2" Grid.Column="1"
+                                     Text="{Binding Settings.AttentionDriftThreshold}"
+                                     Style="{StaticResource CompactTextBox}" />
 
-                        <TextBlock Grid.Row="5" Text="{DynamicResource LOCGT_SettingsCalibrationDuration}" Style="{StaticResource FieldLabel}" />
-                        <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Settings.CenterCalibrationMilliseconds}" Style="{StaticResource CompactTextBox}" />
-                    </Grid>
+                            <TextBlock Grid.Row="3"
+                                       Text="{DynamicResource LOCGT_SettingsStickEdge}"
+                                       Style="{StaticResource FieldLabel}" />
+                            <TextBox Grid.Row="3" Grid.Column="1"
+                                     Text="{Binding Settings.StickEdgeThreshold}"
+                                     Style="{StaticResource CompactTextBox}" />
 
-                    <TextBlock Text="{DynamicResource LOCGT_SettingsThresholdsHelp}"
-                               Style="{StaticResource MutedText}"
-                               Margin="0,4,0,0" />
-                </StackPanel>
-            </Border>
-        </StackPanel>
-    </ScrollViewer>
+                            <TextBlock Grid.Row="4"
+                                       Text="{DynamicResource LOCGT_SettingsTriggerFullPress}"
+                                       Style="{StaticResource FieldLabel}" />
+                            <TextBox Grid.Row="4" Grid.Column="1"
+                                     Text="{Binding Settings.TriggerFullPressThreshold}"
+                                     Style="{StaticResource CompactTextBox}" />
+
+                            <TextBlock Grid.Row="5"
+                                       Text="{DynamicResource LOCGT_SettingsCalibrationDuration}"
+                                       Style="{StaticResource FieldLabel}" />
+                            <TextBox Grid.Row="5" Grid.Column="1"
+                                     Text="{Binding Settings.CenterCalibrationMilliseconds}"
+                                     Style="{StaticResource CompactTextBox}" />
+                        </Grid>
+
+                        <TextBlock Text="{DynamicResource LOCGT_SettingsThresholdsHelp}"
+                                   TextWrapping="Wrap"
+                                   Opacity="0.72"
+                                   Margin="0,4,0,0" />
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="{DynamicResource LOCGT_SettingsTabAbout}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Margin="8" HorizontalAlignment="Stretch">
+                        <Border Style="{StaticResource FirstSectionHeaderBorder}">
+                            <TextBlock Text="{DynamicResource LOCGT_SettingsAboutTitle}"
+                                       Style="{StaticResource SectionHeaderText}" />
+                        </Border>
+
+                        <TextBlock Text="{DynamicResource LOCGT_SettingsAboutDescription}"
+                                   TextWrapping="Wrap"
+                                   MaxWidth="700"
+                                   HorizontalAlignment="Left"
+                                   Margin="0,0,0,8" />
+                        <TextBlock Text="{Binding InstalledVersionAuthorText, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                   FontWeight="SemiBold"
+                                   Margin="0,0,0,2"
+                                   Opacity="0.78" />
+
+                        <Border Style="{StaticResource SectionHeaderBorder}">
+                            <TextBlock Text="{DynamicResource LOCGT_SettingsLinksTitle}"
+                                       Style="{StaticResource SectionHeaderText}" />
+                        </Border>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="{DynamicResource LOCGT_SettingsGitHub}"
+                                    Tag="https://github.com/Naerian/playnite-nx-gamepad-tester"
+                                    MinWidth="120"
+                                    Margin="0,0,8,0"
+                                    Click="OpenExternalLink" />
+                            <Button Content="{DynamicResource LOCGT_SettingsDocumentationWiki}"
+                                    Tag="https://github.com/Naerian/playnite-nx-gamepad-tester/wiki"
+                                    MinWidth="180"
+                                    Margin="0,0,8,0"
+                                    Click="OpenExternalLink" />
+                            <Button Content="{DynamicResource LOCGT_SettingsReportIssue}"
+                                    Tag="https://github.com/Naerian/playnite-nx-gamepad-tester/issues/new"
+                                    MinWidth="180"
+                                    Click="OpenExternalLink" />
+                        </StackPanel>
+
+                        <Border Style="{StaticResource SectionHeaderBorder}">
+                            <TextBlock Text="{DynamicResource LOCGT_SettingsSupportTitle}"
+                                       Style="{StaticResource SectionHeaderText}" />
+                        </Border>
+                        <TextBlock Text="{DynamicResource LOCGT_SettingsSupportHelp}"
+                                   TextWrapping="Wrap"
+                                   MaxWidth="700"
+                                   HorizontalAlignment="Left"
+                                   Margin="0,0,0,14" />
+                        <Button Content="{DynamicResource LOCGT_SettingsSupportKoFi}"
+                                Tag="https://ko-fi.com/naerian"
+                                MinWidth="180"
+                                HorizontalAlignment="Left"
+                                Click="OpenExternalLink" />
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+    </Grid>
 </UserControl>

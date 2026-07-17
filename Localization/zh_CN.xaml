@@ -258,4 +258,16 @@
     <sys:String x:Key="LOCGT_StartStickCapture">测试摇杆</sys:String>
     <sys:String x:Key="LOCGT_StickCaptureRunning">正在测试摇杆</sys:String>
     <sys:String x:Key="LOCGT_CaptureExitHint">按住 LB + RB 结束测试。</sys:String>
+    <sys:String x:Key="LOCGT_SettingsTabGeneral">常规</sys:String>
+    <sys:String x:Key="LOCGT_SettingsTabDiagnostics">诊断</sys:String>
+    <sys:String x:Key="LOCGT_SettingsTabAbout">关于</sys:String>
+    <sys:String x:Key="LOCGT_SettingsAboutTitle">关于 Gamepad Tester</sys:String>
+    <sys:String x:Key="LOCGT_SettingsAboutDescription">直接在 Playnite 中测试手柄按钮、摇杆、扳机、振动、漂移、延迟和设备信息。</sys:String>
+    <sys:String x:Key="LOCGT_SettingsSupportTitle">支持项目</sys:String>
+    <sys:String x:Key="LOCGT_SettingsSupportHelp">如果 Gamepad Tester 对你有帮助，可以通过 Ko-fi 支持其持续开发。</sys:String>
+    <sys:String x:Key="LOCGT_SettingsSupportKoFi">在 Ko-fi 上支持</sys:String>
+    <sys:String x:Key="LOCGT_SettingsLinksTitle">直接链接</sys:String>
+    <sys:String x:Key="LOCGT_SettingsGitHub">GitHub</sys:String>
+    <sys:String x:Key="LOCGT_SettingsDocumentationWiki">Wiki 文档</sys:String>
+    <sys:String x:Key="LOCGT_SettingsReportIssue">报告问题</sys:String>
 </ResourceDictionary>

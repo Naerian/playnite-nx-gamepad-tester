@@ -258,4 +258,16 @@
     <sys:String x:Key="LOCGT_StartStickCapture">スティックをテスト</sys:String>
     <sys:String x:Key="LOCGT_StickCaptureRunning">スティックをテスト中</sys:String>
     <sys:String x:Key="LOCGT_CaptureExitHint">LB + RB を長押ししてテストを終了します。</sys:String>
+    <sys:String x:Key="LOCGT_SettingsTabGeneral">一般</sys:String>
+    <sys:String x:Key="LOCGT_SettingsTabDiagnostics">診断</sys:String>
+    <sys:String x:Key="LOCGT_SettingsTabAbout">この拡張機能について</sys:String>
+    <sys:String x:Key="LOCGT_SettingsAboutTitle">Gamepad Tester について</sys:String>
+    <sys:String x:Key="LOCGT_SettingsAboutDescription">コントローラーのボタン、スティック、トリガー、振動、ドリフト、遅延、デバイス情報を Playnite 内で直接確認できます。</sys:String>
+    <sys:String x:Key="LOCGT_SettingsSupportTitle">プロジェクトを支援</sys:String>
+    <sys:String x:Key="LOCGT_SettingsSupportHelp">Gamepad Tester が役に立った場合は、Ko-fi で継続的な開発を支援できます。</sys:String>
+    <sys:String x:Key="LOCGT_SettingsSupportKoFi">Ko-fi で支援</sys:String>
+    <sys:String x:Key="LOCGT_SettingsLinksTitle">直接リンク</sys:String>
+    <sys:String x:Key="LOCGT_SettingsGitHub">GitHub</sys:String>
+    <sys:String x:Key="LOCGT_SettingsDocumentationWiki">Wiki ドキュメント</sys:String>
+    <sys:String x:Key="LOCGT_SettingsReportIssue">問題を報告</sys:String>
 </ResourceDictionary>

@@ -258,4 +258,16 @@
     <sys:String x:Key="LOCGT_StartStickCapture">Testuj drążki</sys:String>
     <sys:String x:Key="LOCGT_StickCaptureRunning">Trwa test drążków</sys:String>
     <sys:String x:Key="LOCGT_CaptureExitHint">Przytrzymaj LB + RB, aby zakończyć test.</sys:String>
+    <sys:String x:Key="LOCGT_SettingsTabGeneral">Ogólne</sys:String>
+    <sys:String x:Key="LOCGT_SettingsTabDiagnostics">Diagnostyka</sys:String>
+    <sys:String x:Key="LOCGT_SettingsTabAbout">O rozszerzeniu</sys:String>
+    <sys:String x:Key="LOCGT_SettingsAboutTitle">Informacje o Gamepad Tester</sys:String>
+    <sys:String x:Key="LOCGT_SettingsAboutDescription">Testuj przyciski, drążki, spusty, wibracje, dryf, opóźnienie i informacje o urządzeniu bezpośrednio w Playnite.</sys:String>
+    <sys:String x:Key="LOCGT_SettingsSupportTitle">Wesprzyj projekt</sys:String>
+    <sys:String x:Key="LOCGT_SettingsSupportHelp">Jeśli Gamepad Tester jest dla Ciebie przydatny, możesz wesprzeć jego dalszy rozwój w Ko-fi.</sys:String>
+    <sys:String x:Key="LOCGT_SettingsSupportKoFi">Wesprzyj w Ko-fi</sys:String>
+    <sys:String x:Key="LOCGT_SettingsLinksTitle">Bezpośrednie odnośniki</sys:String>
+    <sys:String x:Key="LOCGT_SettingsGitHub">GitHub</sys:String>
+    <sys:String x:Key="LOCGT_SettingsDocumentationWiki">Dokumentacja Wiki</sys:String>
+    <sys:String x:Key="LOCGT_SettingsReportIssue">Zgłoś problem</sys:String>
 </ResourceDictionary>
