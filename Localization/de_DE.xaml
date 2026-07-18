@@ -256,7 +256,7 @@
     <sys:String x:Key="LOCGT_ButtonCaptureDescription">Starte einen fokussierten Tastentest, ohne Playnite zu navigieren.</sys:String>
     <sys:String x:Key="LOCGT_ButtonCaptureRunning">Tastentest läuft</sys:String>
     <sys:String x:Key="LOCGT_StartStickCapture">Sticks testen</sys:String>
-    <sys:String x:Key="LOCGT_StickCaptureRunning">Stick-Test läuft</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunning">Stick-Test beenden</sys:String>
     <sys:String x:Key="LOCGT_CaptureExitHint">Halte LB + RB gedrückt, um den Test zu beenden.</sys:String>
     <sys:String x:Key="LOCGT_SettingsTabGeneral">Allgemein</sys:String>
     <sys:String x:Key="LOCGT_SettingsTabDiagnostics">Diagnose</sys:String>
@@ -270,4 +270,20 @@
     <sys:String x:Key="LOCGT_SettingsGitHub">GitHub</sys:String>
     <sys:String x:Key="LOCGT_SettingsDocumentationWiki">Wiki-Dokumentation</sys:String>
     <sys:String x:Key="LOCGT_SettingsReportIssue">Problem melden</sys:String>
+    <sys:String x:Key="LOCGT_RumbleRunningFormat">{0} läuft...</sys:String>
+    <sys:String x:Key="LOCGT_RumbleCompleteFormat">{0} abgeschlossen.</sys:String>
+    <sys:String x:Key="LOCGT_RumbleFailedFormat">{0} fehlgeschlagen.</sys:String>
+    <sys:String x:Key="LOCGT_DiagnosticProfile">Diagnoseprofil</sys:String>
+    <sys:String x:Key="LOCGT_DiagnosticProfileHelp">Vervollständige jede Achse mit den unten beschriebenen Aktionen. Die Prozentwerte sind einzelne Testergebnisse und keine gemeinsame Zustandswertung.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureReady">Starte den Stick-Test und drehe beide Sticks vollständig am äußeren Rand entlang.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunningHelp">Stick-Daten werden erfasst. Drehe beide Sticks langsam am gesamten äußeren Rand entlang.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureComplete">Die Erfassung wurde automatisch beendet, nachdem beide Sticks 100 % Kreisabdeckung erreicht hatten.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureLimit">Die Erfassung hat ihr Sicherheitslimit erreicht und wurde beendet. Setze sie zurück und wiederhole fehlende Richtungen.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureStopped">Die Stick-Erfassung ist beendet. Pfad und Abdeckung bleiben bis zum Zurücksetzen erhalten.</sys:String>
+    <sys:String x:Key="LOCGT_RadarCenterAction">Lass beide Sticks los und den Controller ruhig liegen, bis die Mittelpunktmessung abgeschlossen ist.</sys:String>
+    <sys:String x:Key="LOCGT_RadarLeftStickAction">Öffne Sticks &amp; Kalibrierung, starte den Test und drehe LS vollständig am Rand entlang.</sys:String>
+    <sys:String x:Key="LOCGT_RadarRightStickAction">Drehe während des Stick-Tests RS vollständig am Rand entlang.</sys:String>
+    <sys:String x:Key="LOCGT_RadarTriggersAction">Drücke LT und RT mindestens einmal vollständig.</sys:String>
+    <sys:String x:Key="LOCGT_RadarControlsAction">Führe den geführten Test aus und vervollständige alle angeforderten Eingaben.</sys:String>
+    <sys:String x:Key="LOCGT_RadarTimingAction">Öffne Latenz, starte den Test, drücke wiederholt Tasten und beende ihn anschließend.</sys:String>
 </ResourceDictionary>

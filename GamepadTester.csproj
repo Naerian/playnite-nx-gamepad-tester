@@ -117,6 +117,8 @@
       <DependentUpon>GamepadTesterView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\GamepadTesterThemeLauncherControl.cs" />
+    <Compile Include="Views\Controls\LatencyRateChart.cs" />
+    <Compile Include="Views\Controls\DiagnosticRadarChart.cs" />
     <Compile Include="Views\ThemeIntegration\GamepadTesterButtonMapControl.cs" />
     <Compile Include="Views\ThemeIntegration\GamepadTesterLatencyMiniControl.cs" />
     <Compile Include="Views\ThemeIntegration\GamepadTesterRumblePadControl.cs" />

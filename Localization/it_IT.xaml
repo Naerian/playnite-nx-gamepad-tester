@@ -256,7 +256,7 @@
     <sys:String x:Key="LOCGT_ButtonCaptureDescription">Avvia un test mirato dei pulsanti senza navigare in Playnite.</sys:String>
     <sys:String x:Key="LOCGT_ButtonCaptureRunning">Test pulsanti in corso</sys:String>
     <sys:String x:Key="LOCGT_StartStickCapture">Testa stick</sys:String>
-    <sys:String x:Key="LOCGT_StickCaptureRunning">Test stick in corso</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunning">Interrompi test stick</sys:String>
     <sys:String x:Key="LOCGT_CaptureExitHint">Tieni premuti LB + RB per terminare il test.</sys:String>
     <sys:String x:Key="LOCGT_SettingsTabGeneral">Generale</sys:String>
     <sys:String x:Key="LOCGT_SettingsTabDiagnostics">Diagnostica</sys:String>
@@ -270,4 +270,20 @@
     <sys:String x:Key="LOCGT_SettingsGitHub">GitHub</sys:String>
     <sys:String x:Key="LOCGT_SettingsDocumentationWiki">Documentazione Wiki</sys:String>
     <sys:String x:Key="LOCGT_SettingsReportIssue">Segnala un problema</sys:String>
+    <sys:String x:Key="LOCGT_RumbleRunningFormat">{0} in corso...</sys:String>
+    <sys:String x:Key="LOCGT_RumbleCompleteFormat">{0} completato.</sys:String>
+    <sys:String x:Key="LOCGT_RumbleFailedFormat">{0} non riuscito.</sys:String>
+    <sys:String x:Key="LOCGT_DiagnosticProfile">Profilo diagnostico</sys:String>
+    <sys:String x:Key="LOCGT_DiagnosticProfileHelp">Completa ogni asse seguendo le azioni indicate. Le percentuali sono risultati indipendenti, non un unico punteggio di integrità.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureReady">Avvia il test degli stick, quindi ruotali entrambi lungo tutto il bordo esterno.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunningHelp">Campionamento degli stick in corso. Ruotali lentamente lungo tutto il bordo esterno.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureComplete">Il campionamento si è interrotto automaticamente dopo che entrambi gli stick hanno raggiunto il 100% di copertura circolare.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureLimit">Il campionamento ha raggiunto il limite di sicurezza ed è stato interrotto. Reimposta e ripeti le direzioni mancanti.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureStopped">Il campionamento è interrotto. Percorso e copertura restano disponibili fino al ripristino.</sys:String>
+    <sys:String x:Key="LOCGT_RadarCenterAction">Rilascia entrambi gli stick e lascia fermo il controller finché il campionamento del centro non è completo.</sys:String>
+    <sys:String x:Key="LOCGT_RadarLeftStickAction">Apri Stick e calibrazione, avvia il test e ruota LS lungo tutto il bordo.</sys:String>
+    <sys:String x:Key="LOCGT_RadarRightStickAction">Durante il test, ruota RS lungo tutto il bordo.</sys:String>
+    <sys:String x:Key="LOCGT_RadarTriggersAction">Premi completamente LT e RT almeno una volta.</sys:String>
+    <sys:String x:Key="LOCGT_RadarControlsAction">Esegui il test guidato e completa tutti i controlli richiesti.</sys:String>
+    <sys:String x:Key="LOCGT_RadarTimingAction">Apri Latenza, avvia il test, premi ripetutamente i controlli e poi interrompilo.</sys:String>
 </ResourceDictionary>

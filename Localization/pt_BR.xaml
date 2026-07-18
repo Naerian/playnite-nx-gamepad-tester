@@ -256,7 +256,7 @@
     <sys:String x:Key="LOCGT_ButtonCaptureDescription">Inicie um teste focado de botões sem navegar pelo Playnite.</sys:String>
     <sys:String x:Key="LOCGT_ButtonCaptureRunning">Testando botões</sys:String>
     <sys:String x:Key="LOCGT_StartStickCapture">Testar analógicos</sys:String>
-    <sys:String x:Key="LOCGT_StickCaptureRunning">Testando analógicos</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunning">Parar teste dos analógicos</sys:String>
     <sys:String x:Key="LOCGT_CaptureExitHint">Mantenha LB + RB pressionados para encerrar o teste.</sys:String>
     <sys:String x:Key="LOCGT_SettingsTabGeneral">Geral</sys:String>
     <sys:String x:Key="LOCGT_SettingsTabDiagnostics">Diagnóstico</sys:String>
@@ -270,4 +270,20 @@
     <sys:String x:Key="LOCGT_SettingsGitHub">GitHub</sys:String>
     <sys:String x:Key="LOCGT_SettingsDocumentationWiki">Documentação Wiki</sys:String>
     <sys:String x:Key="LOCGT_SettingsReportIssue">Relatar um problema</sys:String>
+    <sys:String x:Key="LOCGT_RumbleRunningFormat">Executando {0}...</sys:String>
+    <sys:String x:Key="LOCGT_RumbleCompleteFormat">{0} concluído.</sys:String>
+    <sys:String x:Key="LOCGT_RumbleFailedFormat">Falha em {0}.</sys:String>
+    <sys:String x:Key="LOCGT_DiagnosticProfile">Perfil de diagnóstico</sys:String>
+    <sys:String x:Key="LOCGT_DiagnosticProfileHelp">Complete cada eixo seguindo as ações indicadas. As porcentagens são resultados independentes, não uma única pontuação de integridade.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureReady">Inicie o teste dos analógicos e gire ambos por toda a borda externa.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunningHelp">Amostrando os analógicos. Gire ambos lentamente por toda a borda externa.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureComplete">A amostragem parou automaticamente após os dois analógicos atingirem 100% de cobertura circular.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureLimit">A amostragem atingiu o limite de segurança e parou. Redefina e repita as direções que faltam.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureStopped">A amostragem está parada. O caminho e a cobertura permanecem disponíveis até a redefinição.</sys:String>
+    <sys:String x:Key="LOCGT_RadarCenterAction">Solte os dois analógicos e deixe o controle parado até concluir a amostragem do centro.</sys:String>
+    <sys:String x:Key="LOCGT_RadarLeftStickAction">Abra Analógicos e calibração, inicie o teste e gire o LS por toda a borda.</sys:String>
+    <sys:String x:Key="LOCGT_RadarRightStickAction">Durante o teste, gire o RS por toda a borda.</sys:String>
+    <sys:String x:Key="LOCGT_RadarTriggersAction">Pressione LT e RT completamente pelo menos uma vez.</sys:String>
+    <sys:String x:Key="LOCGT_RadarControlsAction">Execute o teste guiado e conclua todos os controles solicitados.</sys:String>
+    <sys:String x:Key="LOCGT_RadarTimingAction">Abra Latência, inicie o teste, pressione controles repetidamente e depois pare o teste.</sys:String>
 </ResourceDictionary>

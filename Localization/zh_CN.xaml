@@ -256,7 +256,7 @@
     <sys:String x:Key="LOCGT_ButtonCaptureDescription">启动按键专项测试，不会在 Playnite 中导航。</sys:String>
     <sys:String x:Key="LOCGT_ButtonCaptureRunning">正在测试按键</sys:String>
     <sys:String x:Key="LOCGT_StartStickCapture">测试摇杆</sys:String>
-    <sys:String x:Key="LOCGT_StickCaptureRunning">正在测试摇杆</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunning">停止摇杆测试</sys:String>
     <sys:String x:Key="LOCGT_CaptureExitHint">按住 LB + RB 结束测试。</sys:String>
     <sys:String x:Key="LOCGT_SettingsTabGeneral">常规</sys:String>
     <sys:String x:Key="LOCGT_SettingsTabDiagnostics">诊断</sys:String>
@@ -270,4 +270,20 @@
     <sys:String x:Key="LOCGT_SettingsGitHub">GitHub</sys:String>
     <sys:String x:Key="LOCGT_SettingsDocumentationWiki">Wiki 文档</sys:String>
     <sys:String x:Key="LOCGT_SettingsReportIssue">报告问题</sys:String>
+    <sys:String x:Key="LOCGT_RumbleRunningFormat">正在运行{0}...</sys:String>
+    <sys:String x:Key="LOCGT_RumbleCompleteFormat">{0}已完成。</sys:String>
+    <sys:String x:Key="LOCGT_RumbleFailedFormat">{0}失败。</sys:String>
+    <sys:String x:Key="LOCGT_DiagnosticProfile">诊断概览</sys:String>
+    <sys:String x:Key="LOCGT_DiagnosticProfileHelp">按照下方操作完成每个轴。各百分比是独立测试结果，并非统一的健康评分。</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureReady">启动摇杆测试，然后让两个摇杆沿最外圈完整旋转一周。</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunningHelp">正在采样摇杆。请让两个摇杆沿最外圈缓慢旋转一周。</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureComplete">两个摇杆均达到 100% 圆周覆盖率，采样已自动停止。</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureLimit">采样达到安全上限并已停止。请重置后重新测试缺失方向。</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureStopped">采样已停止。路径和覆盖率会保留到重置为止。</sys:String>
+    <sys:String x:Key="LOCGT_RadarCenterAction">松开两个摇杆并保持手柄不动，直到中心采样完成。</sys:String>
+    <sys:String x:Key="LOCGT_RadarLeftStickAction">打开“摇杆与校准”，启动测试，然后让 LS 沿最外圈旋转一周。</sys:String>
+    <sys:String x:Key="LOCGT_RadarRightStickAction">测试期间，让 RS 沿最外圈旋转一周。</sys:String>
+    <sys:String x:Key="LOCGT_RadarTriggersAction">至少将 LT 和 RT 各完全按下一次。</sys:String>
+    <sys:String x:Key="LOCGT_RadarControlsAction">运行引导测试并完成所有要求的控制操作。</sys:String>
+    <sys:String x:Key="LOCGT_RadarTimingAction">打开“延迟”，启动测试，反复按下控制键，然后停止测试。</sys:String>
 </ResourceDictionary>

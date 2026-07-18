@@ -256,7 +256,7 @@
     <sys:String x:Key="LOCGT_ButtonCaptureDescription">Lancez un test ciblé des boutons sans naviguer dans Playnite.</sys:String>
     <sys:String x:Key="LOCGT_ButtonCaptureRunning">Test des boutons en cours</sys:String>
     <sys:String x:Key="LOCGT_StartStickCapture">Tester les sticks</sys:String>
-    <sys:String x:Key="LOCGT_StickCaptureRunning">Test des sticks en cours</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunning">Arrêter le test des sticks</sys:String>
     <sys:String x:Key="LOCGT_CaptureExitHint">Maintenez LB + RB pour terminer le test.</sys:String>
     <sys:String x:Key="LOCGT_SettingsTabGeneral">Général</sys:String>
     <sys:String x:Key="LOCGT_SettingsTabDiagnostics">Diagnostic</sys:String>
@@ -270,4 +270,20 @@
     <sys:String x:Key="LOCGT_SettingsGitHub">GitHub</sys:String>
     <sys:String x:Key="LOCGT_SettingsDocumentationWiki">Documentation Wiki</sys:String>
     <sys:String x:Key="LOCGT_SettingsReportIssue">Signaler un problème</sys:String>
+    <sys:String x:Key="LOCGT_RumbleRunningFormat">{0} en cours...</sys:String>
+    <sys:String x:Key="LOCGT_RumbleCompleteFormat">{0} terminé.</sys:String>
+    <sys:String x:Key="LOCGT_RumbleFailedFormat">Échec de {0}.</sys:String>
+    <sys:String x:Key="LOCGT_DiagnosticProfile">Profil de diagnostic</sys:String>
+    <sys:String x:Key="LOCGT_DiagnosticProfileHelp">Complétez chaque axe avec les actions indiquées. Les pourcentages sont des résultats indépendants, pas une note de santé unique.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureReady">Démarrez le test des sticks puis faites-les tourner sur tout leur bord extérieur.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunningHelp">Échantillonnage des sticks. Faites-les tourner lentement sur tout leur bord extérieur.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureComplete">L'échantillonnage s'est arrêté automatiquement après que les deux sticks ont atteint 100 % de couverture circulaire.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureLimit">La limite de sécurité a été atteinte. Réinitialisez puis recommencez les directions manquantes.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureStopped">L'échantillonnage est arrêté. Le tracé et la couverture restent disponibles jusqu'à la réinitialisation.</sys:String>
+    <sys:String x:Key="LOCGT_RadarCenterAction">Relâchez les deux sticks et laissez la manette immobile jusqu'à la fin de l'échantillonnage du centre.</sys:String>
+    <sys:String x:Key="LOCGT_RadarLeftStickAction">Ouvrez Sticks et calibration, démarrez le test puis faites tourner LS sur tout son bord.</sys:String>
+    <sys:String x:Key="LOCGT_RadarRightStickAction">Pendant le test, faites tourner RS sur tout son bord.</sys:String>
+    <sys:String x:Key="LOCGT_RadarTriggersAction">Enfoncez complètement LT et RT au moins une fois.</sys:String>
+    <sys:String x:Key="LOCGT_RadarControlsAction">Lancez le test guidé et complétez toutes les commandes demandées.</sys:String>
+    <sys:String x:Key="LOCGT_RadarTimingAction">Ouvrez Latence, démarrez le test, appuyez plusieurs fois sur des commandes puis arrêtez-le.</sys:String>
 </ResourceDictionary>

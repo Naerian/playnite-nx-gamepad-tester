@@ -256,7 +256,7 @@
     <sys:String x:Key="LOCGT_ButtonCaptureDescription">Start a focused button test without navigating Playnite.</sys:String>
     <sys:String x:Key="LOCGT_ButtonCaptureRunning">Testing buttons</sys:String>
     <sys:String x:Key="LOCGT_StartStickCapture">Test sticks</sys:String>
-    <sys:String x:Key="LOCGT_StickCaptureRunning">Testing sticks</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunning">Stop stick test</sys:String>
     <sys:String x:Key="LOCGT_CaptureExitHint">Hold LB + RB to finish the test.</sys:String>
     <sys:String x:Key="LOCGT_SettingsTabGeneral">General</sys:String>
     <sys:String x:Key="LOCGT_SettingsTabDiagnostics">Diagnostics</sys:String>
@@ -270,4 +270,20 @@
     <sys:String x:Key="LOCGT_SettingsGitHub">GitHub</sys:String>
     <sys:String x:Key="LOCGT_SettingsDocumentationWiki">Documentation Wiki</sys:String>
     <sys:String x:Key="LOCGT_SettingsReportIssue">Report an issue</sys:String>
+    <sys:String x:Key="LOCGT_RumbleRunningFormat">{0} running...</sys:String>
+    <sys:String x:Key="LOCGT_RumbleCompleteFormat">{0} complete.</sys:String>
+    <sys:String x:Key="LOCGT_RumbleFailedFormat">{0} failed.</sys:String>
+    <sys:String x:Key="LOCGT_DiagnosticProfile">Diagnostic profile</sys:String>
+    <sys:String x:Key="LOCGT_DiagnosticProfileHelp">Complete each axis using the actions below. Percentages are independent test results, not a single health score.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureReady">Start the stick test, then rotate both sticks around their full outer edge.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunningHelp">Sampling sticks. Rotate both sticks slowly around their full outer edge.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureComplete">Stick sampling stopped automatically after both sticks reached 100% circular coverage.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureLimit">Stick sampling reached its safety limit and stopped. Reset and retry any directions that are still missing.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureStopped">Stick sampling is stopped. The collected path and coverage remain available until reset.</sys:String>
+    <sys:String x:Key="LOCGT_RadarCenterAction">Release both sticks and leave the controller untouched until center sampling completes.</sys:String>
+    <sys:String x:Key="LOCGT_RadarLeftStickAction">Open Sticks &amp; Calibration, start the stick test, and rotate LS around its full edge.</sys:String>
+    <sys:String x:Key="LOCGT_RadarRightStickAction">During the stick test, rotate RS around its full edge.</sys:String>
+    <sys:String x:Key="LOCGT_RadarTriggersAction">Fully press LT and RT at least once.</sys:String>
+    <sys:String x:Key="LOCGT_RadarControlsAction">Run Guided test and complete every requested control.</sys:String>
+    <sys:String x:Key="LOCGT_RadarTimingAction">Open Latency, start the test, press controls repeatedly, then stop the test.</sys:String>
 </ResourceDictionary>

@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.1.0
+
+- Added a native WPF latency history chart with fixed dimensions and active-theme coloring.
+- Added a diagnostic radar profile to Test with separate axis values and instructions for completing every measurement.
+- Made stick diagnostics an explicit sampling session that can be stopped manually, completes automatically at 100% circular coverage for both sticks, and stops at a safety limit.
+- Capped stable-rest drift collection after high-confidence sampling to avoid unbounded session growth.
+- Clarified the difference between diagnostic confidence, circular coverage, health, and completion state.
+- Redesigned Desktop dashboard panels and metric tiles with theme-provided surfaces, subtle borders, shadows, and balanced outer spacing.
+- Localized rumble status messages and the complete diagnostic workflow in all bundled languages.
+- Expanded automated coverage to 101 checks, including finite sampling, capture gating, chart rendering, and localization parity.
+
 ## 1.0.4
 
 - Reorganized extension settings into General, Diagnostics, and About tabs.

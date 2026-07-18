@@ -256,7 +256,7 @@
     <sys:String x:Key="LOCGT_ButtonCaptureDescription">Playnite를 탐색하지 않고 버튼 테스트를 시작합니다.</sys:String>
     <sys:String x:Key="LOCGT_ButtonCaptureRunning">버튼 테스트 중</sys:String>
     <sys:String x:Key="LOCGT_StartStickCapture">스틱 테스트</sys:String>
-    <sys:String x:Key="LOCGT_StickCaptureRunning">스틱 테스트 중</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunning">스틱 테스트 중지</sys:String>
     <sys:String x:Key="LOCGT_CaptureExitHint">테스트를 종료하려면 LB + RB을 길게 누르세요.</sys:String>
     <sys:String x:Key="LOCGT_SettingsTabGeneral">일반</sys:String>
     <sys:String x:Key="LOCGT_SettingsTabDiagnostics">진단</sys:String>
@@ -270,4 +270,20 @@
     <sys:String x:Key="LOCGT_SettingsGitHub">GitHub</sys:String>
     <sys:String x:Key="LOCGT_SettingsDocumentationWiki">Wiki 문서</sys:String>
     <sys:String x:Key="LOCGT_SettingsReportIssue">문제 신고</sys:String>
+    <sys:String x:Key="LOCGT_RumbleRunningFormat">{0} 실행 중...</sys:String>
+    <sys:String x:Key="LOCGT_RumbleCompleteFormat">{0} 완료.</sys:String>
+    <sys:String x:Key="LOCGT_RumbleFailedFormat">{0} 실패.</sys:String>
+    <sys:String x:Key="LOCGT_DiagnosticProfile">진단 프로필</sys:String>
+    <sys:String x:Key="LOCGT_DiagnosticProfileHelp">아래 작업에 따라 각 축을 완료하세요. 백분율은 각각의 테스트 결과이며 하나의 상태 점수가 아닙니다.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureReady">스틱 테스트를 시작한 다음 두 스틱을 바깥쪽 가장자리를 따라 한 바퀴 돌리세요.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunningHelp">스틱을 샘플링 중입니다. 두 스틱을 바깥쪽 가장자리를 따라 천천히 돌리세요.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureComplete">두 스틱 모두 원형 커버리지 100%에 도달하여 샘플링이 자동으로 중지되었습니다.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureLimit">샘플링이 안전 한도에 도달하여 중지되었습니다. 재설정 후 누락된 방향을 다시 테스트하세요.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureStopped">샘플링이 중지되었습니다. 경로와 커버리지는 재설정할 때까지 유지됩니다.</sys:String>
+    <sys:String x:Key="LOCGT_RadarCenterAction">중앙 샘플링이 끝날 때까지 두 스틱에서 손을 떼고 컨트롤러를 움직이지 마세요.</sys:String>
+    <sys:String x:Key="LOCGT_RadarLeftStickAction">스틱 및 보정을 열고 테스트를 시작한 뒤 LS를 가장자리를 따라 한 바퀴 돌리세요.</sys:String>
+    <sys:String x:Key="LOCGT_RadarRightStickAction">스틱 테스트 중 RS를 가장자리를 따라 한 바퀴 돌리세요.</sys:String>
+    <sys:String x:Key="LOCGT_RadarTriggersAction">LT와 RT를 각각 한 번 이상 끝까지 누르세요.</sys:String>
+    <sys:String x:Key="LOCGT_RadarControlsAction">가이드 테스트를 실행하고 요청된 모든 컨트롤을 완료하세요.</sys:String>
+    <sys:String x:Key="LOCGT_RadarTimingAction">레이턴시를 열고 테스트를 시작한 뒤 버튼을 반복해서 누르고 테스트를 중지하세요.</sys:String>
 </ResourceDictionary>

@@ -3,6 +3,7 @@ using GamepadTester.Services;
 using GamepadTester.ViewModels;
 using GamepadTester.Views.ThemeIntegration;
 using GamepadTester.Views;
+using GamepadTester.Views.Controls;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,6 +13,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace GamepadTester.Tests
 {
@@ -30,6 +33,7 @@ namespace GamepadTester.Tests
                 TestDiagnosticConfidence();
                 TestRestDriftTracking();
                 TestStickDiagnostics();
+                TestDesktopStickCaptureSession();
                 TestSimulatedProvider();
                 TestVisualSchemeCatalog();
                 TestEmbeddedSidebarIcon();
@@ -41,6 +45,7 @@ namespace GamepadTester.Tests
                 TestFullscreenStickPlotSize();
                 TestFullscreenCaptureGating();
                 TestCompatibilityReport();
+                TestLatencyRateChartRendering();
                 TestLocalizationParity();
                 Console.WriteLine("GamepadTester.Tests: {0} checks passed.", executed);
                 return 0;
@@ -90,8 +95,92 @@ namespace GamepadTester.Tests
 
             True(tracker.ExploredSectors >= 60, "Circular movement explores enough sectors for high confidence");
             Equal(72, tracker.SampleCount, "Stick samples are counted");
+
+            for (var index = tracker.SampleCount; index < StickDiagnosticsTracker.MaximumSamples + 20; index++)
+            {
+                tracker.AddSample(new StickState { X = 0.5f, Y = 0.5f });
+            }
+
+            Equal(StickDiagnosticsTracker.MaximumSamples, tracker.SampleCount, "Stick sampling stops at its safety limit");
+            True(tracker.HasReachedSamplingLimit, "Stick tracker reports its safety limit");
             tracker.Reset();
             Equal(0, tracker.ExploredSectors, "Reset clears explored sectors");
+            True(!tracker.HasReachedSamplingLimit, "Reset clears the stick sampling limit");
+        }
+
+        private static void TestDesktopStickCaptureSession()
+        {
+            var provider = new SimulatedGamepadInputProvider();
+            var polling = new GamepadPollingService(provider);
+            using (var viewModel = new GamepadTesterViewModel(polling))
+            {
+                var state = new GamepadState
+                {
+                    IsConnected = true,
+                    ControllerName = "Simulated Xbox",
+                    Layout = GamepadLayout.Xbox,
+                    LeftStick = new StickState { X = 0.6f, Y = 0.2f },
+                    RightStick = new StickState { X = -0.4f, Y = 0.5f }
+                };
+
+                SetPrivateField(viewModel, "state", state);
+                SetPrivateField(viewModel, "latestInputState", state);
+                var leftTracker = GetPrivateField<StickDiagnosticsTracker>(viewModel, "leftStickDiagnostics");
+                var rightTracker = GetPrivateField<StickDiagnosticsTracker>(viewModel, "rightStickDiagnostics");
+
+                InvokePrivate(viewModel, "UpdateDiagnostics", state);
+                Equal(0, leftTracker.SampleCount, "Desktop stick sampling remains idle before the test starts");
+                Equal(0, rightTracker.SampleCount, "Desktop right stick sampling remains idle before the test starts");
+
+                viewModel.StartStickCaptureCommand.Execute(null);
+                InvokePrivate(viewModel, "UpdateDiagnostics", state);
+                Equal(1, leftTracker.SampleCount, "Desktop stick sampling starts explicitly");
+                Equal(1, rightTracker.SampleCount, "Desktop right stick sampling starts explicitly");
+
+                viewModel.StartStickCaptureCommand.Execute(null);
+                InvokePrivate(viewModel, "UpdateDiagnostics", state);
+                Equal(1, leftTracker.SampleCount, "Stopped desktop stick sampling remains frozen");
+                Equal(1, rightTracker.SampleCount, "Stopped desktop right stick sampling remains frozen");
+
+                viewModel.StartStickCaptureCommand.Execute(null);
+                for (var index = 0; index < 60; index++)
+                {
+                    state.LeftStick = StickAtSector(index);
+                    state.RightStick = StickAtSector(index);
+                    InvokePrivate(viewModel, "UpdateDiagnostics", state);
+                }
+
+                for (var index = 0; index < 60; index++)
+                {
+                    state.LeftStick = StickAtSector(0);
+                    state.RightStick = StickAtSector(0);
+                    InvokePrivate(viewModel, "UpdateDiagnostics", state);
+                }
+
+                True(viewModel.IsStickCaptureRunning, "High-confidence stick data does not stop an incomplete circular test");
+                True(leftTracker.CoveragePercent < 100 && rightTracker.CoveragePercent < 100, "Incomplete stick coverage remains below 100 percent");
+
+                for (var index = 60; index < 72; index++)
+                {
+                    state.LeftStick = StickAtSector(index);
+                    state.RightStick = StickAtSector(index);
+                    InvokePrivate(viewModel, "UpdateDiagnostics", state);
+                }
+
+                Equal(100, leftTracker.CoveragePercent, "Left stick circular test reaches full coverage");
+                Equal(100, rightTracker.CoveragePercent, "Right stick circular test reaches full coverage");
+                True(!viewModel.IsStickCaptureRunning, "Stick sampling stops only after both sticks reach full coverage");
+            }
+        }
+
+        private static StickState StickAtSector(int index)
+        {
+            var angle = Math.PI * 2d * (index + 0.5d) / 72d;
+            return new StickState
+            {
+                X = (float)(Math.Cos(angle) * 0.95d),
+                Y = (float)(Math.Sin(angle) * 0.95d)
+            };
         }
 
         private static void TestRestDriftTracking()
@@ -123,9 +212,18 @@ namespace GamepadTester.Tests
             Equal(0, tracker.SampleCount, "Rest drift reset clears samples");
             Equal(0d, tracker.MaxDrift, "Rest drift reset clears the peak");
 
-            restingState.ExtraButtons.Add(new ExtraButtonState { RawIndex = 15, IsPressed = true });
             tracker.AddSample(restingState, start.AddSeconds(3));
-            tracker.AddSample(restingState, start.AddSeconds(4));
+            for (var index = 0; index < RestDriftTracker.MaximumSamples + 20; index++)
+            {
+                tracker.AddSample(restingState, start.AddSeconds(4).AddMilliseconds(index * 20));
+            }
+
+            Equal(RestDriftTracker.MaximumSamples, tracker.SampleCount, "Rest drift collection stops at high confidence");
+
+            tracker.Reset();
+            restingState.ExtraButtons.Add(new ExtraButtonState { RawIndex = 15, IsPressed = true });
+            tracker.AddSample(restingState, start.AddSeconds(12));
+            tracker.AddSample(restingState, start.AddSeconds(13));
             Equal(0, tracker.SampleCount, "Extra button activity is excluded from rest drift");
         }
 
@@ -412,6 +510,48 @@ namespace GamepadTester.Tests
                 var missing = expected.Except(actual).ToArray();
                 True(missing.Length == 0, Path.GetFileName(path) + " is missing: " + string.Join(", ", missing));
             }
+        }
+
+        private static void TestLatencyRateChartRendering()
+        {
+            var chart = new LatencyRateChart
+            {
+                Values = new[] { 125d, 118d, 132d, 127d, 140d },
+                AccentBrush = Brushes.LimeGreen,
+                GridBrush = Brushes.DimGray,
+                LabelBrush = Brushes.LightGray,
+                PlotBackgroundBrush = Brushes.Black
+            };
+
+            chart.Measure(new Size(620d, 216d));
+            chart.Arrange(new Rect(0d, 0d, 620d, 216d));
+            chart.UpdateLayout();
+
+            var bitmap = new RenderTargetBitmap(620, 216, 96d, 96d, PixelFormats.Pbgra32);
+            bitmap.Render(chart);
+            var pixels = new byte[bitmap.PixelWidth * bitmap.PixelHeight * 4];
+            bitmap.CopyPixels(pixels, bitmap.PixelWidth * 4, 0);
+
+            True(pixels.Any(channel => channel != 0), "Latency chart produces a visible WPF render");
+
+            var radar = new DiagnosticRadarChart
+            {
+                Values = new[] { 92d, 84d, 78d, 100d, 68d, 90d },
+                Labels = new[] { "Center", "LS", "RS", "Triggers", "Controls", "Timing" },
+                AccentBrush = Brushes.DeepSkyBlue,
+                GridBrush = Brushes.DimGray,
+                LabelBrush = Brushes.White
+            };
+
+            radar.Measure(new Size(520d, 340d));
+            radar.Arrange(new Rect(0d, 0d, 520d, 340d));
+            radar.UpdateLayout();
+
+            var radarBitmap = new RenderTargetBitmap(520, 340, 96d, 96d, PixelFormats.Pbgra32);
+            radarBitmap.Render(radar);
+            var radarPixels = new byte[radarBitmap.PixelWidth * radarBitmap.PixelHeight * 4];
+            radarBitmap.CopyPixels(radarPixels, radarBitmap.PixelWidth * 4, 0);
+            True(radarPixels.Any(channel => channel != 0), "Diagnostic radar produces a visible WPF render");
         }
 
         private static HashSet<string> ReadKeys(string path)

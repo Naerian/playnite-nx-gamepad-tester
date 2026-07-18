@@ -256,7 +256,7 @@
     <sys:String x:Key="LOCGT_ButtonCaptureDescription">Запустите проверку кнопок без навигации по Playnite.</sys:String>
     <sys:String x:Key="LOCGT_ButtonCaptureRunning">Проверка кнопок</sys:String>
     <sys:String x:Key="LOCGT_StartStickCapture">Проверить стики</sys:String>
-    <sys:String x:Key="LOCGT_StickCaptureRunning">Проверка стиков</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunning">Остановить тест стиков</sys:String>
     <sys:String x:Key="LOCGT_CaptureExitHint">Удерживайте LB + RB, чтобы завершить тест.</sys:String>
     <sys:String x:Key="LOCGT_SettingsTabGeneral">Общие</sys:String>
     <sys:String x:Key="LOCGT_SettingsTabDiagnostics">Диагностика</sys:String>
@@ -270,4 +270,20 @@
     <sys:String x:Key="LOCGT_SettingsGitHub">GitHub</sys:String>
     <sys:String x:Key="LOCGT_SettingsDocumentationWiki">Документация Wiki</sys:String>
     <sys:String x:Key="LOCGT_SettingsReportIssue">Сообщить о проблеме</sys:String>
+    <sys:String x:Key="LOCGT_RumbleRunningFormat">Выполняется: {0}...</sys:String>
+    <sys:String x:Key="LOCGT_RumbleCompleteFormat">{0} завершено.</sys:String>
+    <sys:String x:Key="LOCGT_RumbleFailedFormat">Ошибка: {0}.</sys:String>
+    <sys:String x:Key="LOCGT_DiagnosticProfile">Диагностический профиль</sys:String>
+    <sys:String x:Key="LOCGT_DiagnosticProfileHelp">Заполните каждую ось, выполнив указанные действия. Проценты — это независимые результаты тестов, а не единая оценка состояния.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureReady">Запустите тест стиков, затем проведите оба стика по всей внешней окружности.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunningHelp">Идёт сбор данных стиков. Медленно проведите оба стика по всей внешней окружности.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureComplete">Сбор данных остановлен автоматически после достижения 100% кругового покрытия обоими стиками.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureLimit">Достигнут предел безопасности, сбор данных остановлен. Сбросьте результаты и повторите недостающие направления.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureStopped">Сбор данных остановлен. Траектория и покрытие сохраняются до сброса.</sys:String>
+    <sys:String x:Key="LOCGT_RadarCenterAction">Отпустите оба стика и не двигайте геймпад до завершения измерения центра.</sys:String>
+    <sys:String x:Key="LOCGT_RadarLeftStickAction">Откройте «Стики и калибровка», запустите тест и проведите LS по всей окружности.</sys:String>
+    <sys:String x:Key="LOCGT_RadarRightStickAction">Во время теста проведите RS по всей окружности.</sys:String>
+    <sys:String x:Key="LOCGT_RadarTriggersAction">Хотя бы один раз полностью нажмите LT и RT.</sys:String>
+    <sys:String x:Key="LOCGT_RadarControlsAction">Запустите пошаговый тест и выполните все запрошенные действия.</sys:String>
+    <sys:String x:Key="LOCGT_RadarTimingAction">Откройте «Задержка», запустите тест, несколько раз нажмите кнопки и остановите тест.</sys:String>
 </ResourceDictionary>

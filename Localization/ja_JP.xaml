@@ -256,7 +256,7 @@
     <sys:String x:Key="LOCGT_ButtonCaptureDescription">Playnite を操作せずにボタンテストを開始します。</sys:String>
     <sys:String x:Key="LOCGT_ButtonCaptureRunning">ボタンをテスト中</sys:String>
     <sys:String x:Key="LOCGT_StartStickCapture">スティックをテスト</sys:String>
-    <sys:String x:Key="LOCGT_StickCaptureRunning">スティックをテスト中</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunning">スティックテストを停止</sys:String>
     <sys:String x:Key="LOCGT_CaptureExitHint">LB + RB を長押ししてテストを終了します。</sys:String>
     <sys:String x:Key="LOCGT_SettingsTabGeneral">一般</sys:String>
     <sys:String x:Key="LOCGT_SettingsTabDiagnostics">診断</sys:String>
@@ -270,4 +270,20 @@
     <sys:String x:Key="LOCGT_SettingsGitHub">GitHub</sys:String>
     <sys:String x:Key="LOCGT_SettingsDocumentationWiki">Wiki ドキュメント</sys:String>
     <sys:String x:Key="LOCGT_SettingsReportIssue">問題を報告</sys:String>
+    <sys:String x:Key="LOCGT_RumbleRunningFormat">{0} を実行中...</sys:String>
+    <sys:String x:Key="LOCGT_RumbleCompleteFormat">{0} が完了しました。</sys:String>
+    <sys:String x:Key="LOCGT_RumbleFailedFormat">{0} に失敗しました。</sys:String>
+    <sys:String x:Key="LOCGT_DiagnosticProfile">診断プロファイル</sys:String>
+    <sys:String x:Key="LOCGT_DiagnosticProfileHelp">以下の操作で各軸を完了してください。各パーセンテージは独立したテスト結果であり、単一の健康スコアではありません。</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureReady">スティックテストを開始し、両方のスティックを外周に沿って一周させてください。</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunningHelp">スティックを測定中です。両方のスティックを外周に沿ってゆっくり一周させてください。</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureComplete">両方のスティックが円周カバレッジ 100% に達したため、測定を自動的に停止しました。</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureLimit">測定が安全上限に達して停止しました。リセットして不足している方向を再試行してください。</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureStopped">測定は停止中です。軌跡とカバレッジはリセットするまで保持されます。</sys:String>
+    <sys:String x:Key="LOCGT_RadarCenterAction">両方のスティックから手を離し、中央の測定が完了するまでコントローラーを動かさないでください。</sys:String>
+    <sys:String x:Key="LOCGT_RadarLeftStickAction">「スティックと調整」を開いてテストを開始し、LS を外周に沿って一周させます。</sys:String>
+    <sys:String x:Key="LOCGT_RadarRightStickAction">スティックテスト中に RS を外周に沿って一周させます。</sys:String>
+    <sys:String x:Key="LOCGT_RadarTriggersAction">LT と RT を少なくとも一度ずつ最後まで押してください。</sys:String>
+    <sys:String x:Key="LOCGT_RadarControlsAction">ガイド付きテストを実行し、要求されたすべての操作を完了してください。</sys:String>
+    <sys:String x:Key="LOCGT_RadarTimingAction">「レイテンシー」を開いてテストを開始し、ボタンを繰り返し押してから停止してください。</sys:String>
 </ResourceDictionary>

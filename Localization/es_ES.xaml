@@ -256,7 +256,7 @@
     <sys:String x:Key="LOCGT_ButtonCaptureDescription">Inicia una prueba de botones sin navegar por Playnite.</sys:String>
     <sys:String x:Key="LOCGT_ButtonCaptureRunning">Probando botones</sys:String>
     <sys:String x:Key="LOCGT_StartStickCapture">Probar sticks</sys:String>
-    <sys:String x:Key="LOCGT_StickCaptureRunning">Probando sticks</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunning">Detener prueba de sticks</sys:String>
     <sys:String x:Key="LOCGT_CaptureExitHint">Mantén LB + RB pulsados para finalizar la prueba.</sys:String>
     <sys:String x:Key="LOCGT_SettingsTabGeneral">General</sys:String>
     <sys:String x:Key="LOCGT_SettingsTabDiagnostics">Diagnóstico</sys:String>
@@ -270,4 +270,20 @@
     <sys:String x:Key="LOCGT_SettingsGitHub">GitHub</sys:String>
     <sys:String x:Key="LOCGT_SettingsDocumentationWiki">Documentación Wiki</sys:String>
     <sys:String x:Key="LOCGT_SettingsReportIssue">Reportar un problema</sys:String>
+    <sys:String x:Key="LOCGT_RumbleRunningFormat">Ejecutando {0}...</sys:String>
+    <sys:String x:Key="LOCGT_RumbleCompleteFormat">{0} completado.</sys:String>
+    <sys:String x:Key="LOCGT_RumbleFailedFormat">Error en {0}.</sys:String>
+    <sys:String x:Key="LOCGT_DiagnosticProfile">Perfil de diagnóstico</sys:String>
+    <sys:String x:Key="LOCGT_DiagnosticProfileHelp">Completa cada eje siguiendo las acciones indicadas. Los porcentajes son resultados independientes, no una única puntuación de salud.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureReady">Inicia la prueba de sticks y gira ambos por todo su borde exterior.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunningHelp">Muestreando sticks. Gira ambos lentamente por todo su borde exterior.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureComplete">El muestreo se detuvo automáticamente al alcanzar el 100% de cobertura circular en ambos sticks.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureLimit">El muestreo alcanzó su límite de seguridad y se detuvo. Reinicia y repite las direcciones que falten.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureStopped">El muestreo está detenido. El recorrido y la cobertura se conservarán hasta reiniciarlos.</sys:String>
+    <sys:String x:Key="LOCGT_RadarCenterAction">Suelta ambos sticks y deja el mando quieto hasta completar el muestreo del centro.</sys:String>
+    <sys:String x:Key="LOCGT_RadarLeftStickAction">Abre Sticks y calibración, inicia la prueba y gira LS por todo su borde.</sys:String>
+    <sys:String x:Key="LOCGT_RadarRightStickAction">Durante la prueba de sticks, gira RS por todo su borde.</sys:String>
+    <sys:String x:Key="LOCGT_RadarTriggersAction">Pulsa LT y RT completamente al menos una vez.</sys:String>
+    <sys:String x:Key="LOCGT_RadarControlsAction">Ejecuta la prueba guiada y completa todos los controles solicitados.</sys:String>
+    <sys:String x:Key="LOCGT_RadarTimingAction">Abre Latencia, inicia la prueba, pulsa controles repetidamente y después detenla.</sys:String>
 </ResourceDictionary>

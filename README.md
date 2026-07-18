@@ -4,9 +4,9 @@ Playnite NX Gamepad Tester is a Playnite extension for testing controllers in De
 
 It is designed for couch, TV, handheld-PC, and console-like setups where users want to verify gamepad buttons, sticks, triggers, rumble, drift, latency, and device metadata without leaving Playnite.
 
-## Version 1.0.4
+## Version 1.1.0
 
-Version `1.0.4` reorganizes extension settings into General, Diagnostics, and About tabs. The new About page includes the installed version and author, direct links to GitHub, the documentation Wiki and issue reporting, plus an optional Ko-fi support link. Settings inputs continue to inherit the active Playnite theme.
+Version `1.1.0` adds native theme-aware latency and diagnostic radar charts, finite stick and rest-drift sampling, clearer test guidance, and a more cohesive Desktop dashboard built from the active Playnite theme surfaces. Stick tests now remain active until both sticks reach 100% circular coverage, are stopped manually, or reach the safety limit.
 
 ## Documentation
 
@@ -24,9 +24,10 @@ Version `1.0.4` reorganizes extension settings into General, Diagnostics, and Ab
 - Automatic and manual visual schemes for Universal, Xbox One, Xbox Series X / S, PlayStation, DualSense, Switch Pro, 8BitDo Ultimate, 8BitDo Pro, and Steam Controller layouts.
 - Live controller map with button, shoulder, trigger, stick, and D-pad feedback.
 - Guided test pass that asks for the next missing normalized input.
-- Stick diagnostics with paths, circular coverage, max reach, range quality, center capture, recommended deadzone, and measurement confidence.
+- Stick diagnostics with explicit start/stop, paths, 100% circular-coverage completion, max reach, range quality, center capture, recommended deadzone, and measurement confidence.
 - Health estimate based only on stable resting samples, with configurable thresholds and a collection-readiness indicator.
-- Latency panel for observed polling/input timing with sample confidence.
+- Latency panel with a fixed-size theme-colored history chart for observed polling/input timing and sample confidence.
+- Diagnostic profile radar with separate center, stick, trigger, control-coverage, and timing results plus instructions for completing each axis.
 - Input log with opt-in recording and export.
 - Rumble tests integrated into the main test dashboard.
 - Device information with controller name, display name, VID/PID, layout, backend, SDL mapping status, and an exportable compatibility report.

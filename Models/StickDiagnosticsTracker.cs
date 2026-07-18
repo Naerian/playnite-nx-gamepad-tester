@@ -6,6 +6,7 @@ namespace GamepadTester.Models
 {
     public sealed class StickDiagnosticsTracker
     {
+        public const int MaximumSamples = 1800;
         private const int BucketCount = 72;
         private const int MaxPathPoints = 420;
         private const double Threshold = 0.85d;
@@ -36,6 +37,7 @@ namespace GamepadTester.Models
         public double MaxMagnitude { get; private set; }
         public double AverageMagnitude { get; private set; }
         public int SampleCount { get; private set; }
+        public bool HasReachedSamplingLimit { get { return SampleCount >= MaximumSamples; } }
         public double MinX { get; private set; }
         public double MaxX { get; private set; }
         public double MinY { get; private set; }
@@ -43,6 +45,11 @@ namespace GamepadTester.Models
 
         public void AddSample(StickState stick)
         {
+            if (HasReachedSamplingLimit)
+            {
+                return;
+            }
+
             var magnitude = Math.Min(1d, stick.Magnitude);
             MaxMagnitude = Math.Max(MaxMagnitude, magnitude);
             SampleCount++;

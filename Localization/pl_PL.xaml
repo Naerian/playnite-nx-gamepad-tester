@@ -256,7 +256,7 @@
     <sys:String x:Key="LOCGT_ButtonCaptureDescription">Uruchom test przycisków bez nawigowania po Playnite.</sys:String>
     <sys:String x:Key="LOCGT_ButtonCaptureRunning">Trwa test przycisków</sys:String>
     <sys:String x:Key="LOCGT_StartStickCapture">Testuj drążki</sys:String>
-    <sys:String x:Key="LOCGT_StickCaptureRunning">Trwa test drążków</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunning">Zatrzymaj test drążków</sys:String>
     <sys:String x:Key="LOCGT_CaptureExitHint">Przytrzymaj LB + RB, aby zakończyć test.</sys:String>
     <sys:String x:Key="LOCGT_SettingsTabGeneral">Ogólne</sys:String>
     <sys:String x:Key="LOCGT_SettingsTabDiagnostics">Diagnostyka</sys:String>
@@ -270,4 +270,20 @@
     <sys:String x:Key="LOCGT_SettingsGitHub">GitHub</sys:String>
     <sys:String x:Key="LOCGT_SettingsDocumentationWiki">Dokumentacja Wiki</sys:String>
     <sys:String x:Key="LOCGT_SettingsReportIssue">Zgłoś problem</sys:String>
+    <sys:String x:Key="LOCGT_RumbleRunningFormat">Uruchamianie: {0}...</sys:String>
+    <sys:String x:Key="LOCGT_RumbleCompleteFormat">{0} zakończono.</sys:String>
+    <sys:String x:Key="LOCGT_RumbleFailedFormat">{0} nie powiodło się.</sys:String>
+    <sys:String x:Key="LOCGT_DiagnosticProfile">Profil diagnostyczny</sys:String>
+    <sys:String x:Key="LOCGT_DiagnosticProfileHelp">Uzupełnij każdą oś, wykonując opisane czynności. Wartości procentowe są niezależnymi wynikami, a nie jedną oceną stanu.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureReady">Uruchom test drążków, a następnie obróć oba po całej zewnętrznej krawędzi.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunningHelp">Trwa próbkowanie drążków. Powoli obróć oba po całej zewnętrznej krawędzi.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureComplete">Próbkowanie zatrzymało się automatycznie po osiągnięciu 100% pokrycia kołowego przez oba drążki.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureLimit">Próbkowanie osiągnęło limit bezpieczeństwa i zostało zatrzymane. Zresetuj je i powtórz brakujące kierunki.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureStopped">Próbkowanie jest zatrzymane. Ścieżka i pokrycie pozostaną dostępne do czasu resetu.</sys:String>
+    <sys:String x:Key="LOCGT_RadarCenterAction">Puść oba drążki i nie poruszaj kontrolerem do zakończenia próbkowania środka.</sys:String>
+    <sys:String x:Key="LOCGT_RadarLeftStickAction">Otwórz Drążki i kalibracja, uruchom test i obróć LS po całej krawędzi.</sys:String>
+    <sys:String x:Key="LOCGT_RadarRightStickAction">Podczas testu obróć RS po całej krawędzi.</sys:String>
+    <sys:String x:Key="LOCGT_RadarTriggersAction">Wciśnij LT i RT do końca co najmniej raz.</sys:String>
+    <sys:String x:Key="LOCGT_RadarControlsAction">Uruchom test z przewodnikiem i wykonaj wszystkie wymagane działania.</sys:String>
+    <sys:String x:Key="LOCGT_RadarTimingAction">Otwórz Opóźnienie, uruchom test, naciskaj wielokrotnie przyciski, a następnie go zatrzymaj.</sys:String>
 </ResourceDictionary>

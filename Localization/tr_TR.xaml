@@ -256,7 +256,7 @@
     <sys:String x:Key="LOCGT_ButtonCaptureDescription">Playnite içinde gezinmeden odaklı bir düğme testi başlatın.</sys:String>
     <sys:String x:Key="LOCGT_ButtonCaptureRunning">Düğmeler test ediliyor</sys:String>
     <sys:String x:Key="LOCGT_StartStickCapture">Analog çubukları test et</sys:String>
-    <sys:String x:Key="LOCGT_StickCaptureRunning">Analog çubuklar test ediliyor</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunning">Analog çubuk testini durdur</sys:String>
     <sys:String x:Key="LOCGT_CaptureExitHint">Testi bitirmek için LB + RB tuşlarını basılı tutun.</sys:String>
     <sys:String x:Key="LOCGT_SettingsTabGeneral">Genel</sys:String>
     <sys:String x:Key="LOCGT_SettingsTabDiagnostics">Tanılama</sys:String>
@@ -270,4 +270,20 @@
     <sys:String x:Key="LOCGT_SettingsGitHub">GitHub</sys:String>
     <sys:String x:Key="LOCGT_SettingsDocumentationWiki">Wiki belgeleri</sys:String>
     <sys:String x:Key="LOCGT_SettingsReportIssue">Sorun bildir</sys:String>
+    <sys:String x:Key="LOCGT_RumbleRunningFormat">{0} çalışıyor...</sys:String>
+    <sys:String x:Key="LOCGT_RumbleCompleteFormat">{0} tamamlandı.</sys:String>
+    <sys:String x:Key="LOCGT_RumbleFailedFormat">{0} başarısız.</sys:String>
+    <sys:String x:Key="LOCGT_DiagnosticProfile">Tanılama profili</sys:String>
+    <sys:String x:Key="LOCGT_DiagnosticProfileHelp">Aşağıdaki işlemleri uygulayarak her ekseni tamamlayın. Yüzdeler bağımsız test sonuçlarıdır; tek bir sağlık puanı değildir.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureReady">Analog çubuk testini başlatın ve iki çubuğu da dış kenar boyunca tam tur döndürün.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureRunningHelp">Analog çubuklar örnekleniyor. İkisini de dış kenar boyunca yavaşça tam tur döndürün.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureComplete">Her iki çubuk da %100 dairesel kapsama ulaştığı için örnekleme otomatik olarak durdu.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureLimit">Örnekleme güvenlik sınırına ulaşıp durdu. Sıfırlayın ve eksik yönleri yeniden deneyin.</sys:String>
+    <sys:String x:Key="LOCGT_StickCaptureStopped">Örnekleme durduruldu. Yol ve kapsama sıfırlanana kadar korunur.</sys:String>
+    <sys:String x:Key="LOCGT_RadarCenterAction">Merkez örneklemesi bitene kadar iki çubuğu da bırakın ve kontrolcüyü hareket ettirmeyin.</sys:String>
+    <sys:String x:Key="LOCGT_RadarLeftStickAction">Çubuklar ve kalibrasyonu açın, testi başlatın ve LS'yi tüm kenar boyunca döndürün.</sys:String>
+    <sys:String x:Key="LOCGT_RadarRightStickAction">Test sırasında RS'yi tüm kenar boyunca döndürün.</sys:String>
+    <sys:String x:Key="LOCGT_RadarTriggersAction">LT ve RT'ye en az bir kez sonuna kadar basın.</sys:String>
+    <sys:String x:Key="LOCGT_RadarControlsAction">Yönlendirmeli testi çalıştırın ve istenen tüm kontrolleri tamamlayın.</sys:String>
+    <sys:String x:Key="LOCGT_RadarTimingAction">Gecikmeyi açın, testi başlatın, kontrollere art arda basın ve ardından testi durdurun.</sys:String>
 </ResourceDictionary>

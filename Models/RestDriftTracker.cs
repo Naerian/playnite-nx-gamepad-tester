@@ -4,6 +4,7 @@ namespace GamepadTester.Models
 {
     public sealed class RestDriftTracker
     {
+        public const int MaximumSamples = DiagnosticConfidenceEvaluator.HighConfidenceRestSamples;
         private const double StabilityDelta = 0.015d;
         private const double ObservationMilliseconds = 450d;
         private const double MaximumCandidateMagnitude = 0.35d;
@@ -24,6 +25,11 @@ namespace GamepadTester.Models
 
         public void AddSample(GamepadState state, DateTime timestamp)
         {
+            if (SampleCount >= MaximumSamples)
+            {
+                return;
+            }
+
             if (!IsRestCandidate(state))
             {
                 ResetCandidate();

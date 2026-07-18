@@ -103,6 +103,8 @@ namespace GamepadTester.ViewModels
         private bool isLatencyTestRunning;
         private bool isButtonCaptureRunning;
         private bool isStickCaptureRunning;
+        private bool stickCaptureCompletedAutomatically;
+        private bool stickCaptureReachedLimit;
         private DateTime latencyTestStartedAt;
         private double latencyTestDurationSeconds;
         private double lastLatencyMs;
@@ -130,19 +132,19 @@ namespace GamepadTester.ViewModels
             GuidedTestInputs = new ObservableCollection<GuidedTestInputItem>();
             VisualSchemeOptions = new ObservableCollection<ControllerVisualSchemeOption>();
             InitializeVisualSchemeOptions();
-            rumbleCommand = new RelayCommand(() => RunSimpleRumble("Standard rumble", 42000, 52000, 350), CanRunRumble);
-            lightRumbleCommand = new RelayCommand(() => RunSimpleRumble("Light rumble", 14000, 18000, 260), CanRunRumble);
-            mediumRumbleCommand = new RelayCommand(() => RunSimpleRumble("Medium rumble", 28000, 36000, 360), CanRunRumble);
-            heavyRumbleCommand = new RelayCommand(() => RunSimpleRumble("Heavy rumble", 52000, 62000, 520), CanRunRumble);
-            lowMotorRumbleCommand = new RelayCommand(() => RunSimpleRumble("Low-frequency motor", 52000, 0, 520), CanRunRumble);
-            highMotorRumbleCommand = new RelayCommand(() => RunSimpleRumble("High-frequency motor", 0, 56000, 520), CanRunRumble);
+            rumbleCommand = new RelayCommand(() => RunSimpleRumble(L("LOCGT_Standard", "Standard"), 42000, 52000, 350), CanRunRumble);
+            lightRumbleCommand = new RelayCommand(() => RunSimpleRumble(L("LOCGT_Light", "Light"), 14000, 18000, 260), CanRunRumble);
+            mediumRumbleCommand = new RelayCommand(() => RunSimpleRumble(L("LOCGT_Medium", "Medium"), 28000, 36000, 360), CanRunRumble);
+            heavyRumbleCommand = new RelayCommand(() => RunSimpleRumble(L("LOCGT_Heavy", "Heavy"), 52000, 62000, 520), CanRunRumble);
+            lowMotorRumbleCommand = new RelayCommand(() => RunSimpleRumble(L("LOCGT_LowMotor", "Low motor"), 52000, 0, 520), CanRunRumble);
+            highMotorRumbleCommand = new RelayCommand(() => RunSimpleRumble(L("LOCGT_HighMotor", "High motor"), 0, 56000, 520), CanRunRumble);
             pulseRumbleCommand = new RelayCommand(TestPulseRumble, CanRunRumble);
             alternatingRumbleCommand = new RelayCommand(TestAlternatingRumble, CanRunRumble);
             rampRumbleCommand = new RelayCommand(TestRampRumble, CanRunRumble);
             resetDiagnosticsCommand = new RelayCommand(ResetDiagnostics);
             startCenterCalibrationCommand = new RelayCommand(StartCenterCalibration, () => State.IsConnected && !isCenterCalibrationRunning);
             resetCalibrationCommand = new RelayCommand(ResetCalibration);
-            resetStickRangeCommand = new RelayCommand(ResetStickRangeDiagnostics);
+            resetStickRangeCommand = new RelayCommand(ResetStickRangeDiagnostics, () => !isStickCaptureRunning);
             resetLatencyCommand = new RelayCommand(ResetLatency, () => State.IsConnected && !isLatencyTestRunning);
             startLatencyTestCommand = new RelayCommand(ToggleLatencyTest, () => isLatencyTestRunning || State.IsConnected);
             startButtonCaptureCommand = new RelayCommand(
@@ -1197,6 +1199,34 @@ namespace GamepadTester.ViewModels
             }
         }
 
+        public string StickCaptureStatusLabel
+        {
+            get
+            {
+                if (isStickCaptureRunning)
+                {
+                    return L("LOCGT_StickCaptureRunningHelp", "Sampling sticks. Rotate both sticks slowly around their full outer edge.");
+                }
+
+                if (stickCaptureCompletedAutomatically)
+                {
+                    return L("LOCGT_StickCaptureComplete", "Stick sampling stopped automatically after both sticks reached 100% circular coverage.");
+                }
+
+                if (stickCaptureReachedLimit)
+                {
+                    return L("LOCGT_StickCaptureLimit", "Stick sampling reached its safety limit and stopped. Reset and retry any directions that are still missing.");
+                }
+
+                if (leftStickDiagnostics.SampleCount > 0 || rightStickDiagnostics.SampleCount > 0)
+                {
+                    return L("LOCGT_StickCaptureStopped", "Stick sampling is stopped. The collected path and coverage remain available until reset.");
+                }
+
+                return L("LOCGT_StickCaptureReady", "Start the stick test, then rotate both sticks around their full outer edge.");
+            }
+        }
+
         public string CaptureExitHintLabel
         {
             get { return L("LOCGT_CaptureExitHint", "Hold LB + RB to finish the test."); }
@@ -1228,6 +1258,45 @@ namespace GamepadTester.ViewModels
                 }
 
                 return points;
+            }
+        }
+
+        public IList<double> LatencyRateGraphValues
+        {
+            get { return new List<double>(latencyRateHistory); }
+        }
+
+        public IList<double> DiagnosticRadarValues
+        {
+            get
+            {
+                var healthConfidence = HealthConfidence;
+                var timingConfidence = DiagnosticConfidenceEvaluator.ForLatency(hasLatencyTestStarted, inputEventIntervalSamples);
+                return new List<double>
+                {
+                    healthConfidence.IsReady ? HealthScore : 0d,
+                    LeftStickCircularCoveragePercent,
+                    RightStickCircularCoveragePercent,
+                    Math.Round((maxLeftTrigger + maxRightTrigger) * 50d),
+                    QuickTestProgress,
+                    timingConfidence.IsReady ? 100d : timingConfidence.ProgressPercent
+                };
+            }
+        }
+
+        public IList<string> DiagnosticRadarLabels
+        {
+            get
+            {
+                return new List<string>
+                {
+                    L("LOCGT_CenterDrift", "Center"),
+                    L("LOCGT_LeftStick", "Left stick"),
+                    L("LOCGT_RightStick", "Right stick"),
+                    L("LOCGT_Triggers", "Triggers"),
+                    L("LOCGT_SessionCoverage", "Controls"),
+                    L("LOCGT_InputEventLatency", "Timing")
+                };
             }
         }
 
@@ -2106,11 +2175,13 @@ namespace GamepadTester.ViewModels
 
             UpdateCenterCalibration(nextState);
 
-            if (!isFullscreenSimplifiedMode || isStickCaptureRunning)
+            TrackRestDrift(nextState);
+
+            if (isStickCaptureRunning)
             {
-                TrackRestDrift(nextState);
                 leftStickDiagnostics.AddSample(nextState.LeftStick);
                 rightStickDiagnostics.AddSample(nextState.RightStick);
+                EvaluateStickCaptureCompletion();
             }
 
             if (!isFullscreenSimplifiedMode || isButtonCaptureRunning)
@@ -2276,7 +2347,7 @@ namespace GamepadTester.ViewModels
 
         private void TestPulseRumble()
         {
-            RunRumblePattern("Pulse pattern", () =>
+            RunRumblePattern(L("LOCGT_Pulse", "Pulse"), () =>
             {
                 for (var index = 0; index < 3; index++)
                 {
@@ -2288,7 +2359,7 @@ namespace GamepadTester.ViewModels
 
         private void TestAlternatingRumble()
         {
-            RunRumblePattern("Alternating motors", () =>
+            RunRumblePattern(L("LOCGT_Alternating", "Alternating"), () =>
             {
                 for (var index = 0; index < 4; index++)
                 {
@@ -2302,7 +2373,7 @@ namespace GamepadTester.ViewModels
 
         private void TestRampRumble()
         {
-            RunRumblePattern("Ramp pattern", () =>
+            RunRumblePattern(L("LOCGT_Ramp", "Ramp"), () =>
             {
                 for (var step = 1; step <= 5; step++)
                 {
@@ -2315,18 +2386,18 @@ namespace GamepadTester.ViewModels
 
         private void RunRumblePattern(string label, Action pattern)
         {
-            SetRumbleState(true, label + " running...");
+            SetRumbleState(true, string.Format(L("LOCGT_RumbleRunningFormat", "{0} running..."), label));
             Task.Run(() =>
             {
                 try
                 {
                     pattern();
                     pollingService.TryRumble(0, 0, 1);
-                    SetRumbleState(false, label + " complete");
+                    SetRumbleState(false, string.Format(L("LOCGT_RumbleCompleteFormat", "{0} complete."), label));
                 }
                 catch
                 {
-                    SetRumbleState(false, label + " failed");
+                    SetRumbleState(false, string.Format(L("LOCGT_RumbleFailedFormat", "{0} failed."), label));
                 }
             });
         }
@@ -2361,6 +2432,8 @@ namespace GamepadTester.ViewModels
         {
             isGuidedTestRunning = false;
             guidedTestStepIndex = 0;
+            stickCaptureCompletedAutomatically = false;
+            stickCaptureReachedLimit = false;
             restDriftDiagnostics.Reset();
             maxLeftStickMagnitude = 0d;
             maxRightStickMagnitude = 0d;
@@ -2463,6 +2536,8 @@ namespace GamepadTester.ViewModels
 
         private void ResetStickRangeDiagnostics()
         {
+            stickCaptureCompletedAutomatically = false;
+            stickCaptureReachedLimit = false;
             maxLeftStickMagnitude = 0d;
             maxRightStickMagnitude = 0d;
             leftStickDiagnostics.Reset();
@@ -2488,6 +2563,8 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("LeftRangeQualityPercent");
             OnPropertyChanged("RightRangeQualityPercent");
             OnPropertyChanged("HealthRangeFactorLabel");
+            OnPropertyChanged("StickCaptureStatusLabel");
+            OnPropertyChanged("DiagnosticRadarValues");
         }
 
         private void ResetLatency()
@@ -2530,6 +2607,8 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("PollingJitterLabel");
             OnPropertyChanged("EstimatedDelayLabel");
             OnPropertyChanged("LatencyRateGraphPoints");
+            OnPropertyChanged("LatencyRateGraphValues");
+            OnPropertyChanged("DiagnosticRadarValues");
             startLatencyTestCommand.RaiseCanExecuteChanged();
             startButtonCaptureCommand.RaiseCanExecuteChanged();
             startStickCaptureCommand.RaiseCanExecuteChanged();
@@ -2575,15 +2654,19 @@ namespace GamepadTester.ViewModels
 
             ResetStickRangeDiagnostics();
             restDriftDiagnostics.Reset();
+            stickCaptureCompletedAutomatically = false;
+            stickCaptureReachedLimit = false;
             isStickCaptureRunning = true;
             RefreshFullscreenDisplayState();
             OnPropertyChanged("IsStickCaptureRunning");
             OnPropertyChanged("IsFullscreenInputCaptureActive");
             OnPropertyChanged("StickCaptureButtonLabel");
+            OnPropertyChanged("StickCaptureStatusLabel");
             OnPropertyChanged("SessionRestDriftLabel");
             startStickCaptureCommand.RaiseCanExecuteChanged();
             startButtonCaptureCommand.RaiseCanExecuteChanged();
             startLatencyTestCommand.RaiseCanExecuteChanged();
+            resetStickRangeCommand.RaiseCanExecuteChanged();
         }
 
         private void StopStickCapture()
@@ -2598,9 +2681,27 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("IsStickCaptureRunning");
             OnPropertyChanged("IsFullscreenInputCaptureActive");
             OnPropertyChanged("StickCaptureButtonLabel");
+            OnPropertyChanged("StickCaptureStatusLabel");
             startStickCaptureCommand.RaiseCanExecuteChanged();
             startButtonCaptureCommand.RaiseCanExecuteChanged();
             startLatencyTestCommand.RaiseCanExecuteChanged();
+            resetStickRangeCommand.RaiseCanExecuteChanged();
+        }
+
+        private void EvaluateStickCaptureCompletion()
+        {
+            if (leftStickDiagnostics.CoveragePercent >= 100 && rightStickDiagnostics.CoveragePercent >= 100)
+            {
+                stickCaptureCompletedAutomatically = true;
+                StopStickCapture();
+                return;
+            }
+
+            if (leftStickDiagnostics.HasReachedSamplingLimit || rightStickDiagnostics.HasReachedSamplingLimit)
+            {
+                stickCaptureReachedLimit = true;
+                StopStickCapture();
+            }
         }
 
         private void StartLatencyTest()
@@ -2650,6 +2751,8 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("LatencyRangeLabel");
             OnPropertyChanged("LatencyTestDurationLabel");
             OnPropertyChanged("LatencyRateGraphPoints");
+            OnPropertyChanged("LatencyRateGraphValues");
+            OnPropertyChanged("DiagnosticRadarValues");
             startLatencyTestCommand.RaiseCanExecuteChanged();
             startButtonCaptureCommand.RaiseCanExecuteChanged();
             startStickCaptureCommand.RaiseCanExecuteChanged();
@@ -3146,6 +3249,8 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("PollingJitterLabel");
             OnPropertyChanged("EstimatedDelayLabel");
             OnPropertyChanged("LatencyRateGraphPoints");
+            OnPropertyChanged("LatencyRateGraphValues");
+            OnPropertyChanged("DiagnosticRadarValues");
             OnPropertyChanged("LatencySampleCountLabel");
             OnPropertyChanged("LatencyRangeLabel");
             OnPropertyChanged("LatencyTestDurationLabel");
@@ -3817,6 +3922,7 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("RightRangeDisplayProgress");
             OnPropertyChanged("LeftRangeConfidenceLabel");
             OnPropertyChanged("RightRangeConfidenceLabel");
+            OnPropertyChanged("StickCaptureStatusLabel");
             OnPropertyChanged("LatencyStatusLabel");
             OnPropertyChanged("StartLatencyButtonLabel");
             OnPropertyChanged("LatencyResultLabel");
@@ -3871,6 +3977,8 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("HealthDriftFactorLabel");
             OnPropertyChanged("HealthRangeFactorLabel");
             OnPropertyChanged("HealthCoverageFactorLabel");
+            OnPropertyChanged("DiagnosticRadarValues");
+            OnPropertyChanged("DiagnosticRadarLabels");
             OnPropertyChanged("ControllerSummary");
             OnPropertyChanged("HasController");
             OnPropertyChanged("IsNoControllerVisible");
