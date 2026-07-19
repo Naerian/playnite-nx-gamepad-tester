@@ -286,4 +286,23 @@
     <sys:String x:Key="LOCGT_RadarTriggersAction">Хотя бы один раз полностью нажмите LT и RT.</sys:String>
     <sys:String x:Key="LOCGT_RadarControlsAction">Запустите пошаговый тест и выполните все запрошенные действия.</sys:String>
     <sys:String x:Key="LOCGT_RadarTimingAction">Откройте «Задержка», запустите тест, несколько раз нажмите кнопки и остановите тест.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityAssistant">Помощник совместимости</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityAssistantHelp">Проверяет раскладку SDL и возможности устройства. Рекомендации основаны только на доступных данных и не предполагают режим ввода, который SDL не может определить.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityDisconnected">Нет сопоставленного контроллера</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReady">Готово</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReadyWithNotes">Готово с замечаниями</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReview">Рекомендуется проверка</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityLimited">Ограниченная раскладка</sys:String>
+    <sys:String x:Key="LOCGT_InputModeUnknown">SDL не может определить</sys:String>
+    <sys:String x:Key="LOCGT_InputModeNativeHid">Нативный / HID через SDL</sys:String>
+    <sys:String x:Key="LOCGT_MappingCoverageUnavailable">Охват раскладки недоступен</sys:String>
+    <sys:String x:Key="LOCGT_MappingCoverageFormat">Сопоставлено {0}% стандартных элементов</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityInputMode">Режим ввода</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingCoverage">Стандартная раскладка</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingUnavailableDetail">Контроллер подключён, но SDL не вернул текст раскладки. Проверьте все элементы и экспортируйте отчёт, если чего-то не хватает.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingCompleteDetail">SDL предоставляет все стандартные кнопки, оси, бамперы и триггеры, ожидаемые тестером.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMissingBindingsDetail">Отсутствуют: {0}. Попробуйте другой режим контроллера или драйвер и повторите пошаговый тест.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityInsufficientAxesDetail">SDL сообщает только о {0} осях. Стандартный контроллер с двумя стиками обычно предоставляет не менее четырёх.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityFewButtonsDetail">SDL сообщает о {0} необработанных кнопках. Подтвердите стандартные элементы в пошаговом тесте.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityEightBitDoModeDetail">SDL не предоставляет надёжный признак XInput/DInput. Если элементы отсутствуют, переключитесь на XInput и переподключите контроллер.</sys:String>
 </ResourceDictionary>

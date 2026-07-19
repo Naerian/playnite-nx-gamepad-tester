@@ -114,6 +114,19 @@ namespace GamepadTester.ViewModels
         private string exportReportStatusLabel;
         private string inputLogExportStatusLabel;
         private string compatibilityReportStatusLabel;
+        private GamepadCompatibilityAssessment compatibilityAssessment;
+        private bool compatibilityMetadataInitialized;
+        private bool compatibilityConnected;
+        private string compatibilityControllerName;
+        private ushort compatibilityVendorId;
+        private ushort compatibilityProductId;
+        private GamepadLayout compatibilityLayout;
+        private string compatibilitySdlGuid;
+        private string compatibilitySdlMapping;
+        private int compatibilityAxisCount;
+        private int compatibilityButtonCount;
+        private int compatibilityHatCount;
+        private int compatibilityExtraButtonCount;
         private string selectedVisualSchemeKey;
         private bool isVisualSchemeManuallySelected;
         private int selectedTabIndex;
@@ -131,6 +144,7 @@ namespace GamepadTester.ViewModels
             InputHistory = new ObservableCollection<InputHistoryItem>();
             GuidedTestInputs = new ObservableCollection<GuidedTestInputItem>();
             VisualSchemeOptions = new ObservableCollection<ControllerVisualSchemeOption>();
+            CompatibilityFindings = new ObservableCollection<GamepadCompatibilityFindingView>();
             InitializeVisualSchemeOptions();
             rumbleCommand = new RelayCommand(() => RunSimpleRumble(L("LOCGT_Standard", "Standard"), 42000, 52000, 350), CanRunRumble);
             lightRumbleCommand = new RelayCommand(() => RunSimpleRumble(L("LOCGT_Light", "Light"), 14000, 18000, 260), CanRunRumble);
@@ -175,12 +189,14 @@ namespace GamepadTester.ViewModels
             pollingIntervalMinMs = double.MaxValue;
             inputEventIntervalMinMs = double.MaxValue;
             pollingService.StateUpdated += OnStateUpdated;
+            RefreshCompatibilityAssessment();
         }
 
         public ObservableCollection<GamepadControllerInfo> Controllers { get; private set; }
         public ObservableCollection<InputHistoryItem> InputHistory { get; private set; }
         public ObservableCollection<GuidedTestInputItem> GuidedTestInputs { get; private set; }
         public ObservableCollection<ControllerVisualSchemeOption> VisualSchemeOptions { get; private set; }
+        public ObservableCollection<GamepadCompatibilityFindingView> CompatibilityFindings { get; private set; }
 
         public GamepadState State
         {
@@ -188,6 +204,7 @@ namespace GamepadTester.ViewModels
             private set
             {
                 state = value;
+                RefreshCompatibilityAssessment();
                 NotifyStateChanged();
             }
         }
@@ -1174,6 +1191,28 @@ namespace GamepadTester.ViewModels
             get { return isButtonCaptureRunning || isStickCaptureRunning || isLatencyTestRunning; }
         }
 
+        public bool IsAnyTestRunning
+        {
+            get { return IsFullscreenInputCaptureActive || isRumbleRunning; }
+        }
+
+        public string ActiveTestKind
+        {
+            get
+            {
+                if (isButtonCaptureRunning) return "Buttons";
+                if (isStickCaptureRunning) return "Sticks";
+                if (isLatencyTestRunning) return "Latency";
+                if (isRumbleRunning) return "Rumble";
+                return "None";
+            }
+        }
+
+        public string ThemeContractVersion
+        {
+            get { return Views.ThemeIntegration.GamepadTesterThemeContract.Version; }
+        }
+
         public bool IsRumbleRunning
         {
             get { return isRumbleRunning; }
@@ -1613,6 +1652,78 @@ namespace GamepadTester.ViewModels
         public string CompatibilityReportStatusLabel
         {
             get { return compatibilityReportStatusLabel; }
+        }
+
+        public string CompatibilityAssistantStatus
+        {
+            get
+            {
+                var severity = compatibilityAssessment == null
+                    ? GamepadCompatibilitySeverity.Limited
+                    : compatibilityAssessment.Severity;
+                return severity.ToString();
+            }
+        }
+
+        public string CompatibilityAssistantStatusLabel
+        {
+            get
+            {
+                if (compatibilityAssessment == null || !State.IsConnected)
+                {
+                    return L("LOCGT_CompatibilityDisconnected", "No mapped controller");
+                }
+
+                switch (compatibilityAssessment.Severity)
+                {
+                    case GamepadCompatibilitySeverity.Ready:
+                        return L("LOCGT_CompatibilityReady", "Ready");
+                    case GamepadCompatibilitySeverity.Info:
+                        return L("LOCGT_CompatibilityReadyWithNotes", "Ready with notes");
+                    case GamepadCompatibilitySeverity.Warning:
+                        return L("LOCGT_CompatibilityReview", "Review recommended");
+                    default:
+                        return L("LOCGT_CompatibilityLimited", "Limited mapping");
+                }
+            }
+        }
+
+        public string CompatibilityInputModeLabel
+        {
+            get
+            {
+                if (compatibilityAssessment == null)
+                {
+                    return L("LOCGT_InputModeUnknown", "Not determined by SDL");
+                }
+
+                switch (compatibilityAssessment.InputMode)
+                {
+                    case GamepadInputMode.XInput:
+                        return "XInput";
+                    case GamepadInputMode.DirectInput:
+                        return "DirectInput";
+                    case GamepadInputMode.NativeHid:
+                        return L("LOCGT_InputModeNativeHid", "Native / HID through SDL");
+                    default:
+                        return L("LOCGT_InputModeUnknown", "Not determined by SDL");
+                }
+            }
+        }
+
+        public string CompatibilityMappingCoverageLabel
+        {
+            get
+            {
+                if (compatibilityAssessment == null || !compatibilityAssessment.HasMapping)
+                {
+                    return L("LOCGT_MappingCoverageUnavailable", "Mapping coverage unavailable");
+                }
+
+                return string.Format(
+                    L("LOCGT_MappingCoverageFormat", "{0}% of standard controls mapped"),
+                    compatibilityAssessment.MappingCoveragePercent);
+            }
         }
 
         public string ControllerSummary
@@ -2410,6 +2521,7 @@ namespace GamepadTester.ViewModels
                 rumbleStatusLabel = statusLabel;
                 OnPropertyChanged("IsRumbleRunning");
                 OnPropertyChanged("IsFullscreenInputCaptureActive");
+                NotifyThemeTestStateChanged();
                 OnPropertyChanged("RumbleStatusLabel");
                 RaiseRumbleCanExecuteChanged();
             }));
@@ -2593,6 +2705,7 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("LatencyStatusLabel");
             OnPropertyChanged("IsLatencyTestRunning");
             OnPropertyChanged("IsFullscreenInputCaptureActive");
+            NotifyThemeTestStateChanged();
             OnPropertyChanged("StartLatencyButtonLabel");
             OnPropertyChanged("LatencyResultLabel");
             OnPropertyChanged("LatencyStatsLabel");
@@ -2633,6 +2746,7 @@ namespace GamepadTester.ViewModels
             RefreshFullscreenDisplayState();
             OnPropertyChanged("IsButtonCaptureRunning");
             OnPropertyChanged("IsFullscreenInputCaptureActive");
+            NotifyThemeTestStateChanged();
             OnPropertyChanged("ButtonCaptureButtonLabel");
             startButtonCaptureCommand.RaiseCanExecuteChanged();
             startStickCaptureCommand.RaiseCanExecuteChanged();
@@ -2660,6 +2774,7 @@ namespace GamepadTester.ViewModels
             RefreshFullscreenDisplayState();
             OnPropertyChanged("IsStickCaptureRunning");
             OnPropertyChanged("IsFullscreenInputCaptureActive");
+            NotifyThemeTestStateChanged();
             OnPropertyChanged("StickCaptureButtonLabel");
             OnPropertyChanged("StickCaptureStatusLabel");
             OnPropertyChanged("SessionRestDriftLabel");
@@ -2680,6 +2795,7 @@ namespace GamepadTester.ViewModels
             RefreshFullscreenDisplayState();
             OnPropertyChanged("IsStickCaptureRunning");
             OnPropertyChanged("IsFullscreenInputCaptureActive");
+            NotifyThemeTestStateChanged();
             OnPropertyChanged("StickCaptureButtonLabel");
             OnPropertyChanged("StickCaptureStatusLabel");
             startStickCaptureCommand.RaiseCanExecuteChanged();
@@ -2736,6 +2852,7 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("IsButtonCaptureRunning");
             OnPropertyChanged("IsStickCaptureRunning");
             OnPropertyChanged("IsFullscreenInputCaptureActive");
+            NotifyThemeTestStateChanged();
             OnPropertyChanged("ButtonCaptureButtonLabel");
             OnPropertyChanged("StickCaptureButtonLabel");
             OnPropertyChanged("StartLatencyButtonLabel");
@@ -2775,6 +2892,7 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("LatencyStatusLabel");
             OnPropertyChanged("IsLatencyTestRunning");
             OnPropertyChanged("IsFullscreenInputCaptureActive");
+            NotifyThemeTestStateChanged();
             OnPropertyChanged("StartLatencyButtonLabel");
             OnPropertyChanged("LatencyResultLabel");
             OnPropertyChanged("LatencyStatsLabel");
@@ -3843,6 +3961,115 @@ namespace GamepadTester.ViewModels
             return string.IsNullOrWhiteSpace(value) || value == key ? fallback : value;
         }
 
+        private void NotifyThemeTestStateChanged()
+        {
+            OnPropertyChanged("IsAnyTestRunning");
+            OnPropertyChanged("ActiveTestKind");
+        }
+
+        private void RefreshCompatibilityAssessment()
+        {
+            var current = state ?? new GamepadState();
+            var extraButtonCount = current.ExtraButtons == null ? 0 : current.ExtraButtons.Count;
+            if (compatibilityMetadataInitialized &&
+                compatibilityConnected == current.IsConnected &&
+                string.Equals(compatibilityControllerName, current.ControllerName, StringComparison.Ordinal) &&
+                compatibilityVendorId == current.VendorId &&
+                compatibilityProductId == current.ProductId &&
+                compatibilityLayout == current.Layout &&
+                string.Equals(compatibilitySdlGuid, current.SdlGuid, StringComparison.Ordinal) &&
+                string.Equals(compatibilitySdlMapping, current.SdlMapping, StringComparison.Ordinal) &&
+                compatibilityAxisCount == current.AxisCount &&
+                compatibilityButtonCount == current.ButtonCount &&
+                compatibilityHatCount == current.HatCount &&
+                compatibilityExtraButtonCount == extraButtonCount)
+            {
+                return;
+            }
+
+            compatibilityMetadataInitialized = true;
+            compatibilityConnected = current.IsConnected;
+            compatibilityControllerName = current.ControllerName;
+            compatibilityVendorId = current.VendorId;
+            compatibilityProductId = current.ProductId;
+            compatibilityLayout = current.Layout;
+            compatibilitySdlGuid = current.SdlGuid;
+            compatibilitySdlMapping = current.SdlMapping;
+            compatibilityAxisCount = current.AxisCount;
+            compatibilityButtonCount = current.ButtonCount;
+            compatibilityHatCount = current.HatCount;
+            compatibilityExtraButtonCount = extraButtonCount;
+            compatibilityAssessment = GamepadCompatibilityService.Assess(current);
+            if (CompatibilityFindings != null)
+            {
+                CompatibilityFindings.Clear();
+                foreach (var finding in compatibilityAssessment.Findings)
+                {
+                    CompatibilityFindings.Add(CreateCompatibilityFindingView(finding));
+                }
+            }
+
+            OnPropertyChanged("CompatibilityAssistantStatus");
+            OnPropertyChanged("CompatibilityAssistantStatusLabel");
+            OnPropertyChanged("CompatibilityInputModeLabel");
+            OnPropertyChanged("CompatibilityMappingCoverageLabel");
+            OnPropertyChanged("CompatibilityFindings");
+        }
+
+        private GamepadCompatibilityFindingView CreateCompatibilityFindingView(GamepadCompatibilityFinding finding)
+        {
+            var title = string.Empty;
+            var detail = string.Empty;
+            switch (finding.Code)
+            {
+                case "NoController":
+                    title = L("LOCGT_NoControllerDetected", "No controller detected");
+                    detail = L("LOCGT_ConnectControllerAndPress", "Connect a controller and press any button.");
+                    break;
+                case "MappingUnavailable":
+                    title = L("LOCGT_MappingStatus", "Mapping status");
+                    detail = L("LOCGT_CompatibilityMappingUnavailableDetail", "The controller is connected, but SDL did not return its mapping text. Test every control and export the report if anything is missing.");
+                    break;
+                case "MappingComplete":
+                    title = L("LOCGT_MappingStatus", "Mapping status");
+                    detail = L("LOCGT_CompatibilityMappingCompleteDetail", "SDL exposes every standard button, axis, shoulder and trigger binding expected by the tester.");
+                    break;
+                case "MissingBindings":
+                    title = L("LOCGT_MappingStatus", "Mapping status");
+                    detail = string.Format(
+                        L("LOCGT_CompatibilityMissingBindingsDetail", "Missing: {0}. Try another controller mode or driver and run the guided test again."),
+                        finding.Evidence);
+                    break;
+                case "InsufficientAxes":
+                    title = L("LOCGT_Capabilities", "Capabilities");
+                    detail = string.Format(
+                        L("LOCGT_CompatibilityInsufficientAxesDetail", "SDL reports only {0} axes. A standard dual-stick controller normally exposes at least four."),
+                        finding.Evidence);
+                    break;
+                case "FewButtons":
+                    title = L("LOCGT_Capabilities", "Capabilities");
+                    detail = string.Format(
+                        L("LOCGT_CompatibilityFewButtonsDetail", "SDL reports {0} raw buttons. Use the guided test to confirm the standard controls."),
+                        finding.Evidence);
+                    break;
+                case "EightBitDoModeUnknown":
+                    title = L("LOCGT_InputApi", "Input API");
+                    detail = L("LOCGT_CompatibilityEightBitDoModeDetail", "SDL does not expose a reliable XInput/DInput flag. If controls are missing, switch the controller to XInput and reconnect it.");
+                    break;
+                default:
+                    title = finding.Code;
+                    detail = finding.Evidence ?? string.Empty;
+                    break;
+            }
+
+            return new GamepadCompatibilityFindingView
+            {
+                Severity = finding.Severity.ToString(),
+                Title = title,
+                Detail = detail
+            };
+        }
+
         private void NotifyStateChanged()
         {
             OnPropertyChanged("State");
@@ -3988,6 +4215,10 @@ namespace GamepadTester.ViewModels
             OnPropertyChanged("DeviceApiLabel");
             OnPropertyChanged("DeviceRumbleCapabilityLabel");
             OnPropertyChanged("CompatibilityReportStatusLabel");
+            OnPropertyChanged("CompatibilityAssistantStatus");
+            OnPropertyChanged("CompatibilityAssistantStatusLabel");
+            OnPropertyChanged("CompatibilityInputModeLabel");
+            OnPropertyChanged("CompatibilityMappingCoverageLabel");
             OnPropertyChanged("ExtraButtonDetailLabel");
             OnPropertyChanged("BackendLabel");
             OnPropertyChanged("MappingStatusLabel");

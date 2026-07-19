@@ -286,4 +286,23 @@
     <sys:String x:Key="LOCGT_RadarTriggersAction">Wciśnij LT i RT do końca co najmniej raz.</sys:String>
     <sys:String x:Key="LOCGT_RadarControlsAction">Uruchom test z przewodnikiem i wykonaj wszystkie wymagane działania.</sys:String>
     <sys:String x:Key="LOCGT_RadarTimingAction">Otwórz Opóźnienie, uruchom test, naciskaj wielokrotnie przyciski, a następnie go zatrzymaj.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityAssistant">Asystent zgodności</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityAssistantHelp">Sprawdza mapowanie SDL i możliwości udostępniane przez urządzenie. Zalecenia opierają się wyłącznie na dostępnych danych i nie zakładają trybu, którego SDL nie potrafi rozpoznać.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityDisconnected">Brak zmapowanego kontrolera</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReady">Gotowe</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReadyWithNotes">Gotowe z uwagami</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReview">Zalecane sprawdzenie</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityLimited">Ograniczone mapowanie</sys:String>
+    <sys:String x:Key="LOCGT_InputModeUnknown">SDL nie może określić</sys:String>
+    <sys:String x:Key="LOCGT_InputModeNativeHid">Natywny / HID przez SDL</sys:String>
+    <sys:String x:Key="LOCGT_MappingCoverageUnavailable">Pokrycie mapowania niedostępne</sys:String>
+    <sys:String x:Key="LOCGT_MappingCoverageFormat">Zmapowano {0}% standardowych elementów sterujących</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityInputMode">Tryb wejścia</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingCoverage">Mapowanie standardowe</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingUnavailableDetail">Kontroler jest podłączony, ale SDL nie zwrócił tekstu mapowania. Sprawdź wszystkie elementy i wyeksportuj raport, jeśli czegoś brakuje.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingCompleteDetail">SDL udostępnia wszystkie standardowe przyciski, osie, bumpery i spusty oczekiwane przez tester.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMissingBindingsDetail">Brakujące: {0}. Wypróbuj inny tryb kontrolera lub sterownik i ponów test z przewodnikiem.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityInsufficientAxesDetail">SDL zgłasza tylko {0} osi. Standardowy kontroler z dwoma drążkami zwykle udostępnia co najmniej cztery.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityFewButtonsDetail">SDL zgłasza {0} surowych przycisków. Potwierdź standardowe sterowanie w teście z przewodnikiem.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityEightBitDoModeDetail">SDL nie udostępnia pewnego wskaźnika XInput/DInput. Jeśli brakuje sterowania, przełącz kontroler na XInput i podłącz go ponownie.</sys:String>
 </ResourceDictionary>

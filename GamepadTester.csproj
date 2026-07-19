@@ -61,6 +61,7 @@
     <Compile Include="Models\ControllerVisualSchemeDefinition.cs" />
     <Compile Include="Models\ControllerVisualSchemeOption.cs" />
     <Compile Include="Models\GamepadControllerInfo.cs" />
+    <Compile Include="Models\GamepadCompatibilityAssessment.cs" />
     <Compile Include="Models\DiagnosticConfidence.cs" />
     <Compile Include="Models\GamepadDeviceNames.cs" />
     <Compile Include="Models\GamepadLayout.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="Models\StickDiagnosticsTracker.cs" />
     <Compile Include="Services\GamepadPollingService.cs" />
     <Compile Include="Services\GamepadCompatibilityReportBuilder.cs" />
+    <Compile Include="Services\GamepadCompatibilityService.cs" />
     <Compile Include="Services\ControllerIdentificationService.cs" />
     <Compile Include="Services\IGamepadInputProvider.cs" />
     <Compile Include="Services\Sdl2Native.cs" />
@@ -126,6 +128,7 @@
     <Compile Include="Views\ThemeIntegration\GamepadTesterStickCheckControl.cs" />
     <Compile Include="Views\ThemeIntegration\GamepadTesterTriggerCheckControl.cs" />
     <Compile Include="Views\ThemeIntegration\GamepadTesterThemeHost.cs" />
+    <Compile Include="Views\ThemeIntegration\GamepadTesterThemeContract.cs" />
     <Compile Include="Views\ThemeIntegration\GamepadTesterThemeControlBase.cs" />
     <Compile Include="Views\GuidedTestView.xaml.cs">
       <DependentUpon>GuidedTestView.xaml</DependentUpon>

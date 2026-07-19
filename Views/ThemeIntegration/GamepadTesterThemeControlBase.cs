@@ -26,6 +26,20 @@ namespace GamepadTester.Views.ThemeIntegration
                 typeof(GamepadTesterThemeControlBase),
                 new PropertyMetadata(false));
 
+        public static readonly DependencyProperty IsControllerConnectedProperty =
+            DependencyProperty.Register(
+                "IsControllerConnected",
+                typeof(bool),
+                typeof(GamepadTesterThemeControlBase),
+                new PropertyMetadata(false));
+
+        public static readonly DependencyProperty ActiveTestKindProperty =
+            DependencyProperty.Register(
+                "ActiveTestKind",
+                typeof(string),
+                typeof(GamepadTesterThemeControlBase),
+                new PropertyMetadata("None"));
+
         private readonly GamepadTesterThemeRuntimeHandle runtimeHandle;
 
         protected GamepadTesterThemeControlBase(GamepadTesterSettings settings, Func<string, string> localizer)
@@ -34,12 +48,29 @@ namespace GamepadTester.Views.ThemeIntegration
             runtimeHandle = GamepadTesterThemeRuntime.Acquire(settings, localizer);
             DataContext = runtimeHandle.ViewModel;
             SetBinding(IsInputCaptureActiveProperty, Bind("IsFullscreenInputCaptureActive"));
+            SetBinding(IsControllerConnectedProperty, Bind("HasController"));
+            SetBinding(ActiveTestKindProperty, Bind("ActiveTestKind"));
             Unloaded += OnUnloaded;
         }
 
         public bool IsInputCaptureActive
         {
             get { return (bool)GetValue(IsInputCaptureActiveProperty); }
+        }
+
+        public bool IsControllerConnected
+        {
+            get { return (bool)GetValue(IsControllerConnectedProperty); }
+        }
+
+        public string ActiveTestKind
+        {
+            get { return (string)GetValue(ActiveTestKindProperty); }
+        }
+
+        public string ThemeContractVersion
+        {
+            get { return GamepadTesterThemeContract.Version; }
         }
 
         protected GamepadTesterViewModel ViewModel

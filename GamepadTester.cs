@@ -78,16 +78,7 @@ namespace GamepadTester
             AddCustomElementSupport(new AddCustomElementSupportArgs
             {
                 SourceName = "GamepadTester",
-                ElementList = new List<string>
-                {
-                    "GamepadTesterLauncher",
-                    "StatusBadge",
-                    "ButtonMap",
-                    "StickCheck",
-                    "TriggerCheck",
-                    "RumblePad",
-                    "LatencyMini"
-                }
+                ElementList = GamepadTesterThemeContract.BlockNames.ToList()
             });
             AddSettingsSupport(new AddSettingsSupportArgs
             {
@@ -1001,6 +992,17 @@ namespace GamepadTester
         public ICommand OpenSticksCommand { get; private set; }
         public ICommand OpenRumbleCommand { get; private set; }
         public ICommand OpenLatencyCommand { get; private set; }
+        public ICommand RefreshThemeBlocksCommand { get; private set; }
+
+        public string ContractVersion
+        {
+            get { return GamepadTesterThemeContract.Version; }
+        }
+
+        public string SupportedBlocks
+        {
+            get { return string.Join(", ", GamepadTesterThemeContract.BlockNames); }
+        }
 
         public bool ShowTopPanelItem
         {
@@ -1026,6 +1028,8 @@ namespace GamepadTester
             OpenSticksCommand = openSticksCommand;
             OpenRumbleCommand = openRumbleCommand;
             OpenLatencyCommand = openLatencyCommand;
+            RefreshThemeBlocksCommand = new global::GamepadTester.Commands.RelayCommand(
+                () => GamepadTesterThemeHost.RefreshOpenWindows());
         }
     }
 }

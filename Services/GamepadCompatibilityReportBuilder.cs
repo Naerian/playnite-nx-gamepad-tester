@@ -53,6 +53,27 @@ namespace GamepadTester.Services
             report.AppendLine("Rumble API: SDL_GameControllerRumble (device support must be verified with a vibration test)");
             report.AppendLine();
 
+            var compatibility = GamepadCompatibilityService.Assess(state);
+            report.AppendLine("[Compatibility assistant]");
+            report.AppendLine(string.Format("Status: {0}", compatibility.Severity));
+            report.AppendLine(string.Format("Input mode: {0}", compatibility.InputMode));
+            report.AppendLine(string.Format("Mapping available: {0}", compatibility.HasMapping));
+            report.AppendLine(string.Format("Standard mapping coverage: {0}%", compatibility.MappingCoveragePercent));
+            report.AppendLine(string.Format(
+                "Missing standard bindings: {0}",
+                compatibility.MissingBindings.Count == 0
+                    ? "None"
+                    : string.Join(", ", compatibility.MissingBindings)));
+            foreach (var finding in compatibility.Findings)
+            {
+                report.AppendLine(string.Format(
+                    "Finding: {0} [{1}]{2}",
+                    finding.Code,
+                    finding.Severity,
+                    string.IsNullOrWhiteSpace(finding.Evidence) ? string.Empty : " - " + finding.Evidence));
+            }
+            report.AppendLine();
+
             report.AppendLine("[Normalized state]");
             report.AppendLine(string.Format("Left stick: X {0:0.000}, Y {1:0.000}", state.LeftStick.X, state.LeftStick.Y));
             report.AppendLine(string.Format("Right stick: X {0:0.000}, Y {1:0.000}", state.RightStick.X, state.RightStick.Y));

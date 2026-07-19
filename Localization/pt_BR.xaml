@@ -286,4 +286,23 @@
     <sys:String x:Key="LOCGT_RadarTriggersAction">Pressione LT e RT completamente pelo menos uma vez.</sys:String>
     <sys:String x:Key="LOCGT_RadarControlsAction">Execute o teste guiado e conclua todos os controles solicitados.</sys:String>
     <sys:String x:Key="LOCGT_RadarTimingAction">Abra Latência, inicie o teste, pressione controles repetidamente e depois pare o teste.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityAssistant">Assistente de compatibilidade</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityAssistantHelp">Verifica o mapeamento SDL e os recursos expostos pelo dispositivo. As recomendações usam apenas os dados disponíveis e não presumem um modo que o SDL não consiga identificar.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityDisconnected">Nenhum controle mapeado</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReady">Pronto</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReadyWithNotes">Pronto com observações</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReview">Revisão recomendada</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityLimited">Mapeamento limitado</sys:String>
+    <sys:String x:Key="LOCGT_InputModeUnknown">Não determinado pelo SDL</sys:String>
+    <sys:String x:Key="LOCGT_InputModeNativeHid">Nativo / HID pelo SDL</sys:String>
+    <sys:String x:Key="LOCGT_MappingCoverageUnavailable">Cobertura do mapeamento indisponível</sys:String>
+    <sys:String x:Key="LOCGT_MappingCoverageFormat">{0}% dos controles padrão mapeados</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityInputMode">Modo de entrada</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingCoverage">Mapeamento padrão</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingUnavailableDetail">O controle está conectado, mas o SDL não retornou seu mapeamento. Teste todos os controles e exporte o relatório se algo estiver faltando.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingCompleteDetail">O SDL expõe todos os botões, eixos, botões superiores e gatilhos padrão esperados pelo testador.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMissingBindingsDetail">Ausentes: {0}. Tente outro modo ou driver e execute novamente o teste guiado.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityInsufficientAxesDetail">O SDL informa apenas {0} eixos. Um controle padrão com dois analógicos normalmente expõe pelo menos quatro.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityFewButtonsDetail">O SDL informa {0} botões brutos. Use o teste guiado para confirmar os controles padrão.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityEightBitDoModeDetail">O SDL não expõe um indicador XInput/DInput confiável. Se faltarem controles, altere para XInput e reconecte o controle.</sys:String>
 </ResourceDictionary>

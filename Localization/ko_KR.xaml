@@ -286,4 +286,23 @@
     <sys:String x:Key="LOCGT_RadarTriggersAction">LT와 RT를 각각 한 번 이상 끝까지 누르세요.</sys:String>
     <sys:String x:Key="LOCGT_RadarControlsAction">가이드 테스트를 실행하고 요청된 모든 컨트롤을 완료하세요.</sys:String>
     <sys:String x:Key="LOCGT_RadarTimingAction">레이턴시를 열고 테스트를 시작한 뒤 버튼을 반복해서 누르고 테스트를 중지하세요.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityAssistant">호환성 도우미</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityAssistantHelp">SDL 매핑과 장치가 제공하는 기능을 확인합니다. 권장 사항은 확인 가능한 정보만 사용하며 SDL이 식별할 수 없는 입력 모드를 추측하지 않습니다.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityDisconnected">매핑된 컨트롤러 없음</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReady">준비됨</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReadyWithNotes">참고 사항과 함께 준비됨</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReview">검토 권장</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityLimited">제한된 매핑</sys:String>
+    <sys:String x:Key="LOCGT_InputModeUnknown">SDL에서 확인할 수 없음</sys:String>
+    <sys:String x:Key="LOCGT_InputModeNativeHid">SDL을 통한 네이티브 / HID</sys:String>
+    <sys:String x:Key="LOCGT_MappingCoverageUnavailable">매핑 범위를 확인할 수 없음</sys:String>
+    <sys:String x:Key="LOCGT_MappingCoverageFormat">표준 컨트롤의 {0}% 매핑됨</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityInputMode">입력 모드</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingCoverage">표준 매핑</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingUnavailableDetail">컨트롤러가 연결되었지만 SDL이 매핑 문자열을 반환하지 않았습니다. 모든 컨트롤을 테스트하고 누락된 항목이 있으면 보고서를 내보내세요.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingCompleteDetail">SDL이 테스터에 필요한 모든 표준 버튼, 축, 숄더 버튼과 트리거 매핑을 제공합니다.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMissingBindingsDetail">누락: {0}. 다른 컨트롤러 모드나 드라이버를 시도한 뒤 안내 테스트를 다시 실행하세요.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityInsufficientAxesDetail">SDL이 {0}개의 축만 보고합니다. 일반적인 듀얼 스틱 컨트롤러는 보통 최소 4개의 축을 제공합니다.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityFewButtonsDetail">SDL이 {0}개의 원시 버튼을 보고합니다. 안내 테스트로 표준 컨트롤을 확인하세요.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityEightBitDoModeDetail">SDL은 신뢰할 수 있는 XInput/DInput 표시를 제공하지 않습니다. 컨트롤이 누락되면 XInput으로 전환하고 다시 연결하세요.</sys:String>
 </ResourceDictionary>

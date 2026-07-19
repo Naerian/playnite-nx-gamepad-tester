@@ -286,4 +286,23 @@
     <sys:String x:Key="LOCGT_RadarTriggersAction">Fully press LT and RT at least once.</sys:String>
     <sys:String x:Key="LOCGT_RadarControlsAction">Run Guided test and complete every requested control.</sys:String>
     <sys:String x:Key="LOCGT_RadarTimingAction">Open Latency, start the test, press controls repeatedly, then stop the test.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityAssistant">Compatibility assistant</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityAssistantHelp">Checks the SDL mapping and exposed hardware capabilities. Recommendations are based on available evidence and never assume an input mode that SDL cannot identify.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityDisconnected">No mapped controller</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReady">Ready</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReadyWithNotes">Ready with notes</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReview">Review recommended</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityLimited">Limited mapping</sys:String>
+    <sys:String x:Key="LOCGT_InputModeUnknown">Not determined by SDL</sys:String>
+    <sys:String x:Key="LOCGT_InputModeNativeHid">Native / HID through SDL</sys:String>
+    <sys:String x:Key="LOCGT_MappingCoverageUnavailable">Mapping coverage unavailable</sys:String>
+    <sys:String x:Key="LOCGT_MappingCoverageFormat">{0}% of standard controls mapped</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityInputMode">Input mode</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingCoverage">Standard mapping</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingUnavailableDetail">The controller is connected, but SDL did not return its mapping text. Test every control and export the report if anything is missing.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingCompleteDetail">SDL exposes every standard button, axis, shoulder and trigger binding expected by the tester.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMissingBindingsDetail">Missing: {0}. Try another controller mode or driver and run the guided test again.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityInsufficientAxesDetail">SDL reports only {0} axes. A standard dual-stick controller normally exposes at least four.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityFewButtonsDetail">SDL reports {0} raw buttons. Use the guided test to confirm the standard controls.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityEightBitDoModeDetail">SDL does not expose a reliable XInput/DInput flag. If controls are missing, switch the controller to XInput and reconnect it.</sys:String>
 </ResourceDictionary>

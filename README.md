@@ -4,9 +4,9 @@ Playnite NX Gamepad Tester is a Playnite extension for testing controllers in De
 
 It is designed for couch, TV, handheld-PC, and console-like setups where users want to verify gamepad buttons, sticks, triggers, rumble, drift, latency, and device metadata without leaving Playnite.
 
-## Version 1.1.0
+## Version 1.2.0
 
-Version `1.1.0` adds native theme-aware latency and diagnostic radar charts, finite stick and rest-drift sampling, clearer test guidance, and a more cohesive Desktop dashboard built from the active Playnite theme surfaces. Stick tests now remain active until both sticks reach 100% circular coverage, are stopped manually, or reach the safety limit.
+Version `1.2.0` adds a controller compatibility assistant and a versioned Fullscreen theme developer contract. Device Info now explains the detected input path, SDL mapping coverage, missing normalized controls, and actionable compatibility findings, while theme developers gain runtime host diagnostics, refresh support for dynamically created views, test-state bindings, and a complete reference XAML view.
 
 ## Documentation
 
@@ -58,6 +58,10 @@ Desktop mode provides the complete tester: controller selection, visual scheme o
 Fullscreen themes can open focused tester views or embed independent `StatusBadge`, `ButtonMap`, `StickCheck`, `TriggerCheck`, `RumblePad`, and `LatencyMini` blocks. The theme remains responsible for focus, controller navigation, layout, animation, and modal behavior. See the [Fullscreen integration guide](https://github.com/Naerian/playnite-nx-gamepad-tester/wiki/EN-Fullscreen-Theme-Integration) for commands and XAML examples.
 
 Embedded controls expose dedicated `GamepadTesterControlBackgroundBrush`, `GamepadTesterButtonBackgroundBrush`, `GamepadTesterControlBorderBrush`, `GamepadTesterStickGuideBrush`, and `GamepadTesterTextBrush` resources. `GamepadTesterStickGuideBrush` styles the circles, range ring, and axis guides in stick diagnostics independently from panel borders. Themes can override these resources locally without changing Playnite's generic brushes.
+
+### Theme developer kit
+
+The Fullscreen integration follows a versioned `1.0` contract. Dynamic hosts expose initialization state and error details, embedded controls expose controller/test state, and themes can run `RefreshThemeBlocksCommand` after creating a custom window. A complete reference view is available in [`docs/theme-integration/GamepadTesterSampleView.xaml`](docs/theme-integration/GamepadTesterSampleView.xaml), with the stable contract documented in [`docs/theme-integration/CONTRACT.md`](docs/theme-integration/CONTRACT.md).
 
 ## Compatibility note
 

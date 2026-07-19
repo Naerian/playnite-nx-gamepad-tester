@@ -286,4 +286,23 @@
     <sys:String x:Key="LOCGT_RadarTriggersAction">LT ve RT'ye en az bir kez sonuna kadar basın.</sys:String>
     <sys:String x:Key="LOCGT_RadarControlsAction">Yönlendirmeli testi çalıştırın ve istenen tüm kontrolleri tamamlayın.</sys:String>
     <sys:String x:Key="LOCGT_RadarTimingAction">Gecikmeyi açın, testi başlatın, kontrollere art arda basın ve ardından testi durdurun.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityAssistant">Uyumluluk yardımcısı</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityAssistantHelp">SDL eşlemesini ve aygıtın sunduğu yetenekleri denetler. Öneriler yalnızca mevcut verilere dayanır ve SDL'nin tanımlayamadığı bir giriş modunu varsaymaz.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityDisconnected">Eşlenmiş kontrolcü yok</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReady">Hazır</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReadyWithNotes">Notlarla hazır</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReview">İnceleme önerilir</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityLimited">Sınırlı eşleme</sys:String>
+    <sys:String x:Key="LOCGT_InputModeUnknown">SDL tarafından belirlenemedi</sys:String>
+    <sys:String x:Key="LOCGT_InputModeNativeHid">SDL üzerinden yerel / HID</sys:String>
+    <sys:String x:Key="LOCGT_MappingCoverageUnavailable">Eşleme kapsamı kullanılamıyor</sys:String>
+    <sys:String x:Key="LOCGT_MappingCoverageFormat">Standart kontrollerin %{0} kadarı eşlendi</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityInputMode">Giriş modu</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingCoverage">Standart eşleme</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingUnavailableDetail">Kontrolcü bağlı ancak SDL eşleme metnini döndürmedi. Tüm kontrolleri test edin ve eksik varsa raporu dışa aktarın.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingCompleteDetail">SDL, test aracının beklediği tüm standart düğme, eksen, omuz düğmesi ve tetik eşlemelerini sunuyor.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMissingBindingsDetail">Eksik: {0}. Başka bir kontrolcü modu veya sürücü deneyin ve yönlendirmeli testi yeniden çalıştırın.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityInsufficientAxesDetail">SDL yalnızca {0} eksen bildiriyor. İki analog çubuklu standart bir kontrolcü normalde en az dört eksen sunar.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityFewButtonsDetail">SDL {0} ham düğme bildiriyor. Standart kontrolleri doğrulamak için yönlendirmeli testi kullanın.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityEightBitDoModeDetail">SDL güvenilir bir XInput/DInput işareti sunmuyor. Kontroller eksikse XInput moduna geçin ve kontrolcüyü yeniden bağlayın.</sys:String>
 </ResourceDictionary>

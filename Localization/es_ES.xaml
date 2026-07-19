@@ -286,4 +286,23 @@
     <sys:String x:Key="LOCGT_RadarTriggersAction">Pulsa LT y RT completamente al menos una vez.</sys:String>
     <sys:String x:Key="LOCGT_RadarControlsAction">Ejecuta la prueba guiada y completa todos los controles solicitados.</sys:String>
     <sys:String x:Key="LOCGT_RadarTimingAction">Abre Latencia, inicia la prueba, pulsa controles repetidamente y después detenla.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityAssistant">Asistente de compatibilidad</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityAssistantHelp">Comprueba el mapeo de SDL y las capacidades expuestas por el dispositivo. Las recomendaciones se basan en datos disponibles y nunca suponen un modo de entrada que SDL no pueda identificar.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityDisconnected">No hay un mando mapeado</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReady">Listo</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReadyWithNotes">Listo con avisos</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReview">Revisión recomendada</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityLimited">Mapeo limitado</sys:String>
+    <sys:String x:Key="LOCGT_InputModeUnknown">SDL no puede determinarlo</sys:String>
+    <sys:String x:Key="LOCGT_InputModeNativeHid">Nativo / HID mediante SDL</sys:String>
+    <sys:String x:Key="LOCGT_MappingCoverageUnavailable">Cobertura del mapeo no disponible</sys:String>
+    <sys:String x:Key="LOCGT_MappingCoverageFormat">{0}% de controles estándar mapeados</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityInputMode">Modo de entrada</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingCoverage">Mapeo estándar</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingUnavailableDetail">El mando está conectado, pero SDL no ha devuelto su mapeo. Prueba todos los controles y exporta el informe si falta alguno.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingCompleteDetail">SDL expone todos los botones, ejes, botones superiores y gatillos estándar que espera el tester.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMissingBindingsDetail">Faltan: {0}. Prueba otro modo del mando o controlador y vuelve a ejecutar la prueba guiada.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityInsufficientAxesDetail">SDL solo informa de {0} ejes. Un mando estándar con dos sticks suele exponer al menos cuatro.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityFewButtonsDetail">SDL informa de {0} botones sin procesar. Usa la prueba guiada para confirmar los controles estándar.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityEightBitDoModeDetail">SDL no expone un indicador XInput/DInput fiable. Si falta algún control, cambia el mando a XInput y vuelve a conectarlo.</sys:String>
 </ResourceDictionary>

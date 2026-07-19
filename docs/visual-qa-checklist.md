@@ -29,6 +29,14 @@ Use this checklist before tagging a release or publishing a `.pext`.
 - Latency: central result remains visible before and after a captured input.
 - Input log: disabled state is readable, enabled log text has theme contrast, export button aligned.
 - Device info: left-aligned and readable in light/dark themes.
+- Device info: compatibility status, input mode, mapping coverage, and finding separators remain readable at 100-150% scaling.
+
+## Fullscreen Developer Contract
+
+- Static and dynamically loaded attached-property hosts reach `InitializationState=Ready`.
+- Unknown block names expose `UnknownBlock`; occupied hosts expose `Occupied` and keep theme content unchanged.
+- `RefreshThemeBlocksCommand` initializes hosts created after the first `Loaded` pass.
+- `ActiveTestKind` and `IsInputCaptureActive` change and reset with button, stick, latency, and rumble workflows.
 
 ## Theme Contrast
 

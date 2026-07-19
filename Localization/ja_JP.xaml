@@ -286,4 +286,23 @@
     <sys:String x:Key="LOCGT_RadarTriggersAction">LT と RT を少なくとも一度ずつ最後まで押してください。</sys:String>
     <sys:String x:Key="LOCGT_RadarControlsAction">ガイド付きテストを実行し、要求されたすべての操作を完了してください。</sys:String>
     <sys:String x:Key="LOCGT_RadarTimingAction">「レイテンシー」を開いてテストを開始し、ボタンを繰り返し押してから停止してください。</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityAssistant">互換性アシスタント</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityAssistantHelp">SDL マッピングとデバイスが公開する機能を確認します。推奨事項は取得できた情報だけに基づき、SDL が識別できない入力モードを推測しません。</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityDisconnected">マッピング済みコントローラーなし</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReady">準備完了</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReadyWithNotes">注意事項あり</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReview">確認を推奨</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityLimited">マッピングが限定的</sys:String>
+    <sys:String x:Key="LOCGT_InputModeUnknown">SDL では判定できません</sys:String>
+    <sys:String x:Key="LOCGT_InputModeNativeHid">SDL 経由のネイティブ / HID</sys:String>
+    <sys:String x:Key="LOCGT_MappingCoverageUnavailable">マッピング範囲を取得できません</sys:String>
+    <sys:String x:Key="LOCGT_MappingCoverageFormat">標準コントロールの {0}% をマッピング</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityInputMode">入力モード</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingCoverage">標準マッピング</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingUnavailableDetail">コントローラーは接続されていますが、SDL からマッピング文字列を取得できませんでした。すべての操作を確認し、不足があればレポートを出力してください。</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingCompleteDetail">テスターが必要とする標準ボタン、軸、ショルダー、トリガーを SDL がすべて公開しています。</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMissingBindingsDetail">不足: {0}。別のコントローラーモードまたはドライバーを試し、ガイドテストを再実行してください。</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityInsufficientAxesDetail">SDL が報告する軸は {0} 個だけです。一般的なデュアルスティックコントローラーは通常 4 軸以上を公開します。</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityFewButtonsDetail">SDL は {0} 個の物理ボタンを報告しています。ガイドテストで標準操作を確認してください。</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityEightBitDoModeDetail">SDL は信頼できる XInput/DInput フラグを公開しません。操作が不足する場合は XInput に切り替えて再接続してください。</sys:String>
 </ResourceDictionary>

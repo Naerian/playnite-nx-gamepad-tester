@@ -286,4 +286,23 @@
     <sys:String x:Key="LOCGT_RadarTriggersAction">Premi completamente LT e RT almeno una volta.</sys:String>
     <sys:String x:Key="LOCGT_RadarControlsAction">Esegui il test guidato e completa tutti i controlli richiesti.</sys:String>
     <sys:String x:Key="LOCGT_RadarTimingAction">Apri Latenza, avvia il test, premi ripetutamente i controlli e poi interrompilo.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityAssistant">Assistente compatibilità</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityAssistantHelp">Controlla la mappatura SDL e le capacità esposte dal dispositivo. I consigli si basano solo sui dati disponibili e non presumono una modalità che SDL non può identificare.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityDisconnected">Nessun controller mappato</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReady">Pronto</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReadyWithNotes">Pronto con note</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReview">Verifica consigliata</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityLimited">Mappatura limitata</sys:String>
+    <sys:String x:Key="LOCGT_InputModeUnknown">Non determinato da SDL</sys:String>
+    <sys:String x:Key="LOCGT_InputModeNativeHid">Nativo / HID tramite SDL</sys:String>
+    <sys:String x:Key="LOCGT_MappingCoverageUnavailable">Copertura mappatura non disponibile</sys:String>
+    <sys:String x:Key="LOCGT_MappingCoverageFormat">{0}% dei controlli standard mappati</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityInputMode">Modalità di input</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingCoverage">Mappatura standard</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingUnavailableDetail">Il controller è connesso, ma SDL non ha restituito il testo della mappatura. Prova tutti i controlli ed esporta il rapporto se manca qualcosa.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingCompleteDetail">SDL espone tutti i pulsanti, assi, dorsali e grilletti standard previsti dal tester.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMissingBindingsDetail">Mancanti: {0}. Prova un’altra modalità o driver e ripeti il test guidato.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityInsufficientAxesDetail">SDL segnala solo {0} assi. Un controller standard con due stick ne espone normalmente almeno quattro.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityFewButtonsDetail">SDL segnala {0} pulsanti grezzi. Usa il test guidato per confermare i controlli standard.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityEightBitDoModeDetail">SDL non espone un indicatore XInput/DInput affidabile. Se mancano controlli, passa a XInput e riconnetti il controller.</sys:String>
 </ResourceDictionary>

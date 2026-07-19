@@ -286,4 +286,23 @@
     <sys:String x:Key="LOCGT_RadarTriggersAction">Enfoncez complètement LT et RT au moins une fois.</sys:String>
     <sys:String x:Key="LOCGT_RadarControlsAction">Lancez le test guidé et complétez toutes les commandes demandées.</sys:String>
     <sys:String x:Key="LOCGT_RadarTimingAction">Ouvrez Latence, démarrez le test, appuyez plusieurs fois sur des commandes puis arrêtez-le.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityAssistant">Assistant de compatibilité</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityAssistantHelp">Vérifie le mappage SDL et les capacités exposées par le périphérique. Les recommandations reposent uniquement sur les données disponibles et ne supposent jamais un mode que SDL ne peut pas identifier.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityDisconnected">Aucune manette mappée</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReady">Prêt</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReadyWithNotes">Prêt avec remarques</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReview">Vérification recommandée</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityLimited">Mappage limité</sys:String>
+    <sys:String x:Key="LOCGT_InputModeUnknown">Non déterminé par SDL</sys:String>
+    <sys:String x:Key="LOCGT_InputModeNativeHid">Natif / HID via SDL</sys:String>
+    <sys:String x:Key="LOCGT_MappingCoverageUnavailable">Couverture du mappage indisponible</sys:String>
+    <sys:String x:Key="LOCGT_MappingCoverageFormat">{0}% des contrôles standard mappés</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityInputMode">Mode d’entrée</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingCoverage">Mappage standard</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingUnavailableDetail">La manette est connectée, mais SDL n’a pas renvoyé son mappage. Testez tous les contrôles et exportez le rapport si l’un d’eux manque.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingCompleteDetail">SDL expose tous les boutons, axes, boutons supérieurs et gâchettes standard attendus par le testeur.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMissingBindingsDetail">Manquants : {0}. Essayez un autre mode ou pilote, puis relancez le test guidé.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityInsufficientAxesDetail">SDL ne signale que {0} axes. Une manette standard à deux sticks en expose normalement au moins quatre.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityFewButtonsDetail">SDL signale {0} boutons bruts. Utilisez le test guidé pour confirmer les contrôles standard.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityEightBitDoModeDetail">SDL n’expose pas d’indicateur XInput/DInput fiable. Si des contrôles manquent, passez la manette en XInput et reconnectez-la.</sys:String>
 </ResourceDictionary>

@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.2.0
+
+- Added a compatibility assistant to Device Info with detected input mode, SDL mapping coverage, missing standard controls, and actionable findings.
+- Added conservative 8BitDo XInput/DInput guidance without guessing the active mode when SDL metadata is inconclusive.
+- Added an exportable compatibility-assistant section to controller reports.
+- Introduced Fullscreen theme contract `1.0` with supported-block metadata, runtime test state, and host initialization diagnostics.
+- Added refresh support for blocks created after the initial theme load, including dynamically opened custom windows.
+- Added a complete developer reference view and contract documentation for theme integrations.
+- Localized the compatibility workflow in all 12 bundled languages.
+- Expanded automated coverage to 126 checks, including compatibility assessment and dynamic theme-host behavior.
+
 ## 1.1.0
 
 - Added a native WPF latency history chart with fixed dimensions and active-theme coloring.

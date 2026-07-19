@@ -39,12 +39,14 @@ namespace GamepadTester.Tests
                 TestEmbeddedSidebarIcon();
                 TestThemeHostXamlContract();
                 TestLateThemeHostInitialization();
+                TestThemeDeveloperContract();
                 TestTriggerCheckBindings();
                 TestFullscreenThemeBrushOverrides();
                 TestFullscreenStickGuideBrushOverride();
                 TestFullscreenStickPlotSize();
                 TestFullscreenCaptureGating();
                 TestCompatibilityReport();
+                TestCompatibilityAssistant();
                 TestLatencyRateChartRendering();
                 TestLocalizationParity();
                 Console.WriteLine("GamepadTester.Tests: {0} checks passed.", executed);
@@ -267,6 +269,7 @@ namespace GamepadTester.Tests
             True(report.Contains("VID: 045E"), "Compatibility report includes VID");
             True(report.Contains("SDL GUID: 030000005e040000130b000000000000"), "Compatibility report includes SDL GUID");
             True(report.Contains("Axes exposed: 6"), "Compatibility report includes capabilities");
+            True(report.Contains("[Compatibility assistant]"), "Compatibility report includes assistant assessment");
             True(!report.Contains(Environment.UserName), "Compatibility report excludes the user name");
             True(!report.Contains("8BitDo model:"), "Non-8BitDo reports omit model-specific fields");
 
@@ -274,6 +277,51 @@ namespace GamepadTester.Tests
             state.EightBitDoModel = EightBitDoModel.Pro2;
             report = GamepadCompatibilityReportBuilder.Build(state, null, "high", "medium", "medium", "low");
             True(report.Contains("8BitDo model: Pro2"), "8BitDo reports include the detected model");
+        }
+
+        private static void TestCompatibilityAssistant()
+        {
+            const string completeMapping =
+                "030000005e040000130b000000000000,Xbox Controller," +
+                "a:b0,b:b1,x:b2,y:b3,back:b6,start:b7,leftstick:b8,rightstick:b9," +
+                "leftshoulder:b4,rightshoulder:b5,dpup:h0.1,dpdown:h0.4,dpleft:h0.8,dpright:h0.2," +
+                "leftx:a0,lefty:a1,rightx:a2,righty:a3,lefttrigger:a4,righttrigger:a5,platform:Windows,";
+            var state = new GamepadState
+            {
+                IsConnected = true,
+                ControllerName = "Xbox Wireless Controller",
+                Layout = GamepadLayout.Xbox,
+                SdlMapping = completeMapping,
+                AxisCount = 6,
+                ButtonCount = 15
+            };
+
+            var assessment = GamepadCompatibilityService.Assess(state);
+            Equal(GamepadCompatibilitySeverity.Ready, assessment.Severity, "Complete mapping is ready");
+            Equal(GamepadInputMode.XInput, assessment.InputMode, "Xbox identity infers XInput");
+            Equal(100, assessment.MappingCoveragePercent, "Complete mapping reaches full coverage");
+            Equal(0, assessment.MissingBindings.Count, "Complete mapping has no missing bindings");
+
+            state.SdlMapping = completeMapping.Replace("lefttrigger:a4,righttrigger:a5,", string.Empty);
+            assessment = GamepadCompatibilityService.Assess(state);
+            Equal(GamepadCompatibilitySeverity.Warning, assessment.Severity, "Missing triggers request review");
+            True(assessment.MissingBindings.Contains("LT") && assessment.MissingBindings.Contains("RT"),
+                "Missing trigger bindings use normalized Xbox names");
+
+            state.SdlMapping = completeMapping;
+            state.AxisCount = 2;
+            assessment = GamepadCompatibilityService.Assess(state);
+            Equal(GamepadCompatibilitySeverity.Limited, assessment.Severity, "Too few axes produce limited status");
+
+            state.ControllerName = "8BitDo Ultimate 2";
+            state.Layout = GamepadLayout.EightBitDo;
+            state.AxisCount = 6;
+            state.SdlMapping = completeMapping.Replace("Xbox Controller", "8BitDo Ultimate 2");
+            assessment = GamepadCompatibilityService.Assess(state);
+            Equal(GamepadInputMode.Unknown, assessment.InputMode, "8BitDo mode is not guessed without evidence");
+            Equal(GamepadCompatibilitySeverity.Info, assessment.Severity, "Unknown 8BitDo mode is informational");
+            True(assessment.Findings.Any(item => item.Code == "EightBitDoModeUnknown"),
+                "8BitDo receives mode-switch guidance");
         }
 
         private static void TestEmbeddedSidebarIcon()
@@ -316,6 +364,40 @@ namespace GamepadTester.Tests
                 "Late theme host finds the fullscreen trigger block: " + string.Join(" | ", hostMessages));
             True(triggerHost.Content is GamepadTesterTriggerCheckControl,
                 "Late theme host initializes the fullscreen trigger block");
+            Equal("Ready", GamepadTesterThemeHost.GetInitializationState(triggerHost),
+                "Initialized host exposes Ready state");
+            Equal("TriggerCheck", GamepadTesterThemeHost.GetResolvedBlock(triggerHost),
+                "Initialized host exposes its resolved block");
+        }
+
+        private static void TestThemeDeveloperContract()
+        {
+            Equal("1.0", GamepadTesterThemeContract.Version, "Theme contract has a stable version");
+            True(GamepadTesterThemeContract.SupportsBlock("ButtonMap"), "Theme contract lists ButtonMap");
+            True(GamepadTesterThemeContract.SupportsBlock("Launcher"), "Theme contract accepts Launcher alias");
+            True(!GamepadTesterThemeContract.SupportsBlock("UnknownWidget"), "Theme contract rejects unknown blocks");
+
+            var unknown = new ContentControl();
+            GamepadTesterThemeHost.SetBlock(unknown, "UnknownWidget");
+            Equal(0, GamepadTesterThemeHost.Refresh(unknown), "Unknown dynamic block is not initialized");
+            Equal("UnknownBlock", GamepadTesterThemeHost.GetInitializationState(unknown),
+                "Unknown block exposes a diagnostic state");
+
+            var occupied = new ContentControl { Content = new TextBlock { Text = "Theme content" } };
+            GamepadTesterThemeHost.SetBlock(occupied, "ButtonMap");
+            Equal(0, GamepadTesterThemeHost.Refresh(occupied), "Occupied host is not overwritten");
+            Equal("Occupied", GamepadTesterThemeHost.GetInitializationState(occupied),
+                "Occupied host explains why it stayed unchanged");
+
+            var control = new GamepadTesterStatusBadgeControl(new GamepadTesterSettings(), key => key);
+            Equal("1.0", control.ThemeContractVersion, "Embedded control exposes contract version");
+
+            var root = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", ".."));
+            var samplePath = Path.Combine(root, "docs", "theme-integration", "GamepadTesterSampleView.xaml");
+            var contractPath = Path.Combine(root, "docs", "theme-integration", "CONTRACT.md");
+            True(File.Exists(samplePath), "Theme developer sample view exists");
+            True(File.Exists(contractPath), "Theme developer contract document exists");
+            True(XDocument.Load(samplePath).Root != null, "Theme developer sample is valid XML");
         }
 
         private static void TestTriggerCheckBindings()

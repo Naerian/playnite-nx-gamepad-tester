@@ -286,4 +286,23 @@
     <sys:String x:Key="LOCGT_RadarTriggersAction">至少将 LT 和 RT 各完全按下一次。</sys:String>
     <sys:String x:Key="LOCGT_RadarControlsAction">运行引导测试并完成所有要求的控制操作。</sys:String>
     <sys:String x:Key="LOCGT_RadarTimingAction">打开“延迟”，启动测试，反复按下控制键，然后停止测试。</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityAssistant">兼容性助手</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityAssistantHelp">检查 SDL 映射和设备公开的功能。建议仅依据可用信息，不会猜测 SDL 无法识别的输入模式。</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityDisconnected">没有已映射的控制器</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReady">就绪</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReadyWithNotes">就绪，有提示</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReview">建议检查</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityLimited">映射受限</sys:String>
+    <sys:String x:Key="LOCGT_InputModeUnknown">SDL 无法确定</sys:String>
+    <sys:String x:Key="LOCGT_InputModeNativeHid">通过 SDL 的原生 / HID</sys:String>
+    <sys:String x:Key="LOCGT_MappingCoverageUnavailable">无法获取映射覆盖率</sys:String>
+    <sys:String x:Key="LOCGT_MappingCoverageFormat">已映射 {0}% 的标准控件</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityInputMode">输入模式</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingCoverage">标准映射</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingUnavailableDetail">控制器已连接，但 SDL 未返回映射文本。请测试所有控件；如有缺失，请导出报告。</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingCompleteDetail">SDL 已公开测试器所需的全部标准按钮、轴、肩键和扳机映射。</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMissingBindingsDetail">缺失：{0}。请尝试其他控制器模式或驱动，然后重新运行引导测试。</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityInsufficientAxesDetail">SDL 仅报告 {0} 个轴。标准双摇杆控制器通常至少公开 4 个轴。</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityFewButtonsDetail">SDL 报告 {0} 个原始按钮。请使用引导测试确认标准控件。</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityEightBitDoModeDetail">SDL 不提供可靠的 XInput/DInput 标记。如果控件缺失，请切换到 XInput 并重新连接控制器。</sys:String>
 </ResourceDictionary>

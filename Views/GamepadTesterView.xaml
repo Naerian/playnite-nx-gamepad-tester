@@ -1313,10 +1313,111 @@
                 </TabItem>
 
                 <TabItem Header="{DynamicResource LOCGT_TabDeviceInfo}">
-                    <Grid Margin="4,12,4,8">
-                        <Border Style="{StaticResource DashboardPanel}"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Top">
+                    <ScrollViewer Margin="4,12,4,8" VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <Border Style="{StaticResource DashboardPanel}" Margin="0,0,0,12">
+                                <StackPanel>
+                                    <Grid Margin="0,0,0,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <TextBlock Text="{DynamicResource LOCGT_CompatibilityAssistant}" Style="{StaticResource DashboardTitle}" />
+                                            <TextBlock Text="{DynamicResource LOCGT_CompatibilityAssistantHelp}"
+                                                       Foreground="{StaticResource TextMutedBrush}"
+                                                       TextWrapping="Wrap"
+                                                       Margin="0,5,18,0" />
+                                        </StackPanel>
+                                        <Border x:Name="CompatibilityStatusBadge"
+                                                Grid.Column="1"
+                                                Padding="12,6"
+                                                CornerRadius="4"
+                                                VerticalAlignment="Top">
+                                            <TextBlock Text="{Binding CompatibilityAssistantStatusLabel}"
+                                                       Foreground="White"
+                                                       FontWeight="SemiBold" />
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="#667080" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding CompatibilityAssistantStatus}" Value="Ready">
+                                                            <Setter Property="Background" Value="#267A4A" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding CompatibilityAssistantStatus}" Value="Info">
+                                                            <Setter Property="Background" Value="#376A91" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding CompatibilityAssistantStatus}" Value="Warning">
+                                                            <Setter Property="Background" Value="#A56B19" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding CompatibilityAssistantStatus}" Value="Limited">
+                                                            <Setter Property="Background" Value="#9A4438" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                        </Border>
+                                    </Grid>
+                                    <Border Style="{StaticResource SubtleHorizontalSeparator}" Margin="0,0,0,12" />
+                                    <Grid Margin="0,0,0,12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Margin="0,0,18,0">
+                                            <TextBlock Text="{DynamicResource LOCGT_CompatibilityInputMode}" Foreground="{StaticResource TextMutedBrush}" />
+                                            <TextBlock Text="{Binding CompatibilityInputModeLabel}" FontWeight="SemiBold" Margin="0,3,0,0" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="{DynamicResource LOCGT_CompatibilityMappingCoverage}" Foreground="{StaticResource TextMutedBrush}" />
+                                            <TextBlock Text="{Binding CompatibilityMappingCoverageLabel}" FontWeight="SemiBold" Margin="0,3,0,0" />
+                                        </StackPanel>
+                                    </Grid>
+                                    <ItemsControl ItemsSource="{Binding CompatibilityFindings}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Margin="0,0,0,10">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="5" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Border x:Name="FindingSeverity" CornerRadius="2">
+                                                        <Border.Style>
+                                                            <Style TargetType="Border">
+                                                                <Setter Property="Background" Value="#667080" />
+                                                            </Style>
+                                                        </Border.Style>
+                                                    </Border>
+                                                    <StackPanel Grid.Column="1" Margin="12,0,0,0">
+                                                        <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                                                        <TextBlock Text="{Binding Detail}"
+                                                                   Foreground="{StaticResource TextMutedBrush}"
+                                                                   TextWrapping="Wrap"
+                                                                   Margin="0,3,0,0" />
+                                                        <Border Style="{StaticResource SubtleHorizontalSeparator}" Margin="0,10,0,0" />
+                                                    </StackPanel>
+                                                </Grid>
+                                                <DataTemplate.Triggers>
+                                                    <DataTrigger Binding="{Binding Severity}" Value="Ready">
+                                                        <Setter TargetName="FindingSeverity" Property="Background" Value="#267A4A" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Severity}" Value="Info">
+                                                        <Setter TargetName="FindingSeverity" Property="Background" Value="#376A91" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Severity}" Value="Warning">
+                                                        <Setter TargetName="FindingSeverity" Property="Background" Value="#A56B19" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Severity}" Value="Limited">
+                                                        <Setter TargetName="FindingSeverity" Property="Background" Value="#9A4438" />
+                                                    </DataTrigger>
+                                                </DataTemplate.Triggers>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Style="{StaticResource DashboardPanel}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="210" />
@@ -1381,8 +1482,9 @@
                                                TextWrapping="Wrap" />
                                 </Grid>
                             </Grid>
-                        </Border>
-                    </Grid>
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
                 </TabItem>
                 </TabControl>
 

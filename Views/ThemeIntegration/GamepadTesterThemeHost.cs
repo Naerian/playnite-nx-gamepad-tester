@@ -22,6 +22,46 @@ namespace GamepadTester.Views.ThemeIntegration
                 typeof(GamepadTesterThemeHost),
                 new PropertyMetadata(null, OnBlockChanged));
 
+        private static readonly DependencyPropertyKey InitializationStatePropertyKey =
+            DependencyProperty.RegisterAttachedReadOnly(
+                "InitializationState",
+                typeof(string),
+                typeof(GamepadTesterThemeHost),
+                new PropertyMetadata("Unmarked"));
+
+        public static readonly DependencyProperty InitializationStateProperty =
+            InitializationStatePropertyKey.DependencyProperty;
+
+        private static readonly DependencyPropertyKey InitializationMessagePropertyKey =
+            DependencyProperty.RegisterAttachedReadOnly(
+                "InitializationMessage",
+                typeof(string),
+                typeof(GamepadTesterThemeHost),
+                new PropertyMetadata(string.Empty));
+
+        public static readonly DependencyProperty InitializationMessageProperty =
+            InitializationMessagePropertyKey.DependencyProperty;
+
+        private static readonly DependencyPropertyKey ResolvedBlockPropertyKey =
+            DependencyProperty.RegisterAttachedReadOnly(
+                "ResolvedBlock",
+                typeof(string),
+                typeof(GamepadTesterThemeHost),
+                new PropertyMetadata(string.Empty));
+
+        public static readonly DependencyProperty ResolvedBlockProperty =
+            ResolvedBlockPropertyKey.DependencyProperty;
+
+        private static readonly DependencyPropertyKey ContractVersionPropertyKey =
+            DependencyProperty.RegisterAttachedReadOnly(
+                "ContractVersion",
+                typeof(string),
+                typeof(GamepadTesterThemeHost),
+                new PropertyMetadata(GamepadTesterThemeContract.Version));
+
+        public static readonly DependencyProperty ContractVersionProperty =
+            ContractVersionPropertyKey.DependencyProperty;
+
         private static readonly object sync = new object();
         private static bool classHandlerRegistered;
         private static readonly Dictionary<Window, int> windowScanAttempts = new Dictionary<Window, int>();
@@ -141,6 +181,26 @@ namespace GamepadTester.Views.ThemeIntegration
                     windowScanAttempts[window] = 0;
                 }
             }
+        }
+
+        public static string GetInitializationState(DependencyObject element)
+        {
+            return element == null ? "Unmarked" : (string)element.GetValue(InitializationStateProperty);
+        }
+
+        public static string GetInitializationMessage(DependencyObject element)
+        {
+            return element == null ? string.Empty : (string)element.GetValue(InitializationMessageProperty);
+        }
+
+        public static string GetResolvedBlock(DependencyObject element)
+        {
+            return element == null ? string.Empty : (string)element.GetValue(ResolvedBlockProperty);
+        }
+
+        public static string GetContractVersion(DependencyObject element)
+        {
+            return element == null ? GamepadTesterThemeContract.Version : (string)element.GetValue(ContractVersionProperty);
         }
 
         private static void OnWindowScannerTick(object sender, EventArgs args)
@@ -289,6 +349,26 @@ namespace GamepadTester.Views.ThemeIntegration
                 initialized += Refresh(VisualTreeHelper.GetChild(root, index));
             }
 
+            return initialized;
+        }
+
+        public static int RefreshOpenWindows()
+        {
+            if (Application.Current == null)
+            {
+                return 0;
+            }
+
+            var initialized = 0;
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window.IsLoaded)
+                {
+                    initialized += Refresh(window);
+                }
+            }
+
+            Log("Manual theme host refresh completed: " + initialized + " block(s) ready.");
             return initialized;
         }
 
@@ -451,7 +531,7 @@ namespace GamepadTester.Views.ThemeIntegration
 
         private static bool InitializeHost(ContentControl host)
         {
-            if (host == null || settings == null)
+            if (host == null)
             {
                 return false;
             }
@@ -462,14 +542,30 @@ namespace GamepadTester.Views.ThemeIntegration
                 return false;
             }
 
+            SetHostStatus(host, "Pending", block, "Waiting for Gamepad Tester to initialize this block.");
+            if (settings == null)
+            {
+                SetHostStatus(host, "WaitingForPlugin", block, "Gamepad Tester has not configured its theme runtime yet.");
+                return false;
+            }
+
+            if (!GamepadTesterThemeContract.SupportsBlock(block))
+            {
+                SetHostStatus(host, "UnknownBlock", block, "Unknown Gamepad Tester block: " + block);
+                Log("Unknown dynamic theme block: " + block);
+                return false;
+            }
+
             if (host.Content is GamepadTesterThemeControlBase || host.Content is GamepadTesterThemeLauncherControl)
             {
+                SetHostStatus(host, "Ready", block, "Gamepad Tester block initialized.");
                 return true;
             }
 
             if (host.Content != null)
             {
-                return true;
+                SetHostStatus(host, "Occupied", block, "The host already has content, so Gamepad Tester did not replace it.");
+                return false;
             }
 
             Control content;
@@ -479,6 +575,7 @@ namespace GamepadTester.Views.ThemeIntegration
             }
             catch (Exception ex)
             {
+                SetHostStatus(host, "Error", block, ex.Message);
                 Log("Dynamic theme host initialization failed for " + block + ": " + ex.Message);
                 return false;
             }
@@ -486,11 +583,21 @@ namespace GamepadTester.Views.ThemeIntegration
             if (content != null)
             {
                 host.Content = content;
+                SetHostStatus(host, "Ready", block, "Gamepad Tester block initialized.");
                 Log("Dynamic theme host initialized: " + block);
                 return true;
             }
 
+            SetHostStatus(host, "Error", block, "Gamepad Tester could not create the requested block.");
             return false;
+        }
+
+        private static void SetHostStatus(ContentControl host, string state, string block, string message)
+        {
+            host.SetValue(InitializationStatePropertyKey, state ?? string.Empty);
+            host.SetValue(InitializationMessagePropertyKey, message ?? string.Empty);
+            host.SetValue(ResolvedBlockPropertyKey, block ?? string.Empty);
+            host.SetValue(ContractVersionPropertyKey, GamepadTesterThemeContract.Version);
         }
 
         private static string ResolveBlock(ContentControl host)

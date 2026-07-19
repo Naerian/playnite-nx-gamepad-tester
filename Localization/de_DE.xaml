@@ -286,4 +286,23 @@
     <sys:String x:Key="LOCGT_RadarTriggersAction">Drücke LT und RT mindestens einmal vollständig.</sys:String>
     <sys:String x:Key="LOCGT_RadarControlsAction">Führe den geführten Test aus und vervollständige alle angeforderten Eingaben.</sys:String>
     <sys:String x:Key="LOCGT_RadarTimingAction">Öffne Latenz, starte den Test, drücke wiederholt Tasten und beende ihn anschließend.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityAssistant">Kompatibilitätsassistent</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityAssistantHelp">Prüft die SDL-Zuordnung und die erkannten Gerätefunktionen. Empfehlungen beruhen nur auf verfügbaren Daten und nehmen keinen von SDL nicht erkennbaren Eingabemodus an.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityDisconnected">Kein zugeordneter Controller</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReady">Bereit</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReadyWithNotes">Bereit mit Hinweisen</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityReview">Überprüfung empfohlen</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityLimited">Eingeschränkte Zuordnung</sys:String>
+    <sys:String x:Key="LOCGT_InputModeUnknown">Von SDL nicht bestimmbar</sys:String>
+    <sys:String x:Key="LOCGT_InputModeNativeHid">Nativ / HID über SDL</sys:String>
+    <sys:String x:Key="LOCGT_MappingCoverageUnavailable">Zuordnungsabdeckung nicht verfügbar</sys:String>
+    <sys:String x:Key="LOCGT_MappingCoverageFormat">{0}% der Standardsteuerungen zugeordnet</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityInputMode">Eingabemodus</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingCoverage">Standardzuordnung</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingUnavailableDetail">Der Controller ist verbunden, aber SDL hat keinen Zuordnungstext geliefert. Teste alle Steuerungen und exportiere den Bericht, falls etwas fehlt.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMappingCompleteDetail">SDL stellt alle vom Tester erwarteten Standardtasten, Achsen, Schultertasten und Trigger bereit.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityMissingBindingsDetail">Fehlend: {0}. Probiere einen anderen Controller-Modus oder Treiber und führe den geführten Test erneut aus.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityInsufficientAxesDetail">SDL meldet nur {0} Achsen. Ein Standardcontroller mit zwei Sticks stellt normalerweise mindestens vier bereit.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityFewButtonsDetail">SDL meldet {0} Roh-Tasten. Bestätige die Standardsteuerungen mit dem geführten Test.</sys:String>
+    <sys:String x:Key="LOCGT_CompatibilityEightBitDoModeDetail">SDL stellt kein zuverlässiges XInput/DInput-Merkmal bereit. Fehlen Steuerungen, wechsle zu XInput und verbinde den Controller erneut.</sys:String>
 </ResourceDictionary>
