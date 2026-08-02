@@ -24,7 +24,7 @@ namespace GamepadTester.Views.ThemeIntegration
                 "IsInputCaptureActive",
                 typeof(bool),
                 typeof(GamepadTesterThemeControlBase),
-                new PropertyMetadata(false));
+                new PropertyMetadata(false, OnInputCaptureActiveChanged));
 
         public static readonly DependencyProperty IsControllerConnectedProperty =
             DependencyProperty.Register(
@@ -40,6 +40,13 @@ namespace GamepadTester.Views.ThemeIntegration
                 typeof(GamepadTesterThemeControlBase),
                 new PropertyMetadata("None"));
 
+        public static readonly DependencyProperty CanNavigateBackProperty =
+            DependencyProperty.Register(
+                "CanNavigateBack",
+                typeof(bool),
+                typeof(GamepadTesterThemeControlBase),
+                new PropertyMetadata(true));
+
         private readonly GamepadTesterThemeRuntimeHandle runtimeHandle;
 
         protected GamepadTesterThemeControlBase(GamepadTesterSettings settings, Func<string, string> localizer)
@@ -50,6 +57,7 @@ namespace GamepadTester.Views.ThemeIntegration
             SetBinding(IsInputCaptureActiveProperty, Bind("IsFullscreenInputCaptureActive"));
             SetBinding(IsControllerConnectedProperty, Bind("HasController"));
             SetBinding(ActiveTestKindProperty, Bind("ActiveTestKind"));
+            SetBinding(CanNavigateBackProperty, Bind("CanNavigateBack"));
             Unloaded += OnUnloaded;
         }
 
@@ -66,6 +74,20 @@ namespace GamepadTester.Views.ThemeIntegration
         public string ActiveTestKind
         {
             get { return (string)GetValue(ActiveTestKindProperty); }
+        }
+
+        public bool CanNavigateBack
+        {
+            get { return (bool)GetValue(CanNavigateBackProperty); }
+        }
+
+        private static void OnInputCaptureActiveChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+        {
+            var control = dependencyObject as GamepadTesterThemeControlBase;
+            if (control != null)
+            {
+                GamepadTesterThemeHost.UpdateCaptureGuardState(control);
+            }
         }
 
         public string ThemeContractVersion

@@ -37,6 +37,7 @@ Use this checklist before tagging a release or publishing a `.pext`.
 - Unknown block names expose `UnknownBlock`; occupied hosts expose `Occupied` and keep theme content unchanged.
 - `RefreshThemeBlocksCommand` initializes hosts created after the first `Loaded` pass.
 - `ActiveTestKind` and `IsInputCaptureActive` change and reset with button, stick, latency, and rumble workflows.
+- `CanNavigateBack` becomes false during button, stick, and latency capture; Back/B, Escape, and close commands remain blocked until capture stops.
 
 ## Theme Contrast
 

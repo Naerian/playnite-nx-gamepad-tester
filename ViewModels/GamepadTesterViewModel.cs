@@ -1191,6 +1191,11 @@ namespace GamepadTester.ViewModels
             get { return isButtonCaptureRunning || isStickCaptureRunning || isLatencyTestRunning; }
         }
 
+        public bool CanNavigateBack
+        {
+            get { return !IsFullscreenInputCaptureActive; }
+        }
+
         public bool IsAnyTestRunning
         {
             get { return IsFullscreenInputCaptureActive || isRumbleRunning; }
@@ -3965,6 +3970,7 @@ namespace GamepadTester.ViewModels
         {
             OnPropertyChanged("IsAnyTestRunning");
             OnPropertyChanged("ActiveTestKind");
+            OnPropertyChanged("CanNavigateBack");
         }
 
         private void RefreshCompatibilityAssessment()

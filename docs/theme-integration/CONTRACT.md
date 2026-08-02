@@ -1,4 +1,4 @@
-# Gamepad Tester Fullscreen contract 1.0
+# Gamepad Tester Fullscreen contract 1.1
 
 This contract is the stable surface intended for Playnite Fullscreen theme developers.
 
@@ -35,6 +35,7 @@ Each embedded block exposes:
 
 - `IsControllerConnected`
 - `IsInputCaptureActive`
+- `CanNavigateBack`: `false` while button, stick, or latency capture owns controller input.
 - `ActiveTestKind`: `None`, `Buttons`, `Sticks`, `Latency`, or `Rumble`
 - `ThemeContractVersion`
 
@@ -52,4 +53,12 @@ Declare overrides at window or view scope. The plugin falls back to the correspo
 
 ## Navigation responsibility
 
-The theme owns focus, transitions, close behavior, and background navigation. Keep test blocks in a contained focus scope and suppress modal close actions while `IsInputCaptureActive` is true. Name the return control `GamepadTester_BackButton` when you want focus restored there after capture.
+The theme owns focus, transitions, close behavior, and background navigation. Keep test blocks in a contained focus scope and bind every Back button, B gesture, and close command to `CanNavigateBack`. The plugin blocks WPF window closing while capture is active, but a helper that swaps or removes custom content must honor this property itself.
+
+```xaml
+<Button x:Name="GamepadTester_BackButton"
+        IsEnabled="{Binding ElementName=ButtonMapHost, Path=Content.CanNavigateBack}"
+        Command="{Binding CloseCommand}" />
+```
+
+Name the return control `GamepadTester_BackButton` so the plugin can disable it during capture and restore focus there afterwards. Holding `LB + RB` for one second finishes button, stick, or latency capture before Back navigation becomes available again.

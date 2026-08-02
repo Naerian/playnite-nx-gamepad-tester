@@ -46,6 +46,7 @@
             <Button x:Name="GamepadTester_BackButton"
                     Grid.Column="1"
                     Content="Back"
+                    IsEnabled="{Binding ElementName=ButtonMapHost, Path=Content.CanNavigateBack}"
                     MinWidth="160" />
         </Grid>
     </Grid>

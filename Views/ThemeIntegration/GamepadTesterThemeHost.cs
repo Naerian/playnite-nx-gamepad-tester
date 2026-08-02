@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -66,6 +67,8 @@ namespace GamepadTester.Views.ThemeIntegration
         private static bool classHandlerRegistered;
         private static readonly Dictionary<Window, int> windowScanAttempts = new Dictionary<Window, int>();
         private static readonly HashSet<Window> captureGuardWindows = new HashSet<Window>();
+        private static readonly Dictionary<Window, Dictionary<ButtonBase, bool>> guardedBackButtons =
+            new Dictionary<Window, Dictionary<ButtonBase, bool>>();
         private static DispatcherTimer windowScanner;
         private static EventInfo anikiButtonDownEvent;
         private static Delegate anikiButtonDownHandler;
@@ -383,6 +386,100 @@ namespace GamepadTester.Views.ThemeIntegration
             window.Closing += OnThemeWindowClosing;
             window.PreviewKeyDown += OnThemeWindowPreviewKeyDown;
             window.Closed += OnThemeWindowClosed;
+            UpdateBackNavigationState(window);
+        }
+
+        internal static void UpdateCaptureGuardState(FrameworkElement source)
+        {
+            var window = source == null ? null : Window.GetWindow(source);
+            if (window == null || ReferenceEquals(window, Application.Current == null ? null : Application.Current.MainWindow))
+            {
+                return;
+            }
+
+            EnsureCaptureGuard(window);
+            UpdateBackNavigationState(window);
+        }
+
+        private static void UpdateBackNavigationState(Window window)
+        {
+            if (window == null)
+            {
+                return;
+            }
+
+            Dictionary<ButtonBase, bool> originalStates;
+            if (!guardedBackButtons.TryGetValue(window, out originalStates))
+            {
+                originalStates = new Dictionary<ButtonBase, bool>();
+                guardedBackButtons[window] = originalStates;
+            }
+
+            var captureActive = HasActiveCapture(window);
+            var backButtons = FindNamedButtons(window, "GamepadTester_BackButton").ToArray();
+            if (captureActive)
+            {
+                foreach (var button in backButtons)
+                {
+                    if (!originalStates.ContainsKey(button))
+                    {
+                        originalStates[button] = button.IsEnabled;
+                    }
+
+                    button.SetCurrentValue(UIElement.IsEnabledProperty, false);
+                }
+
+                return;
+            }
+
+            foreach (var item in originalStates.ToArray())
+            {
+                item.Key.SetCurrentValue(UIElement.IsEnabledProperty, item.Value);
+                originalStates.Remove(item.Key);
+            }
+        }
+
+        private static IEnumerable<ButtonBase> FindNamedButtons(DependencyObject root, string name)
+        {
+            if (root == null)
+            {
+                yield break;
+            }
+
+            var element = root as FrameworkElement;
+            var button = root as ButtonBase;
+            if (button != null && element != null && string.Equals(element.Name, name, StringComparison.Ordinal))
+            {
+                yield return button;
+            }
+
+            int childCount;
+            try
+            {
+                childCount = VisualTreeHelper.GetChildrenCount(root);
+            }
+            catch (InvalidOperationException)
+            {
+                childCount = 0;
+            }
+
+            for (var index = 0; index < childCount; index++)
+            {
+                foreach (var match in FindNamedButtons(VisualTreeHelper.GetChild(root, index), name))
+                {
+                    yield return match;
+                }
+            }
+
+            var contentControl = root as ContentControl;
+            var content = contentControl == null ? null : contentControl.Content as DependencyObject;
+            if (content != null && childCount == 0)
+            {
+                foreach (var match in FindNamedButtons(content, name))
+                {
+                    yield return match;
+                }
+            }
         }
 
         private static void OnThemeWindowPreviewKeyDown(object sender, KeyEventArgs args)
@@ -421,6 +518,7 @@ namespace GamepadTester.Views.ThemeIntegration
             window.PreviewKeyDown -= OnThemeWindowPreviewKeyDown;
             window.Closed -= OnThemeWindowClosed;
             captureGuardWindows.Remove(window);
+            guardedBackButtons.Remove(window);
             windowScanAttempts.Remove(window);
         }
 

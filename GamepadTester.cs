@@ -8,6 +8,7 @@ using Playnite.SDK.Events;
 using Playnite.SDK.Plugins;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -36,6 +37,9 @@ namespace GamepadTester
         private Window testerWindow;
         private GamepadTesterViewModel testerWindowViewModel;
         private bool testerBackButtonHeld;
+        private bool testerCaptureLeftShoulderHeld;
+        private bool testerCaptureRightShoulderHeld;
+        private System.Windows.Threading.DispatcherTimer testerCaptureExitTimer;
         private bool themeCaptureLeftShoulderHeld;
         private bool themeCaptureRightShoulderHeld;
         private System.Windows.Threading.DispatcherTimer themeCaptureExitTimer;
@@ -448,6 +452,7 @@ namespace GamepadTester
                 testerWindowViewModel = viewModel;
                 window.Closed += (sender, eventArgs) =>
                 {
+                    ResetTesterCaptureExitChord();
                     viewModel.Dispose();
                     if (ReferenceEquals(testerWindow, window))
                     {
@@ -456,6 +461,7 @@ namespace GamepadTester
                         testerBackButtonHeld = false;
                     }
                 };
+                window.Closing += OnTesterWindowClosing;
                 window.PreviewKeyDown += CloseWindowOnEscape;
 
                 window.Show();
@@ -473,6 +479,23 @@ namespace GamepadTester
             {
                 return;
             }
+
+            if (!testerWindowViewModel.CanNavigateBack)
+            {
+                if (button == ControllerInput.LeftShoulder)
+                {
+                    testerCaptureLeftShoulderHeld = state == ControllerInputState.Pressed;
+                }
+                else if (button == ControllerInput.RightShoulder)
+                {
+                    testerCaptureRightShoulderHeld = state == ControllerInputState.Pressed;
+                }
+
+                UpdateTesterCaptureExitChord();
+                return;
+            }
+
+            ResetTesterCaptureExitChord();
 
             if (button == ControllerInput.Back)
             {
@@ -818,6 +841,79 @@ namespace GamepadTester
             }
         }
 
+        private void UpdateTesterCaptureExitChord()
+        {
+            if (!testerCaptureLeftShoulderHeld || !testerCaptureRightShoulderHeld)
+            {
+                if (testerCaptureExitTimer != null)
+                {
+                    testerCaptureExitTimer.Stop();
+                }
+
+                return;
+            }
+
+            if (testerCaptureExitTimer == null)
+            {
+                testerCaptureExitTimer = new System.Windows.Threading.DispatcherTimer
+                {
+                    Interval = TimeSpan.FromSeconds(1)
+                };
+                testerCaptureExitTimer.Tick += OnTesterCaptureExitTimerTick;
+            }
+
+            testerCaptureExitTimer.Stop();
+            testerCaptureExitTimer.Start();
+        }
+
+        private void OnTesterCaptureExitTimerTick(object sender, EventArgs args)
+        {
+            testerCaptureExitTimer.Stop();
+            if (!testerCaptureLeftShoulderHeld || !testerCaptureRightShoulderHeld || testerWindowViewModel == null)
+            {
+                return;
+            }
+
+            if (testerWindowViewModel.IsButtonCaptureRunning && testerWindowViewModel.StartButtonCaptureCommand.CanExecute(null))
+            {
+                testerWindowViewModel.StartButtonCaptureCommand.Execute(null);
+            }
+            else if (testerWindowViewModel.IsStickCaptureRunning && testerWindowViewModel.StartStickCaptureCommand.CanExecute(null))
+            {
+                testerWindowViewModel.StartStickCaptureCommand.Execute(null);
+            }
+            else if (testerWindowViewModel.IsLatencyTestRunning && testerWindowViewModel.StartLatencyTestCommand.CanExecute(null))
+            {
+                testerWindowViewModel.StartLatencyTestCommand.Execute(null);
+            }
+
+            ResetTesterCaptureExitChord();
+            FocusFirstTesterControl();
+        }
+
+        private void ResetTesterCaptureExitChord()
+        {
+            testerCaptureLeftShoulderHeld = false;
+            testerCaptureRightShoulderHeld = false;
+            if (testerCaptureExitTimer != null)
+            {
+                testerCaptureExitTimer.Stop();
+            }
+        }
+
+        private void OnTesterWindowClosing(object sender, CancelEventArgs args)
+        {
+            if (ShouldBlockFullscreenClose(testerWindowViewModel))
+            {
+                args.Cancel = true;
+            }
+        }
+
+        private static bool ShouldBlockFullscreenClose(GamepadTesterViewModel viewModel)
+        {
+            return viewModel != null && viewModel.IsFullscreenSimplifiedMode && !viewModel.CanNavigateBack;
+        }
+
         public string Loc(string key)
         {
             var value = PlayniteApi.Resources.GetString(key);
@@ -977,6 +1073,14 @@ namespace GamepadTester
             var window = sender as Window;
             if (window != null)
             {
+                var content = window.Content as FrameworkElement;
+                var viewModel = content == null ? null : content.DataContext as GamepadTesterViewModel;
+                if (ShouldBlockFullscreenClose(viewModel))
+                {
+                    eventArgs.Handled = true;
+                    return;
+                }
+
                 window.Close();
                 eventArgs.Handled = true;
             }

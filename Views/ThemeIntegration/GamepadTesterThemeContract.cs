@@ -5,7 +5,7 @@ namespace GamepadTester.Views.ThemeIntegration
 {
     public static class GamepadTesterThemeContract
     {
-        public const string Version = "1.0";
+        public const string Version = "1.1";
 
         private static readonly string[] blockNames =
         {

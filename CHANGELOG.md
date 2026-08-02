@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.2.1
+
+- Blocked Back/B, Escape, tab movement, directional navigation, and Fullscreen window closing while button, stick, or latency capture is active.
+- Added a deliberate `LB + RB` one-second hold gesture to finish capture before Back navigation becomes available again.
+- Added `CanNavigateBack` to the shared view model and every embedded Fullscreen block.
+- Updated the public Fullscreen theme contract to `1.1` and documented safe close-command bindings for helper-managed views.
+- Automatically disables and restores controls named `GamepadTester_BackButton` while embedded input capture is active.
+- Expanded automated coverage to 136 checks, including capture-state navigation and Fullscreen close gating.
+
 ## 1.2.0
 
 - Added a compatibility assistant to Device Info with detected input mode, SDL mapping coverage, missing standard controls, and actionable findings.

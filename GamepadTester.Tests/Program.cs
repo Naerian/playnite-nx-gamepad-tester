@@ -372,7 +372,7 @@ namespace GamepadTester.Tests
 
         private static void TestThemeDeveloperContract()
         {
-            Equal("1.0", GamepadTesterThemeContract.Version, "Theme contract has a stable version");
+            Equal("1.1", GamepadTesterThemeContract.Version, "Theme contract has a stable version");
             True(GamepadTesterThemeContract.SupportsBlock("ButtonMap"), "Theme contract lists ButtonMap");
             True(GamepadTesterThemeContract.SupportsBlock("Launcher"), "Theme contract accepts Launcher alias");
             True(!GamepadTesterThemeContract.SupportsBlock("UnknownWidget"), "Theme contract rejects unknown blocks");
@@ -390,7 +390,8 @@ namespace GamepadTester.Tests
                 "Occupied host explains why it stayed unchanged");
 
             var control = new GamepadTesterStatusBadgeControl(new GamepadTesterSettings(), key => key);
-            Equal("1.0", control.ThemeContractVersion, "Embedded control exposes contract version");
+            Equal("1.1", control.ThemeContractVersion, "Embedded control exposes contract version");
+            True(control.CanNavigateBack, "Embedded controls expose initial Back navigation state");
 
             var root = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", ".."));
             var samplePath = Path.Combine(root, "docs", "theme-integration", "GamepadTesterSampleView.xaml");
@@ -398,6 +399,8 @@ namespace GamepadTester.Tests
             True(File.Exists(samplePath), "Theme developer sample view exists");
             True(File.Exists(contractPath), "Theme developer contract document exists");
             True(XDocument.Load(samplePath).Root != null, "Theme developer sample is valid XML");
+            True(File.ReadAllText(samplePath).Contains("Content.CanNavigateBack"),
+                "Theme developer sample guards its Back button with CanNavigateBack");
         }
 
         private static void TestTriggerCheckBindings()
@@ -517,26 +520,34 @@ namespace GamepadTester.Tests
                 var display = CreateFullscreenDisplayState(viewModel, raw);
                 True(!display.Buttons.South && display.LeftTrigger == 0f, "Fullscreen button map stays neutral before its test starts");
                 Equal(0f, display.LeftStick.X, "Fullscreen sticks stay neutral before diagnostics starts");
+                True(viewModel.CanNavigateBack, "Fullscreen Back navigation is available before capture starts");
 
                 viewModel.StartButtonCaptureCommand.Execute(null);
+                True(!viewModel.CanNavigateBack, "Button capture blocks Fullscreen Back navigation");
+                True(ShouldBlockFullscreenClose(viewModel), "Button capture blocks the Fullscreen window close path");
                 display = CreateFullscreenDisplayState(viewModel, raw);
                 True(display.Buttons.South && display.LeftTrigger > 0f, "Button capture exposes buttons and triggers");
                 Equal(0.75f, display.LeftStick.X, "Button capture exposes live stick movement on the controller scheme");
                 viewModel.StartButtonCaptureCommand.Execute(null);
+                True(viewModel.CanNavigateBack, "Stopping button capture restores Fullscreen Back navigation");
 
                 viewModel.StartStickCaptureCommand.Execute(null);
                 display = CreateFullscreenDisplayState(viewModel, raw);
                 True(!display.Buttons.South && display.LeftTrigger == 0f, "Stick diagnostics does not activate controller buttons");
                 Equal(0.75f, display.LeftStick.X, "Stick diagnostics exposes live stick movement");
                 True(viewModel.IsFullscreenInputCaptureActive, "Stick diagnostics engages the fullscreen navigation guard");
+                True(!viewModel.CanNavigateBack, "Stick diagnostics blocks Fullscreen Back navigation");
                 viewModel.StartStickCaptureCommand.Execute(null);
                 True(!viewModel.IsFullscreenInputCaptureActive, "Stopping stick diagnostics releases the fullscreen navigation guard");
+                True(viewModel.CanNavigateBack, "Stopping stick diagnostics restores Fullscreen Back navigation");
 
                 viewModel.StartLatencyTestCommand.Execute(null);
+                True(!viewModel.CanNavigateBack, "Latency capture blocks Fullscreen Back navigation");
                 SetPrivateField(viewModel, "inputEventIntervalSamples", 4);
                 SetPrivateField(viewModel, "pollingIntervalSamples", 7);
                 SetPrivateField(viewModel, "latencyTestStartedAt", DateTime.UtcNow.AddSeconds(-5));
                 viewModel.StartLatencyTestCommand.Execute(null);
+                True(viewModel.CanNavigateBack, "Stopping latency capture restores Fullscreen Back navigation");
                 var frozenDuration = viewModel.LatencyTestDurationLabel;
 
                 InvokePrivate(viewModel, "UpdateLatency", raw);
@@ -553,6 +564,14 @@ namespace GamepadTester.Tests
                 "CreateDisplayState",
                 System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
             return (GamepadState)method.Invoke(viewModel, new object[] { raw });
+        }
+
+        private static bool ShouldBlockFullscreenClose(GamepadTesterViewModel viewModel)
+        {
+            var method = typeof(global::GamepadTester.GamepadTester).GetMethod(
+                "ShouldBlockFullscreenClose",
+                System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+            return (bool)method.Invoke(null, new object[] { viewModel });
         }
 
         private static void SetPrivateField(object instance, string name, object value)
