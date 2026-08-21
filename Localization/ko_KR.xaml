@@ -305,4 +305,19 @@
     <sys:String x:Key="LOCGT_CompatibilityInsufficientAxesDetail">SDL이 {0}개의 축만 보고합니다. 일반적인 듀얼 스틱 컨트롤러는 보통 최소 4개의 축을 제공합니다.</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityFewButtonsDetail">SDL이 {0}개의 원시 버튼을 보고합니다. 안내 테스트로 표준 컨트롤을 확인하세요.</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityEightBitDoModeDetail">SDL은 신뢰할 수 있는 XInput/DInput 표시를 제공하지 않습니다. 컨트롤이 누락되면 XInput으로 전환하고 다시 연결하세요.</sys:String>
+    <sys:String x:Key="LOCGT_OpenRetirementNotice">교체 안내</sys:String>
+    <sys:String x:Key="LOCGT_RetirementTitle">Gamepad Tester가 교체되었습니다</sys:String>
+    <sys:String x:Key="LOCGT_RetirementHeadline">Gamepad Tester를 제거하세요</sys:String>
+    <sys:String x:Key="LOCGT_RetirementBody">Gamepad Tester는 더 이상 유지되지 않습니다. 컨트롤러 테스트는 이제 Controller Manager에 있습니다. 이 플러그인을 제거하고 Controller Manager를 설치하세요.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementConflict">두 플러그인을 함께 두지 마세요. GamepadTester_* 전체 화면 테마 블록이 두 번 등록되어 보기가 깨집니다.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementSteps">Controller Manager가 없으면 먼저 설치한 다음 Gamepad Tester를 제거하고 Playnite를 다시 시작하세요.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementInstallControllerManager">Controller Manager 설치</sys:String>
+    <sys:String x:Key="LOCGT_RetirementUninstallThis">Gamepad Tester 제거</sys:String>
+    <sys:String x:Key="LOCGT_RetirementLater">나중에</sys:String>
+    <sys:String x:Key="LOCGT_RetirementQueuedRestart">Playnite를 다음에 시작할 때 Gamepad Tester가 제거됩니다. 지금 다시 시작할까요?</sys:String>
+    <sys:String x:Key="LOCGT_RetirementQueueFailed">제거를 자동으로 예약할 수 없습니다.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementControllerManagerInstalled">Controller Manager가 이미 설치되어 있습니다. 전체 화면 블록이 두 번 등록되지 않도록 Gamepad Tester를 제거하세요.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementNotification">Gamepad Tester는 Controller Manager로 대체되었습니다. 이 플러그인을 제거하세요. 둘 다 함께 사용할 수 없습니다.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementManualUninstallHint">추가 기능 → 설치됨 → 일반 → Gamepad Tester에서도 제거할 수 있습니다.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementInstallFailed">Controller Manager 설치 프로그램을 열 수 없습니다. 추가 기능 → 찾아보기에서 검색하세요.</sys:String>
 </ResourceDictionary>

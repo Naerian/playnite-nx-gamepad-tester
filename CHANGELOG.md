@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.3.0
+
+- Retired Gamepad Tester as a standalone plugin. Controller testing now lives in Controller Manager.
+- On startup, settings, sidebar, and the top panel, the plugin only shows a replacement notice with no tester access.
+- Added Install Controller Manager and Uninstall Gamepad Tester actions, including a Playnite restart prompt after queuing uninstall.
+- Stopped registering Fullscreen `GamepadTester_*` theme blocks so they cannot initialize twice if both plugins are still installed during the switch.
+- Localized the replacement notice in all bundled languages.
+- Expanded automated coverage to 148 checks, including Controller Manager detection and uninstall-queue merging.
+
 ## 1.2.1
 
 - Blocked Back/B, Escape, tab movement, directional navigation, and Fullscreen window closing while button, stick, or latency capture is active.

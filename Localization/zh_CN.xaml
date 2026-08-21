@@ -305,4 +305,19 @@
     <sys:String x:Key="LOCGT_CompatibilityInsufficientAxesDetail">SDL 仅报告 {0} 个轴。标准双摇杆控制器通常至少公开 4 个轴。</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityFewButtonsDetail">SDL 报告 {0} 个原始按钮。请使用引导测试确认标准控件。</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityEightBitDoModeDetail">SDL 不提供可靠的 XInput/DInput 标记。如果控件缺失，请切换到 XInput 并重新连接控制器。</sys:String>
+    <sys:String x:Key="LOCGT_OpenRetirementNotice">替换说明</sys:String>
+    <sys:String x:Key="LOCGT_RetirementTitle">Gamepad Tester 已被替换</sys:String>
+    <sys:String x:Key="LOCGT_RetirementHeadline">请卸载 Gamepad Tester</sys:String>
+    <sys:String x:Key="LOCGT_RetirementBody">Gamepad Tester 已停止维护。手柄测试现已并入 Controller Manager。请卸载此插件并安装 Controller Manager。</sys:String>
+    <sys:String x:Key="LOCGT_RetirementConflict">请不要同时保留两个插件。名为 GamepadTester_* 的全屏主题块会注册两次，相关视图会损坏。</sys:String>
+    <sys:String x:Key="LOCGT_RetirementSteps">如果尚未安装 Controller Manager，请先安装，然后卸载 Gamepad Tester 并重启 Playnite。</sys:String>
+    <sys:String x:Key="LOCGT_RetirementInstallControllerManager">安装 Controller Manager</sys:String>
+    <sys:String x:Key="LOCGT_RetirementUninstallThis">卸载 Gamepad Tester</sys:String>
+    <sys:String x:Key="LOCGT_RetirementLater">以后再说</sys:String>
+    <sys:String x:Key="LOCGT_RetirementQueuedRestart">下次启动 Playnite 时将卸载 Gamepad Tester。现在重启？</sys:String>
+    <sys:String x:Key="LOCGT_RetirementQueueFailed">无法自动排队卸载。</sys:String>
+    <sys:String x:Key="LOCGT_RetirementControllerManagerInstalled">已安装 Controller Manager。请接着卸载 Gamepad Tester，以免全屏块被注册两次。</sys:String>
+    <sys:String x:Key="LOCGT_RetirementNotification">Gamepad Tester 已被 Controller Manager 取代。请卸载此插件，两者不能同时使用。</sys:String>
+    <sys:String x:Key="LOCGT_RetirementManualUninstallHint">也可以在 附加组件 → 已安装 → 通用 → Gamepad Tester 中卸载。</sys:String>
+    <sys:String x:Key="LOCGT_RetirementInstallFailed">无法打开 Controller Manager 安装程序。请在 附加组件 → 浏览 中搜索。</sys:String>
 </ResourceDictionary>

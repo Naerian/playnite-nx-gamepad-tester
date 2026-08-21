@@ -1,5 +1,16 @@
 AddonId: GamepadTester_518dc982-32b5-4493-b32d-1f71de2fe4ad
 Packages:
+  - Version: 1.3.0
+    RequiredApiVersion: 6.16.0
+    ReleaseDate: 2026-08-21
+    PackageUrl: https://github.com/Naerian/playnite-nx-gamepad-tester/releases/download/v1.3.0/GamepadTester-1.3.0.pext
+    Changelog:
+      - Retired Gamepad Tester. Controller testing now lives in Controller Manager.
+      - Shows a replacement notice on startup with no tester access.
+      - Offers Install Controller Manager and Uninstall Gamepad Tester, then asks to restart Playnite.
+      - Warns that both plugins cannot stay installed because Fullscreen GamepadTester_* blocks would register twice.
+      - Localized the replacement notice in all bundled languages.
+      - Expanded automated coverage to 148 checks.
   - Version: 1.2.1
     RequiredApiVersion: 6.16.0
     ReleaseDate: 2026-08-02

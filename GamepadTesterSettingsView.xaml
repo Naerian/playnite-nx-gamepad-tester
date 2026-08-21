@@ -1,234 +1,53 @@
 <UserControl x:Class="GamepadTester.GamepadTesterSettingsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d"
-             d:DesignHeight="720"
-             d:DesignWidth="900">
-    <UserControl.Resources>
-        <Style x:Key="SectionHeaderBorder" TargetType="Border">
-            <Setter Property="BorderBrush" Value="{DynamicResource GlyphBrush}" />
-            <Setter Property="BorderThickness" Value="0,0,0,1" />
-            <Setter Property="Padding" Value="0,0,0,6" />
-            <Setter Property="Margin" Value="0,18,0,10" />
-        </Style>
-
-        <Style x:Key="FirstSectionHeaderBorder"
-               TargetType="Border"
-               BasedOn="{StaticResource SectionHeaderBorder}">
-            <Setter Property="Margin" Value="0,0,0,10" />
-        </Style>
-
-        <Style x:Key="SectionHeaderText" TargetType="TextBlock">
-            <Setter Property="FontWeight" Value="SemiBold" />
-        </Style>
-
-        <Style x:Key="HelpText" TargetType="TextBlock">
-            <Setter Property="TextWrapping" Value="Wrap" />
-            <Setter Property="Opacity" Value="0.72" />
-            <Setter Property="Margin" Value="28,0,0,12" />
-        </Style>
-
-        <Style x:Key="FieldLabel" TargetType="TextBlock">
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="Margin" Value="0,0,16,10" />
-        </Style>
-
-        <Style x:Key="CompactTextBox"
-               TargetType="TextBox"
-               BasedOn="{StaticResource {x:Type TextBox}}">
-            <Setter Property="Width" Value="120" />
-            <Setter Property="HorizontalAlignment" Value="Left" />
-            <Setter Property="Margin" Value="0,0,0,10" />
-        </Style>
-    </UserControl.Resources>
-
-    <Grid Margin="12" TextElement.Foreground="{DynamicResource TextBrush}">
-        <TabControl>
-            <TabItem Header="{DynamicResource LOCGT_SettingsTabGeneral}">
-                <ScrollViewer VerticalScrollBarVisibility="Auto"
-                              HorizontalScrollBarVisibility="Disabled">
-                    <StackPanel Margin="8" HorizontalAlignment="Stretch">
-                        <Border Style="{StaticResource FirstSectionHeaderBorder}">
-                            <TextBlock Text="{DynamicResource LOCGT_SettingsPlayniteIntegration}"
-                                       Style="{StaticResource SectionHeaderText}" />
-                        </Border>
-
-                        <CheckBox Content="{DynamicResource LOCGT_SettingsShowSidebar}"
-                                  IsChecked="{Binding Settings.ShowSidebarItem}" />
-                        <TextBlock Text="{DynamicResource LOCGT_SettingsShowSidebarHelp}"
-                                   Style="{StaticResource HelpText}" />
-
-                        <CheckBox Content="{DynamicResource LOCGT_SettingsShowTopPanel}"
-                                  IsChecked="{Binding Settings.ShowTopPanelItem}" />
-                        <TextBlock Text="{DynamicResource LOCGT_SettingsShowTopPanelHelp}"
-                                   Style="{StaticResource HelpText}" />
-
-                        <CheckBox Content="{DynamicResource LOCGT_SettingsFullscreenWindow}"
-                                  IsChecked="{Binding Settings.UseFullscreenFriendlyWindow}" />
-                        <TextBlock Text="{DynamicResource LOCGT_SettingsFullscreenWindowHelp}"
-                                   Style="{StaticResource HelpText}" />
-
-                        <Border Style="{StaticResource SectionHeaderBorder}">
-                            <TextBlock Text="{DynamicResource LOCGT_SettingsTestingBehavior}"
-                                       Style="{StaticResource SectionHeaderText}" />
-                        </Border>
-
-                        <CheckBox Content="{DynamicResource LOCGT_SettingsResetOnSwitch}"
-                                  IsChecked="{Binding Settings.AutoResetDiagnosticsOnControllerChange}" />
-                        <TextBlock Text="{DynamicResource LOCGT_SettingsResetOnSwitchHelp}"
-                                   Style="{StaticResource HelpText}" />
-
-                        <CheckBox Content="{DynamicResource LOCGT_SettingsShowSingleSelector}"
-                                  IsChecked="{Binding Settings.ShowDeviceSelectorWhenSingleController}" />
-                        <TextBlock Text="{DynamicResource LOCGT_SettingsShowSingleSelectorHelp}"
-                                   Style="{StaticResource HelpText}" />
-
-                        <CheckBox Content="{DynamicResource LOCGT_SettingsEnableRumble}"
-                                  IsChecked="{Binding Settings.EnableRumbleTests}" />
-                        <TextBlock Text="{DynamicResource LOCGT_SettingsEnableRumbleHelp}"
-                                   Style="{StaticResource HelpText}" />
-
-                        <CheckBox Content="{DynamicResource LOCGT_SettingsInputLogDefault}"
-                                  IsChecked="{Binding Settings.EnableInputLogByDefault}" />
-                        <TextBlock Text="{DynamicResource LOCGT_SettingsInputLogDefaultHelp}"
-                                   Style="{StaticResource HelpText}" />
-                    </StackPanel>
-                </ScrollViewer>
-            </TabItem>
-
-            <TabItem Header="{DynamicResource LOCGT_SettingsTabDiagnostics}">
-                <ScrollViewer VerticalScrollBarVisibility="Auto"
-                              HorizontalScrollBarVisibility="Disabled">
-                    <StackPanel Margin="8" HorizontalAlignment="Stretch">
-                        <Border Style="{StaticResource FirstSectionHeaderBorder}">
-                            <TextBlock Text="{DynamicResource LOCGT_SettingsThresholds}"
-                                       Style="{StaticResource SectionHeaderText}" />
-                        </Border>
-
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="300" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
-                            <TextBlock Grid.Row="0"
-                                       Text="{DynamicResource LOCGT_SettingsHealthyDeadzone}"
-                                       Style="{StaticResource FieldLabel}" />
-                            <TextBox Grid.Row="0" Grid.Column="1"
-                                     Text="{Binding Settings.HealthyDeadzone}"
-                                     Style="{StaticResource CompactTextBox}" />
-
-                            <TextBlock Grid.Row="1"
-                                       Text="{DynamicResource LOCGT_SettingsMinorDrift}"
-                                       Style="{StaticResource FieldLabel}" />
-                            <TextBox Grid.Row="1" Grid.Column="1"
-                                     Text="{Binding Settings.MinorDriftThreshold}"
-                                     Style="{StaticResource CompactTextBox}" />
-
-                            <TextBlock Grid.Row="2"
-                                       Text="{DynamicResource LOCGT_SettingsAttentionDrift}"
-                                       Style="{StaticResource FieldLabel}" />
-                            <TextBox Grid.Row="2" Grid.Column="1"
-                                     Text="{Binding Settings.AttentionDriftThreshold}"
-                                     Style="{StaticResource CompactTextBox}" />
-
-                            <TextBlock Grid.Row="3"
-                                       Text="{DynamicResource LOCGT_SettingsStickEdge}"
-                                       Style="{StaticResource FieldLabel}" />
-                            <TextBox Grid.Row="3" Grid.Column="1"
-                                     Text="{Binding Settings.StickEdgeThreshold}"
-                                     Style="{StaticResource CompactTextBox}" />
-
-                            <TextBlock Grid.Row="4"
-                                       Text="{DynamicResource LOCGT_SettingsTriggerFullPress}"
-                                       Style="{StaticResource FieldLabel}" />
-                            <TextBox Grid.Row="4" Grid.Column="1"
-                                     Text="{Binding Settings.TriggerFullPressThreshold}"
-                                     Style="{StaticResource CompactTextBox}" />
-
-                            <TextBlock Grid.Row="5"
-                                       Text="{DynamicResource LOCGT_SettingsCalibrationDuration}"
-                                       Style="{StaticResource FieldLabel}" />
-                            <TextBox Grid.Row="5" Grid.Column="1"
-                                     Text="{Binding Settings.CenterCalibrationMilliseconds}"
-                                     Style="{StaticResource CompactTextBox}" />
-                        </Grid>
-
-                        <TextBlock Text="{DynamicResource LOCGT_SettingsThresholdsHelp}"
-                                   TextWrapping="Wrap"
-                                   Opacity="0.72"
-                                   Margin="0,4,0,0" />
-                    </StackPanel>
-                </ScrollViewer>
-            </TabItem>
-
-            <TabItem Header="{DynamicResource LOCGT_SettingsTabAbout}">
-                <ScrollViewer VerticalScrollBarVisibility="Auto"
-                              HorizontalScrollBarVisibility="Disabled">
-                    <StackPanel Margin="8" HorizontalAlignment="Stretch">
-                        <Border Style="{StaticResource FirstSectionHeaderBorder}">
-                            <TextBlock Text="{DynamicResource LOCGT_SettingsAboutTitle}"
-                                       Style="{StaticResource SectionHeaderText}" />
-                        </Border>
-
-                        <TextBlock Text="{DynamicResource LOCGT_SettingsAboutDescription}"
-                                   TextWrapping="Wrap"
-                                   MaxWidth="700"
-                                   HorizontalAlignment="Left"
-                                   Margin="0,0,0,8" />
-                        <TextBlock Text="{Binding InstalledVersionAuthorText, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-                                   FontWeight="SemiBold"
-                                   Margin="0,0,0,2"
-                                   Opacity="0.78" />
-
-                        <Border Style="{StaticResource SectionHeaderBorder}">
-                            <TextBlock Text="{DynamicResource LOCGT_SettingsLinksTitle}"
-                                       Style="{StaticResource SectionHeaderText}" />
-                        </Border>
-                        <StackPanel Orientation="Horizontal">
-                            <Button Content="{DynamicResource LOCGT_SettingsGitHub}"
-                                    Tag="https://github.com/Naerian/playnite-nx-gamepad-tester"
-                                    MinWidth="120"
-                                    Margin="0,0,8,0"
-                                    Click="OpenExternalLink" />
-                            <Button Content="{DynamicResource LOCGT_SettingsDocumentationWiki}"
-                                    Tag="https://github.com/Naerian/playnite-nx-gamepad-tester/wiki"
-                                    MinWidth="180"
-                                    Margin="0,0,8,0"
-                                    Click="OpenExternalLink" />
-                            <Button Content="{DynamicResource LOCGT_SettingsReportIssue}"
-                                    Tag="https://github.com/Naerian/playnite-nx-gamepad-tester/issues/new"
-                                    MinWidth="180"
-                                    Click="OpenExternalLink" />
-                        </StackPanel>
-
-                        <Border Style="{StaticResource SectionHeaderBorder}">
-                            <TextBlock Text="{DynamicResource LOCGT_SettingsSupportTitle}"
-                                       Style="{StaticResource SectionHeaderText}" />
-                        </Border>
-                        <TextBlock Text="{DynamicResource LOCGT_SettingsSupportHelp}"
-                                   TextWrapping="Wrap"
-                                   MaxWidth="700"
-                                   HorizontalAlignment="Left"
-                                   Margin="0,0,0,14" />
-                        <Button Content="{DynamicResource LOCGT_SettingsSupportKoFi}"
-                                Tag="https://ko-fi.com/naerian"
-                                MinWidth="180"
-                                HorizontalAlignment="Left"
-                                Click="OpenExternalLink" />
-                    </StackPanel>
-                </ScrollViewer>
-            </TabItem>
-        </TabControl>
-    </Grid>
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="16"
+                    MaxWidth="720"
+                    HorizontalAlignment="Left"
+                    TextElement.Foreground="{DynamicResource TextBrush}">
+            <TextBlock Text="{DynamicResource LOCGT_RetirementHeadline}"
+                       FontSize="22"
+                       FontWeight="SemiBold"
+                       TextWrapping="Wrap"
+                       Margin="0,0,0,12" />
+            <TextBlock Text="{DynamicResource LOCGT_RetirementBody}"
+                       TextWrapping="Wrap"
+                       Margin="0,0,0,12" />
+            <Border Background="{DynamicResource ControlBackgroundBrush}"
+                    BorderBrush="{DynamicResource GlyphBrush}"
+                    BorderThickness="1"
+                    Padding="12"
+                    Margin="0,0,0,12">
+                <TextBlock Text="{DynamicResource LOCGT_RetirementConflict}"
+                           TextWrapping="Wrap"
+                           FontWeight="SemiBold" />
+            </Border>
+            <TextBlock Text="{DynamicResource LOCGT_RetirementSteps}"
+                       TextWrapping="Wrap"
+                       Margin="0,0,0,8" />
+            <TextBlock x:Name="StatusText"
+                       TextWrapping="Wrap"
+                       Opacity="0.86"
+                       Margin="0,0,0,16" />
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="InstallButton"
+                        Content="{DynamicResource LOCGT_RetirementInstallControllerManager}"
+                        MinWidth="220"
+                        MinHeight="36"
+                        Margin="0,0,8,0"
+                        Click="InstallControllerManager" />
+                <Button x:Name="UninstallButton"
+                        Content="{DynamicResource LOCGT_RetirementUninstallThis}"
+                        MinWidth="220"
+                        MinHeight="36"
+                        Click="UninstallGamepadTester" />
+            </StackPanel>
+            <TextBlock Text="{DynamicResource LOCGT_RetirementManualUninstallHint}"
+                       TextWrapping="Wrap"
+                       Opacity="0.72"
+                       Margin="0,16,0,0" />
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

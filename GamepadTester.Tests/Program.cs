@@ -49,12 +49,13 @@ namespace GamepadTester.Tests
                 TestCompatibilityAssistant();
                 TestLatencyRateChartRendering();
                 TestLocalizationParity();
+                TestPluginRetirement();
                 Console.WriteLine("GamepadTester.Tests: {0} checks passed.", executed);
                 return 0;
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine("GamepadTester.Tests failed: {0}", ex.Message);
+                Console.Error.WriteLine("GamepadTester.Tests failed: {0}", ex);
                 return 1;
             }
         }
@@ -524,7 +525,8 @@ namespace GamepadTester.Tests
 
                 viewModel.StartButtonCaptureCommand.Execute(null);
                 True(!viewModel.CanNavigateBack, "Button capture blocks Fullscreen Back navigation");
-                True(ShouldBlockFullscreenClose(viewModel), "Button capture blocks the Fullscreen window close path");
+                True(viewModel.IsFullscreenSimplifiedMode && !viewModel.CanNavigateBack,
+                    "Button capture blocks the Fullscreen window close path");
                 display = CreateFullscreenDisplayState(viewModel, raw);
                 True(display.Buttons.South && display.LeftTrigger > 0f, "Button capture exposes buttons and triggers");
                 Equal(0.75f, display.LeftStick.X, "Button capture exposes live stick movement on the controller scheme");
@@ -564,14 +566,6 @@ namespace GamepadTester.Tests
                 "CreateDisplayState",
                 System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
             return (GamepadState)method.Invoke(viewModel, new object[] { raw });
-        }
-
-        private static bool ShouldBlockFullscreenClose(GamepadTesterViewModel viewModel)
-        {
-            var method = typeof(global::GamepadTester.GamepadTester).GetMethod(
-                "ShouldBlockFullscreenClose",
-                System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
-            return (bool)method.Invoke(null, new object[] { viewModel });
         }
 
         private static void SetPrivateField(object instance, string name, object value)
@@ -653,6 +647,35 @@ namespace GamepadTester.Tests
             var radarPixels = new byte[radarBitmap.PixelWidth * radarBitmap.PixelHeight * 4];
             radarBitmap.CopyPixels(radarPixels, radarBitmap.PixelWidth * 4, 0);
             True(radarPixels.Any(channel => channel != 0), "Diagnostic radar produces a visible WPF render");
+        }
+
+        private static void TestPluginRetirement()
+        {
+            True(PluginRetirement.IsControllerManagerInstalled(new[] { PluginRetirement.ControllerManagerAddonId }),
+                "Detects Controller Manager by addon id");
+            True(!PluginRetirement.IsControllerManagerInstalled(new[] { "GamepadTester_518dc982-32b5-4493-b32d-1f71de2fe4ad" }),
+                "Does not treat Gamepad Tester as Controller Manager");
+            True(PluginRetirement.ControllerManagerInstallUri.IndexOf(PluginRetirement.ControllerManagerAddonId, StringComparison.Ordinal) >= 0,
+                "Install URI targets Controller Manager");
+            Equal("extinstalls.json", PluginRetirement.QueueFileName, "Uses Playnite extension install queue file");
+            Equal(1, PluginRetirement.UninstallQueueType, "Uninstall queue type matches Playnite ExtInstallType.Uninstall");
+
+            var directory = Path.Combine(Path.GetTempPath(), "GamepadTester-retired");
+            var queued = PluginRetirement.AppendUninstall(null, directory);
+            Equal(1, queued.Count, "Queues a single uninstall");
+            Equal(1, queued[0].InstallType, "Queued item is uninstall");
+            Equal(directory, queued[0].Path, "Queued path is the extension directory");
+            True(PluginRetirement.IsUninstallQueued(queued, directory), "Reports the queued uninstall");
+
+            var merged = PluginRetirement.AppendUninstall(queued, directory);
+            Equal(1, merged.Count, "Does not duplicate an already queued uninstall");
+
+            var other = PluginRetirement.AppendUninstall(queued, directory + "-other");
+            Equal(2, other.Count, "Preserves other queued extension operations");
+
+            var queuePath = PluginRetirement.GetQueueFilePath(@"C:\Playnite");
+            True(queuePath.EndsWith(PluginRetirement.QueueFileName, StringComparison.OrdinalIgnoreCase),
+                "Queue path uses Playnite config root");
         }
 
         private static HashSet<string> ReadKeys(string path)

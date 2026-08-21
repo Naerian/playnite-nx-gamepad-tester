@@ -305,4 +305,19 @@
     <sys:String x:Key="LOCGT_CompatibilityInsufficientAxesDetail">O SDL informa apenas {0} eixos. Um controle padrão com dois analógicos normalmente expõe pelo menos quatro.</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityFewButtonsDetail">O SDL informa {0} botões brutos. Use o teste guiado para confirmar os controles padrão.</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityEightBitDoModeDetail">O SDL não expõe um indicador XInput/DInput confiável. Se faltarem controles, altere para XInput e reconecte o controle.</sys:String>
+    <sys:String x:Key="LOCGT_OpenRetirementNotice">Aviso de substituição</sys:String>
+    <sys:String x:Key="LOCGT_RetirementTitle">O Gamepad Tester foi substituído</sys:String>
+    <sys:String x:Key="LOCGT_RetirementHeadline">Desinstale o Gamepad Tester</sys:String>
+    <sys:String x:Key="LOCGT_RetirementBody">O Gamepad Tester não é mais mantido. Os testes de controle agora ficam no Controller Manager. Desinstale este plugin e instale o Controller Manager.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementConflict">Não mantenha os dois plugins instalados. Os blocos Fullscreen GamepadTester_* seriam registrados duas vezes e as visões do tema quebrariam.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementSteps">Instale o Controller Manager primeiro se ainda não o tiver, depois desinstale o Gamepad Tester e reinicie o Playnite.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementInstallControllerManager">Instalar Controller Manager</sys:String>
+    <sys:String x:Key="LOCGT_RetirementUninstallThis">Desinstalar Gamepad Tester</sys:String>
+    <sys:String x:Key="LOCGT_RetirementLater">Agora não</sys:String>
+    <sys:String x:Key="LOCGT_RetirementQueuedRestart">O Gamepad Tester será desinstalado na próxima inicialização do Playnite. Reiniciar agora?</sys:String>
+    <sys:String x:Key="LOCGT_RetirementQueueFailed">Não foi possível agendar a desinstalação automaticamente.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementControllerManagerInstalled">O Controller Manager já está instalado. Desinstale o Gamepad Tester para que os blocos Fullscreen não sejam registrados duas vezes.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementNotification">O Gamepad Tester foi substituído pelo Controller Manager. Desinstale este plugin — os dois não podem ser usados juntos.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementManualUninstallHint">Você também pode desinstalá-lo em Add-ons → Instalados → Genéricos → Gamepad Tester.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementInstallFailed">Não foi possível abrir o instalador do Controller Manager. Procure-o em Add-ons → Procurar.</sys:String>
 </ResourceDictionary>

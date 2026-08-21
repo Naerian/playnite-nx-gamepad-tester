@@ -4,9 +4,9 @@ Playnite NX Gamepad Tester is a Playnite extension for testing controllers in De
 
 It is designed for couch, TV, handheld-PC, and console-like setups where users want to verify gamepad buttons, sticks, triggers, rumble, drift, latency, and device metadata without leaving Playnite.
 
-## Version 1.2.1
+## Version 1.3.0
 
-Version `1.2.1` prevents Back/B, Escape, navigation, and close actions from dismissing Fullscreen tester views during button, stick, or latency capture. Theme contract `1.1` adds `CanNavigateBack`, automatically guards controls named `GamepadTester_BackButton`, and keeps `LB + RB` as the deliberate one-second exit gesture.
+Version `1.3.0` retires Gamepad Tester. Controller testing now lives in [Controller Manager](https://github.com/Naerian/playnite-nx-session-controller-manager). After this update the plugin only shows a replacement notice: install Controller Manager, uninstall Gamepad Tester, and restart Playnite. Keep only Controller Manager installed. Fullscreen theme blocks named `GamepadTester_*` would register twice if both plugins remain enabled.
 
 ## Documentation
 
@@ -15,6 +15,8 @@ Version `1.2.1` prevents Back/B, Escape, navigation, and close actions from dism
 - [Fullscreen theme integration](https://github.com/Naerian/playnite-nx-gamepad-tester/wiki/EN-Fullscreen-Theme-Integration)
 
 ## Features
+
+These features now live in Controller Manager. Gamepad Tester 1.3.0 only shows the replacement notice.
 
 - SDL GameController backend using Playnite's bundled SDL runtime where available.
 - Normalized stick values (`-1..1`) and trigger values (`0..1`).
@@ -45,11 +47,16 @@ Version `1.2.1` prevents Back/B, Escape, navigation, and close actions from dism
 
 ## Installation
 
+This plugin is retired. Install [Controller Manager](https://github.com/Naerian/playnite-nx-session-controller-manager) instead (`playnite://playnite/installaddon/ControllerSessionManager_6f3e7a21-98f4-4f2b-92ad-3fc0e6e941dc`), then uninstall Gamepad Tester from **Add-ons → Installed**. Do not keep both plugins: Fullscreen `GamepadTester_*` theme blocks would register twice.
+
+If you still have Gamepad Tester 1.2.1 or older:
+
 1. Download the latest `.pext` file from the [GitHub releases page](https://github.com/Naerian/playnite-nx-gamepad-tester/releases).
 2. Open the `.pext` file, or drag it into Playnite.
 3. Restart Playnite if Playnite asks you to do so.
+4. Follow the replacement notice: install Controller Manager, uninstall Gamepad Tester, restart Playnite.
 
-After installation, open **Extensions > Gamepad Tester**.
+After installation, the plugin no longer opens the tester. It only shows the replacement notice from **Add-ons → Extension settings → Gamepad Tester**, the Desktop sidebar, or the top panel.
 
 ## Desktop and Fullscreen
 

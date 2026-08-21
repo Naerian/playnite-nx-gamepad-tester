@@ -305,4 +305,19 @@
     <sys:String x:Key="LOCGT_CompatibilityInsufficientAxesDetail">SDL yalnızca {0} eksen bildiriyor. İki analog çubuklu standart bir kontrolcü normalde en az dört eksen sunar.</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityFewButtonsDetail">SDL {0} ham düğme bildiriyor. Standart kontrolleri doğrulamak için yönlendirmeli testi kullanın.</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityEightBitDoModeDetail">SDL güvenilir bir XInput/DInput işareti sunmuyor. Kontroller eksikse XInput moduna geçin ve kontrolcüyü yeniden bağlayın.</sys:String>
+    <sys:String x:Key="LOCGT_OpenRetirementNotice">Değiştirme bildirimi</sys:String>
+    <sys:String x:Key="LOCGT_RetirementTitle">Gamepad Tester değiştirildi</sys:String>
+    <sys:String x:Key="LOCGT_RetirementHeadline">Gamepad Tester eklentisini kaldırın</sys:String>
+    <sys:String x:Key="LOCGT_RetirementBody">Gamepad Tester artık bakılmıyor. Kumanda testleri artık Controller Manager içinde. Bu eklentiyi kaldırın ve Controller Manager yükleyin.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementConflict">İkisini birden yüklü bırakmayın. GamepadTester_* tam ekran tema blokları iki kez kaydedilir ve görünümler bozulur.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementSteps">Henüz yoksa önce Controller Manager yükleyin, sonra Gamepad Tester eklentisini kaldırın ve Playnite'i yeniden başlatın.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementInstallControllerManager">Controller Manager yükle</sys:String>
+    <sys:String x:Key="LOCGT_RetirementUninstallThis">Gamepad Tester kaldır</sys:String>
+    <sys:String x:Key="LOCGT_RetirementLater">Şimdi değil</sys:String>
+    <sys:String x:Key="LOCGT_RetirementQueuedRestart">Gamepad Tester, Playnite sonraki açılışında kaldırılacak. Şimdi yeniden başlatılsın mı?</sys:String>
+    <sys:String x:Key="LOCGT_RetirementQueueFailed">Kaldırma otomatik olarak kuyruğa alınamadı.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementControllerManagerInstalled">Controller Manager zaten yüklü. Tam ekran bloklarının iki kez kaydedilmemesi için Gamepad Tester eklentisini kaldırın.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementNotification">Gamepad Tester, Controller Manager ile değiştirildi. Bu eklentiyi kaldırın; ikisi birlikte kullanılamaz.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementManualUninstallHint">Eklentiler → Yüklü → Genel → Gamepad Tester yolundan da kaldırabilirsiniz.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementInstallFailed">Controller Manager yükleyicisi açılamadı. Eklentiler → Göz at içinde arayın.</sys:String>
 </ResourceDictionary>

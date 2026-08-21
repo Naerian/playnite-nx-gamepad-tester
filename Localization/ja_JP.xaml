@@ -305,4 +305,19 @@
     <sys:String x:Key="LOCGT_CompatibilityInsufficientAxesDetail">SDL が報告する軸は {0} 個だけです。一般的なデュアルスティックコントローラーは通常 4 軸以上を公開します。</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityFewButtonsDetail">SDL は {0} 個の物理ボタンを報告しています。ガイドテストで標準操作を確認してください。</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityEightBitDoModeDetail">SDL は信頼できる XInput/DInput フラグを公開しません。操作が不足する場合は XInput に切り替えて再接続してください。</sys:String>
+    <sys:String x:Key="LOCGT_OpenRetirementNotice">置き換えのお知らせ</sys:String>
+    <sys:String x:Key="LOCGT_RetirementTitle">Gamepad Tester は置き換えられました</sys:String>
+    <sys:String x:Key="LOCGT_RetirementHeadline">Gamepad Tester をアンインストールしてください</sys:String>
+    <sys:String x:Key="LOCGT_RetirementBody">Gamepad Tester の開発は終了しました。コントローラーテストは Controller Manager に移っています。このプラグインをアンインストールし、Controller Manager をインストールしてください。</sys:String>
+    <sys:String x:Key="LOCGT_RetirementConflict">両方を入れたままにしないでください。GamepadTester_* のフルスクリーンテーマブロックが二重登録され、画面が壊れます。</sys:String>
+    <sys:String x:Key="LOCGT_RetirementSteps">未導入なら先に Controller Manager を入れ、Gamepad Tester をアンインストールして Playnite を再起動してください。</sys:String>
+    <sys:String x:Key="LOCGT_RetirementInstallControllerManager">Controller Manager をインストール</sys:String>
+    <sys:String x:Key="LOCGT_RetirementUninstallThis">Gamepad Tester をアンインストール</sys:String>
+    <sys:String x:Key="LOCGT_RetirementLater">後で</sys:String>
+    <sys:String x:Key="LOCGT_RetirementQueuedRestart">次回の Playnite 起動時に Gamepad Tester がアンインストールされます。今すぐ再起動しますか？</sys:String>
+    <sys:String x:Key="LOCGT_RetirementQueueFailed">アンインストールを自動予約できませんでした。</sys:String>
+    <sys:String x:Key="LOCGT_RetirementControllerManagerInstalled">Controller Manager は既にインストール済みです。フルスクリーンブロックの二重登録を避けるため、Gamepad Tester をアンインストールしてください。</sys:String>
+    <sys:String x:Key="LOCGT_RetirementNotification">Gamepad Tester は Controller Manager に置き換わりました。このプラグインをアンインストールしてください。両方は併用できません。</sys:String>
+    <sys:String x:Key="LOCGT_RetirementManualUninstallHint">アドオン → インストール済み → 汎用 → Gamepad Tester からもアンインストールできます。</sys:String>
+    <sys:String x:Key="LOCGT_RetirementInstallFailed">Controller Manager のインストーラーを開けませんでした。アドオン → 参照 で検索してください。</sys:String>
 </ResourceDictionary>

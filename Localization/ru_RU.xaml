@@ -305,4 +305,19 @@
     <sys:String x:Key="LOCGT_CompatibilityInsufficientAxesDetail">SDL сообщает только о {0} осях. Стандартный контроллер с двумя стиками обычно предоставляет не менее четырёх.</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityFewButtonsDetail">SDL сообщает о {0} необработанных кнопках. Подтвердите стандартные элементы в пошаговом тесте.</sys:String>
     <sys:String x:Key="LOCGT_CompatibilityEightBitDoModeDetail">SDL не предоставляет надёжный признак XInput/DInput. Если элементы отсутствуют, переключитесь на XInput и переподключите контроллер.</sys:String>
+    <sys:String x:Key="LOCGT_OpenRetirementNotice">Уведомление о замене</sys:String>
+    <sys:String x:Key="LOCGT_RetirementTitle">Gamepad Tester заменён</sys:String>
+    <sys:String x:Key="LOCGT_RetirementHeadline">Удалите Gamepad Tester</sys:String>
+    <sys:String x:Key="LOCGT_RetirementBody">Gamepad Tester больше не поддерживается. Проверка контроллера теперь в Controller Manager. Удалите этот плагин и установите Controller Manager.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementConflict">Не оставляйте оба плагина. Полноэкранные блоки GamepadTester_* зарегистрируются дважды, и представления темы сломаются.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementSteps">Сначала установите Controller Manager, если его ещё нет, затем удалите Gamepad Tester и перезапустите Playnite.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementInstallControllerManager">Установить Controller Manager</sys:String>
+    <sys:String x:Key="LOCGT_RetirementUninstallThis">Удалить Gamepad Tester</sys:String>
+    <sys:String x:Key="LOCGT_RetirementLater">Не сейчас</sys:String>
+    <sys:String x:Key="LOCGT_RetirementQueuedRestart">Gamepad Tester будет удалён при следующем запуске Playnite. Перезапустить сейчас?</sys:String>
+    <sys:String x:Key="LOCGT_RetirementQueueFailed">Не удалось автоматически запланировать удаление.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementControllerManagerInstalled">Controller Manager уже установлен. Удалите Gamepad Tester, чтобы полноэкранные блоки не регистрировались дважды.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementNotification">Gamepad Tester заменён на Controller Manager. Удалите этот плагин — их нельзя использовать вместе.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementManualUninstallHint">Его также можно удалить в Дополнения → Установленные → Общие → Gamepad Tester.</sys:String>
+    <sys:String x:Key="LOCGT_RetirementInstallFailed">Не удалось открыть установщик Controller Manager. Найдите его в Дополнения → Обзор.</sys:String>
 </ResourceDictionary>

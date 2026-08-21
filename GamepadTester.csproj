@@ -52,6 +52,7 @@
     <Compile Include="Converters\BoolToBrushConverter.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="GamepadTester.cs" />
+    <Compile Include="PluginRetirement.cs" />
     <Compile Include="GamepadTesterSettings.cs" />
     <Compile Include="GamepadTesterSettingsView.xaml.cs">
       <DependentUpon>GamepadTesterSettingsView.xaml</DependentUpon>
