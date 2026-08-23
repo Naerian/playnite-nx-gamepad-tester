@@ -1,81 +1,41 @@
 # Playnite NX Gamepad Tester
 
-Playnite NX Gamepad Tester is a Playnite extension for testing controllers in Desktop mode, with optional embeddable blocks for Fullscreen themes.
+> **This plugin is no longer maintained and will be removed soon.**
+>
+> Controller testing (and more) now lives in **[Controller Manager](https://github.com/Naerian/playnite-nx-session-controller-manager)**. Install that plugin and uninstall Gamepad Tester. Do not keep both: Fullscreen theme blocks named `GamepadTester_*` would register twice and break those views.
 
-It is designed for couch, TV, handheld-PC, and console-like setups where users want to verify gamepad buttons, sticks, triggers, rumble, drift, latency, and device metadata without leaving Playnite.
+## Move to Controller Manager
 
-## Version 1.3.0
+1. Install Controller Manager from the [releases page](https://github.com/Naerian/playnite-nx-session-controller-manager/releases), from Playnite **Add-ons → Browse**, or open:
 
-Version `1.3.0` retires Gamepad Tester. Controller testing now lives in [Controller Manager](https://github.com/Naerian/playnite-nx-session-controller-manager). After this update the plugin only shows a replacement notice: install Controller Manager, uninstall Gamepad Tester, and restart Playnite. Keep only Controller Manager installed. Fullscreen theme blocks named `GamepadTester_*` would register twice if both plugins remain enabled.
+   `playnite://playnite/installaddon/ControllerSessionManager_6f3e7a21-98f4-4f2b-92ad-3fc0e6e941dc`
 
-## Documentation
+2. Uninstall **Gamepad Tester** from **Add-ons → Installed → Generic**.
 
-- [Documentation (English)](https://github.com/Naerian/playnite-nx-gamepad-tester/wiki/EN-Installation-and-Quick-Start)
-- [Documentación (Español)](https://github.com/Naerian/playnite-nx-gamepad-tester/wiki/ES-Instalacion-e-inicio-rapido)
-- [Fullscreen theme integration](https://github.com/Naerian/playnite-nx-gamepad-tester/wiki/EN-Fullscreen-Theme-Integration)
+3. Restart Playnite when prompted.
 
-## Features
+Controller Manager already includes the gamepad tester plus session tracking, connection alerts, adaptive switching, overlays, and battery indicators.
 
-These features now live in Controller Manager. Gamepad Tester 1.3.0 only shows the replacement notice.
+Docs: [English wiki](https://github.com/Naerian/playnite-nx-session-controller-manager/wiki) · [Wiki en español](https://github.com/Naerian/playnite-nx-session-controller-manager/wiki)
 
-- SDL GameController backend using Playnite's bundled SDL runtime where available.
-- Normalized stick values (`-1..1`) and trigger values (`0..1`).
-- Xbox naming convention for normalized controls: `LS`, `RS`, `LB`, `RB`, `LT`, `RT`, `A`, `B`, `X`, `Y`.
-- Support for Xbox/XInput, PlayStation, Nintendo Switch Pro, 8BitDo, and generic SDL-compatible controllers.
-- Multi-controller selector when more than one controller is connected.
-- Automatic and manual visual schemes for Universal, Xbox One, Xbox Series X / S, PlayStation, DualSense, Switch Pro, 8BitDo Ultimate, 8BitDo Pro, and Steam Controller layouts.
-- Live controller map with button, shoulder, trigger, stick, and D-pad feedback.
-- Guided test pass that asks for the next missing normalized input.
-- Stick diagnostics with explicit start/stop, paths, 100% circular-coverage completion, max reach, range quality, center capture, recommended deadzone, and measurement confidence.
-- Health estimate based only on stable resting samples, with configurable thresholds and a collection-readiness indicator.
-- Latency panel with a fixed-size theme-colored history chart for observed polling/input timing and sample confidence.
-- Diagnostic profile radar with separate center, stick, trigger, control-coverage, and timing results plus instructions for completing each axis.
-- Input log with opt-in recording and export.
-- Rumble tests integrated into the main test dashboard.
-- Device information with controller name, display name, VID/PID, layout, backend, SDL mapping status, and an exportable compatibility report.
-- Optional Playnite Desktop sidebar entry.
-- Localizable UI through Playnite resource dictionaries.
+## Version 1.3.0 (final)
 
-## Requirements
+`1.3.0` is the last Gamepad Tester release. It only shows a replacement notice (startup, settings, sidebar, top panel) with **Install Controller Manager** and **Uninstall Gamepad Tester**. There is no tester UI anymore.
 
-- Windows.
-- Playnite 10.x.
-- Playnite SDK compatible runtime.
-- A controller exposed to SDL as a GameController.
+If you are still on `1.2.1` or older, install `1.3.0` from [this repo’s releases](https://github.com/Naerian/playnite-nx-gamepad-tester/releases), then follow the notice above.
 
-8BitDo controllers can expose themselves through XInput or DInput depending on the hardware mode. Gamepad Tester reads through SDL GameController normalization, so both paths are supported when SDL can map the device. XInput mode is usually the most consistent first option; DInput can still work if SDL has a compatible mapping for that mode.
+## Historical notes
 
-## Installation
+Earlier versions provided Desktop controller testing and optional Fullscreen theme blocks (`StatusBadge`, `ButtonMap`, `StickCheck`, `TriggerCheck`, `RumblePad`, `LatencyMini`). That work continues in Controller Manager; theme authors should migrate integrations there.
 
-This plugin is retired. Install [Controller Manager](https://github.com/Naerian/playnite-nx-session-controller-manager) instead (`playnite://playnite/installaddon/ControllerSessionManager_6f3e7a21-98f4-4f2b-92ad-3fc0e6e941dc`), then uninstall Gamepad Tester from **Add-ons → Installed**. Do not keep both plugins: Fullscreen `GamepadTester_*` theme blocks would register twice.
+Archived docs in this repo:
 
-If you still have Gamepad Tester 1.2.1 or older:
-
-1. Download the latest `.pext` file from the [GitHub releases page](https://github.com/Naerian/playnite-nx-gamepad-tester/releases).
-2. Open the `.pext` file, or drag it into Playnite.
-3. Restart Playnite if Playnite asks you to do so.
-4. Follow the replacement notice: install Controller Manager, uninstall Gamepad Tester, restart Playnite.
-
-After installation, the plugin no longer opens the tester. It only shows the replacement notice from **Add-ons → Extension settings → Gamepad Tester**, the Desktop sidebar, or the top panel.
-
-## Desktop and Fullscreen
-
-Desktop mode provides the complete tester: controller selection, visual scheme override, guided checks, stick diagnostics, health, latency, input logs, vibration, device information, and exportable reports.
-
-Fullscreen themes can open focused tester views or embed independent `StatusBadge`, `ButtonMap`, `StickCheck`, `TriggerCheck`, `RumblePad`, and `LatencyMini` blocks. The theme remains responsible for focus, controller navigation, layout, animation, and modal behavior. See the [Fullscreen integration guide](https://github.com/Naerian/playnite-nx-gamepad-tester/wiki/EN-Fullscreen-Theme-Integration) for commands and XAML examples.
-
-Embedded controls expose dedicated `GamepadTesterControlBackgroundBrush`, `GamepadTesterButtonBackgroundBrush`, `GamepadTesterControlBorderBrush`, `GamepadTesterStickGuideBrush`, and `GamepadTesterTextBrush` resources. `GamepadTesterStickGuideBrush` styles the circles, range ring, and axis guides in stick diagnostics independently from panel borders. Themes can override these resources locally without changing Playnite's generic brushes.
-
-### Theme developer kit
-
-The Fullscreen integration follows a versioned `1.1` contract. Dynamic hosts expose initialization state and error details, embedded controls expose controller/test state and `CanNavigateBack`, and themes can run `RefreshThemeBlocksCommand` after creating a custom window. Theme close commands must bind to `CanNavigateBack` so Back/B cannot dismiss a view during input capture. A complete reference view is available in [`docs/theme-integration/GamepadTesterSampleView.xaml`](docs/theme-integration/GamepadTesterSampleView.xaml), with the stable contract documented in [`docs/theme-integration/CONTRACT.md`](docs/theme-integration/CONTRACT.md).
-
-## Compatibility note
-
-Gamepad Tester uses SDL GameController normalization. Xbox/XInput, PlayStation, Nintendo Switch Pro, Steam Controller, 8BitDo, and generic mapped controllers are supported when SDL recognizes the active device mode. 8BitDo XInput and DInput modes can expose different mappings and capabilities.
+- [Fullscreen theme contract](docs/theme-integration/CONTRACT.md)
+- [Sample Fullscreen view](docs/theme-integration/GamepadTesterSampleView.xaml)
+- Old wiki: [EN](https://github.com/Naerian/playnite-nx-gamepad-tester/wiki/EN-Installation-and-Quick-Start) · [ES](https://github.com/Naerian/playnite-nx-gamepad-tester/wiki/ES-Instalacion-e-inicio-rapido)
 
 ## Support
 
-If you find this project useful and want to support its development, consider buying me a coffee!
+If you find Controller Manager useful and want to support its development:
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/naerian)
